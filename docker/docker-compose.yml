@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  nginx:
+    image: nginx
+    container_name: nginx
+    ports:
+      - 8080:8080
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/nginx.conf:ro
+      - ../site/index.html:/var/www/html/index.html:ro
+    command: [nginx-debug, '-g', 'daemon off;'] # DEBUG
