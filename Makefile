@@ -5,6 +5,9 @@ all: up
 up:
 	docker-compose -f $(DOCKER_COMPOSE_PATH) up -d --build
 
+debug: down
+	docker-compose -f $(DOCKER_COMPOSE_PATH) up
+
 down:
 	docker-compose -f $(DOCKER_COMPOSE_PATH) down
 
