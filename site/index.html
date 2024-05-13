@@ -15,12 +15,97 @@
 		</style>
 	</head>
 	<body>
-		<h1>HOME</h1>
-		<p>Bem vindo ao transcendence</p>
-		<p><a href="#login?mail=seu_email_criptografado&pass=senha_cirptografada">Login</a>
-		<a href="#register">Register</a></p>
+		<a href="/site/">TRANSCENDENCE</a>
+		<h1 id="titulo">HOME</h1>
+		<p id="descricao">Bem vindo ao transcendence</p>
+		<div id="buttons">
+			<a href="#login" id="btn_login">Login</a>
+			<a href="#register" id="btn_register">Registre-se</a>
+			<a href="#play" id="btn_play">Jogar</a>
+		</div>
+		<div id="form_container"></div>
+		<br>
 	</body>
 	<footer>
 		<p>Feito com ⌨️, por Reinan, Fabio, (Luis) e Andrey</p>
 	</footer>
+	<script>
+		window.addEventListener('hashchange', () => {
+			const hash = window.location.hash;
+			const buttons = document.querySelector('#buttons');
+
+			if (hash === "#login" || hash === "#register")
+				buttons.style.display = 'none';
+			else
+				buttons.style.display = 'block';
+
+			const form_Container = document.querySelector('#form_container');
+
+			if (hash === "#login" || hash === "#register") {
+				const form = document.createElement('form');
+				const email_Input = document.createElement('input');
+				const password_Input = document.createElement('input');
+				const submit_Button = document.createElement('button');
+
+				form.addEventListener('submit', (event) => {
+					const form = event.target;
+					const email = form['email'].value;
+					const password = form['password'].value;
+					const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^-_+])(?!.*[!&=\?])(?!.*\s).{8,16}$/;
+
+					if (!regex.test(password)) {
+						alert("Senha inválida");
+						event.preventDefault();
+						return ;
+					}
+					form.submit();
+				})
+				email_Input.setAttribute('type', 'email');
+				email_Input.setAttribute('placeholder', 'Email');
+				email_Input.setAttribute('name', 'email');
+				password_Input.setAttribute('type', 'password');
+				password_Input.setAttribute('placeholder', 'Password');
+				password_Input.setAttribute('name', 'password');
+				submit_Button.setAttribute('type', 'submit');
+				submit_Button.textContent = 'Submit';
+				
+				if (hash === "#login") {
+					document.querySelector('#titulo').innerHTML = 'LOGIN';
+					document.querySelector('#descricao').innerHTML =
+					'Não tem uma conta? <a href="#register">Registre-se</a>';
+					form.setAttribute('id', 'login_form');
+					form.setAttribute('method', 'GET');
+					form.setAttribute('action', '/site/login.js');
+				}
+				else if (hash === "#register") {
+					document.querySelector('#titulo').innerHTML = 'REGISTER';
+					document.querySelector('#descricao').innerHTML =
+					'Já tem uma conta? <a href="#login">Entre</a>';
+					form.setAttribute('id', 'register_form');
+					form.setAttribute('method', 'POST');
+					form.setAttribute('action', '/site/register.js');
+				}
+
+				form.appendChild(email_Input);
+				form.appendChild(document.createElement('br'));
+				form.appendChild(password_Input);
+				form.appendChild(document.createElement('br'));
+				form.appendChild(submit_Button);
+				form_Container.innerHTML = '';
+				form_Container.appendChild(form);
+			}
+			else if (hash === "#play") {
+				document.querySelector('#titulo').innerHTML = 'PLAY';
+				document.querySelector('#descricao').innerHTML =
+					'Jogue transcendence';
+				form_Container.innerHTML = '';
+			}
+			else {
+				document.querySelector('#titulo').innerHTML = 'HOME';
+				document.querySelector('#descricao').innerHTML =
+					'Bem vindo ao transcendence';
+				form_Container.innerHTML = '';
+			}
+		})
+	</script>
 </html>
