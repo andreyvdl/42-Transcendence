@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  nginx:
+    image: nginx:transcendence
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nginx
+    ports:
+      - 8080:8080
+    #command: [nginx-debug, '-g', 'daemon off;'] # DEBUG

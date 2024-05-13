@@ -1,4 +1,4 @@
-DOCKER_COMPOSE_PATH=./docker/docker-compose.yml
+DOCKER_COMPOSE_PATH=./docker-compose.yml
 
 all: up
 
