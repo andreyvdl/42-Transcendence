@@ -61,6 +61,7 @@ const defaultBallHeight = 12;
 const defaultBallVelocityX = 2;
 const defaultBallVelocityY = 2;
 const speedIncrement = 1.1; // 1.00 - 2.00
+const maxSpeed = 5;
 
 let ball = {
 	x : boardWidth / 2,
@@ -95,18 +96,36 @@ function detectCollision(a, b) {
         a.y < b.y + b.height && a.y + a.height > b.y);
 }
 
+var hitted = false;
+var checked = 0;
+
 function updateBall() {
 	ball.x += ball.velocityX;
 	ball.y += ball.velocityY;
 	if (ball.y < 0 || (ball.y + ball.height > boardHeight)) {
-		ball.velocityY *= -speedIncrement;
+		ball.velocityY *= -1;
+		ball.velocityY *= (Math.abs(ball.velocityY) < maxSpeed ? speedIncrement : 1);
+	}
+	if (hitted === true && checked <= 100) {
+		checked++;
+		return ;
+	}
+	else {
+		hitted = false;
+		checked = 0;
 	}
     if (detectCollision(ball, playerOne) && ball.x > playerOne.x) {
-        if (ball.x < playerOne.x + playerTwo.height)
-            ball.velocityX *= -speedIncrement;
+        if (ball.x < playerOne.x + playerTwo.height) {
+            ball.velocityX *= -1;
+			ball.velocityX *= (Math.abs(ball.velocityX) < maxSpeed ? speedIncrement : 1);
+			hitted = true;
+		}
     } else if (detectCollision(ball, playerTwo) && ball.x < playerTwo.x) {
-        if (ball.x < playerTwo.x + playerTwo.height)
-            ball.velocityX *= -speedIncrement;
+        if (ball.x < playerTwo.x + playerTwo.height) {
+            ball.velocityX *= -1;
+			ball.velocityX *= (Math.abs(ball.velocityX) < maxSpeed ? speedIncrement : 1);
+			hitted = true;
+		}
     }
 }
 
@@ -141,6 +160,7 @@ function update() {
     context.font = "45px arial";
     context.fillText(playerOne.playerScore, boardWidth/5, 45);
     context.fillText(playerTwo.playerScore, boardWidth*4/5 - 45, 45);
+	console.log(ball.velocityX, ball.velocityY);
 }
 
 function movePlayer(e) {
