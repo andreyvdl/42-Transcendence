@@ -73,8 +73,8 @@ let ball = {
 	velocityY : DEFAULT_BALL_VELOCITY_Y,
 }
 
-let playerOne = new Player(10, BOARD_HEIGHT/2, DEFAULT_PLAYER_WIDTH, DEFAULT_PLAYER_HEIGHT);
-let playerTwo = new Player(BOARD_WIDTH - 20, BOARD_HEIGHT/2, DEFAULT_PLAYER_WIDTH, DEFAULT_PLAYER_HEIGHT);
+let playerOne = new Player(10, BOARD_HEIGHT/2);
+let playerTwo = new Player(BOARD_WIDTH - 20, BOARD_HEIGHT/2);
 
 function getRandomInt(min, max) {
 	return Math.floor(Math.random() * (max - min) + min);
