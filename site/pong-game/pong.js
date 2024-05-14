@@ -1,6 +1,8 @@
 let board;
 let context;
 
+const keys= {};
+
 const BOARD_WIDTH = 800;
 const BOARD_HEIGHT = 800;
 
@@ -9,7 +11,7 @@ const LIMIT_MOVE_DOWN = BOARD_HEIGHT - LIMIT_MOVE_UP;
 
 const DEFAULT_PLAYER_WIDTH = 10;
 const DEFAULT_PLAYER_HEIGHT = 100;
-const DEFAULT_PLAYER_SPEED = 15;
+const DEFAULT_PLAYER_SPEED = 10;
 
 const DEFAULT_BALL_WIDTH = 12;
 const DEFAULT_BALL_HEIGHT = 12;
@@ -130,6 +132,17 @@ function updateBall() {
     }
 }
 
+function updatePlayers() {
+	if (keys["ArrowDown"])
+		playerTwo.moveDown();
+	if (keys["s"])
+		playerOne.moveDown();
+	if (keys["w"])
+		playerOne.moveUp();
+	if (keys["ArrowUp"])
+		playerTwo.moveUp();
+}
+
 function update() {
     requestAnimationFrame(update)
     context.clearRect(0, 0, board.width, board.height)
@@ -141,6 +154,7 @@ function update() {
     }
 
     // PLAYERS
+	updatePlayers();
     context.fillRect(playerOne.x, playerOne.y, playerOne.width, playerOne.height);
     context.fillRect(playerTwo.x, playerTwo.y, playerTwo.width, playerTwo.height);
 
@@ -163,27 +177,19 @@ function update() {
     context.fillText(playerTwo.playerScore, board.width * 4 / 5 - 45, 45);
 }
 
-function movePlayer(e) {
-    if (e.code == "KeyW")
-        playerOne.moveUp();
-    else if (e.code == "KeyS")
-        playerOne.moveDown();
-    if (e.code == "ArrowUp")
-        playerTwo.moveUp();
-    else if (e.code == "ArrowDown")
-        playerTwo.moveDown();
-}
-
 window.onload = function() {
     board = document.getElementById("board");
     board.height = BOARD_HEIGHT;
     board.width = BOARD_WIDTH;
     context = board.getContext("2d");
 
-    document.addEventListener("keyup", movePlayer);
-    document.addEventListener("keydown", movePlayer);
-    document.addEventListener("w", movePlayer);
-    document.addEventListener("s", movePlayer);
+    document.addEventListener("keydown", (event) => {
+		keys[event.key] = true;
+	});
+
+    document.addEventListener("keyup", (event) => {
+		keys[event.key] = false;
+	});
 
     requestAnimationFrame(update);
 }
