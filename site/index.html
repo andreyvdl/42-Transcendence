@@ -23,7 +23,7 @@
 			<a href="#register" id="btn_register">Registre-se</a>
 			<a href="#play" id="btn_play">Jogar</a>
 		</div>
-		<div id="form_container"></div>
+		<div id="formContainer"></div>
 		<br>
 	</body>
 	<footer>
@@ -39,72 +39,174 @@
 			else
 				buttons.style.display = 'block';
 
-			const form_Container = document.querySelector('#form_container');
+			const formContainer = document.querySelector('#formContainer');
 
 			if (hash === "#login" || hash === "#register") {
 				const form = document.createElement('form');
-				const email_Input = document.createElement('input');
-				const password_Input = document.createElement('input');
-				const submit_Button = document.createElement('button');
+				const emailInput = document.createElement('input');
+				const passInput = document.createElement('input');
+				const submitBttn = document.createElement('button');
 
 				form.addEventListener('submit', (event) => {
-					const form = event.target;
-					const email = form['email'].value;
-					const password = form['password'].value;
-					const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^-_+])(?!.*[!&=\?])(?!.*\s).{8,16}$/;
+					const formData = new FormData(form);
+					// const email = formData.get('email');
+					// const password = formData.get('password');
+					// const regex_password = [
+					// 	/^(?=.*\d)/,
+					// 	/^(?=.*[a-z])/,
+					// 	/^(?=.*[A-Z])/,
+					// 	/^(?=.*[@#$%^-_+])/,
+					// 	/(?=.*[!&=\?,])/,
+					// 	/(?=.*\s)/,
+					// 	/.{8,16}/,
+					// 	/(?=.*['"])/
+					// ];
+					// const regex_email = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/;
 
-					if (!regex.test(password)) {
-						alert("Senha inválida");
-						event.preventDefault();
-						return ;
+					// event.preventDefault();
+					// if (!regex_email.test(email)) {
+					// 	event.preventDefault();
+					// 	alert('Email inválido 📧');
+					// 	return ;
+					// } else if (!regex_password[0].test(password)) {
+					// 	event.preventDefault();
+					// 	alert('Senha deve conter ao menos um número 💯');
+					// 	return ;
+					// } else if (!regex_password[1].test(password)) {
+					// 	event.preventDefault();
+					// 	alert('Senha deve conter ao menos uma letra minúscula 🤏');
+					// 	return ;
+					// } else if (!regex_password[2].test(password)) {
+					// 	event.preventDefault();
+					// 	alert('Senha deve conter ao menos uma letra maiúscula 🙌');
+					// 	return ;
+					// } else if (!regex_password[3].test(password)) {
+					// 	event.preventDefault();
+					// 	alert('Senha deve conter ao menos um caractere especial como `@#$%^-_+`');
+					// 	return ;
+					// } else if (regex_password[4].test(password)) {
+					// 	event.preventDefault();
+					// 	alert('Senha não deve conter caracteres especiais "!&=?" 😇');
+					// 	return ;
+					// } else if (regex_password[5].test(password)) {
+					// 	event.preventDefault();
+					// 	alert('Senha não deve conter espaços 👾');
+					// 	return ;
+					// } else if (!regex_password[6].test(password)) {
+					// 	event.preventDefault();
+					// 	alert('Senha deve conter entre 8 e 16 caracteres 🔁');
+					// 	return ;
+					// } else if (regex_password[7].test(password)) {
+					// 	event.preventDefault();
+					// 	alert('💉 de SQL não é legal! O FBI está indo para sua casa agora.');
+					// 	return ;
+					// }
+
+					const data = Object.fromEntries(formData);
+
+					data.newUser = (document.getElementById('register_form') ? true : false);
+					if (data.newUser) {
+						fetch('site/register.js', {
+							method: 'POST',
+							headers: {
+								'Content-Type': 'application/json'
+							},
+							body: JSON.stringify(data)
+						})
+						.then(response => console.log(response))
+						.then(data => {
+							if (data.error) {
+								alert(data.error);
+							} else {
+								alert('Usuário criado com sucesso!');
+							}
+						})
+						.catch(error => {
+							console.error('ERROU: ', error);
+							alert('Erro ao conectar com o servidor');
+						});
+						window.location.href = '#login';
 					}
-					form.submit();
+					// else {
+					// 	fetch('/site/login.js', {
+					// 		method: 'GET',
+					// 		headers: {
+					// 			'Content-Type': 'application/json'
+					// 		},
+					// 		body: JSON.stringify(data)
+					// 	})
+					// 	.then(response => response.json())
+					// 	.then(data => {
+					// 		if (data.error) {
+					// 			alert(data.error);
+					// 		} else {
+					// 			alert('Usuário logado com sucesso!');
+					// 		}
+					// 	})
+					// 	.catch(error => {
+					// 		console.error('ERROU: ', error);
+					// 		alert('Erro ao conectar com o servidor');
+					// 	});
+					// }
+					// pdf página 7
+					// const socket = new WebSocket('ws://localhost:3000/site');
+					// const payload = {
+					// 	email: email,
+					// 	password: password,
+					// 	newUser: (document.getElementById('register_form') ? true : false)
+					// };
+					// socket.onerror = (error) => {
+					// 	console.error('ERROU: ', error);
+					// 	alert('Erro ao conectar com o servidor');
+					// };
+					// socket.onopen = () => {
+					// 	console.log('tamo abertos');
+					// 	socket.send(JSON.stringify(payload));
+					// };
 				})
-				email_Input.setAttribute('type', 'email');
-				email_Input.setAttribute('placeholder', 'Email');
-				email_Input.setAttribute('name', 'email');
-				password_Input.setAttribute('type', 'password');
-				password_Input.setAttribute('placeholder', 'Password');
-				password_Input.setAttribute('name', 'password');
-				submit_Button.setAttribute('type', 'submit');
-				submit_Button.textContent = 'Submit';
+				emailInput.setAttribute('type', 'email');
+				emailInput.setAttribute('autocomplete', 'on');
+				emailInput.setAttribute('placeholder', 'Email');
+				emailInput.setAttribute('name', 'email');
+				passInput.setAttribute('type', 'password');
+				passInput.setAttribute('placeholder', 'Password');
+				passInput.setAttribute('name', 'password');
+				passInput.setAttribute('autocomplete', 'on');
+				submitBttn.setAttribute('type', 'submit');
+				submitBttn.textContent = 'Submit';
 				
 				if (hash === "#login") {
 					document.querySelector('#titulo').innerHTML = 'LOGIN';
 					document.querySelector('#descricao').innerHTML =
-					'Não tem uma conta? <a href="#register">Registre-se</a>';
+						'Não tem uma conta? <a href="#register">Registre-se</a>';
 					form.setAttribute('id', 'login_form');
 					form.setAttribute('method', 'GET');
-					form.setAttribute('action', '/site/login.js');
 				}
 				else if (hash === "#register") {
 					document.querySelector('#titulo').innerHTML = 'REGISTER';
 					document.querySelector('#descricao').innerHTML =
-					'Já tem uma conta? <a href="#login">Entre</a>';
+						'Já tem uma conta? <a href="#login">Entre</a>';
 					form.setAttribute('id', 'register_form');
 					form.setAttribute('method', 'POST');
-					form.setAttribute('action', '/site/register.js');
 				}
 
-				form.appendChild(email_Input);
+				form.appendChild(emailInput);
 				form.appendChild(document.createElement('br'));
-				form.appendChild(password_Input);
+				form.appendChild(passInput);
 				form.appendChild(document.createElement('br'));
-				form.appendChild(submit_Button);
-				form_Container.innerHTML = '';
-				form_Container.appendChild(form);
-			}
-			else if (hash === "#play") {
+				form.appendChild(submitBttn);
+				formContainer.innerHTML = '';
+				formContainer.appendChild(form);
+			} else if (hash === "#play") {
 				document.querySelector('#titulo').innerHTML = 'PLAY';
 				document.querySelector('#descricao').innerHTML =
 					'Jogue transcendence';
-				form_Container.innerHTML = '';
-			}
-			else {
+				formContainer.innerHTML = '';
+			} else {
 				document.querySelector('#titulo').innerHTML = 'HOME';
 				document.querySelector('#descricao').innerHTML =
 					'Bem vindo ao transcendence';
-				form_Container.innerHTML = '';
+				formContainer.innerHTML = '';
 			}
 		})
 	</script>
