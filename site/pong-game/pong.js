@@ -136,8 +136,8 @@ function update() {
 
     // LINE CENTER
     context.fillStyle = "white";
-    for (let i = 10; i < BOARD_HEIGHT; i += 25) {
-        context.fillRect(BOARD_WIDTH / 2 - 10, i, 5, 5);
+    for (let i = 10; i < board.height; i += 25) {
+        context.fillRect(board.width / 2 - 10, i, 5, 5);
     }
 
     // PLAYERS
@@ -150,7 +150,7 @@ function update() {
     context.fillRect(ball.x, ball.y, ball.width, ball.height);
 
     //SCORE
-    if (ball.x + ball.width >= BOARD_WIDTH) {
+    if (ball.x + ball.width >= board.width) {
         playerOne.playerScore++;
 		restartGame();
     } else if (ball.x + ball.width <= 0) {
@@ -159,8 +159,8 @@ function update() {
     }
     context.fillStyle = "white";
     context.font = "45px arial";
-    context.fillText(playerOne.playerScore, BOARD_WIDTH / 5, 45);
-    context.fillText(playerTwo.playerScore, BOARD_WIDTH * 4 / 5 - 45, 45);
+    context.fillText(playerOne.playerScore, board.width / 5, 45);
+    context.fillText(playerTwo.playerScore, board.width * 4 / 5 - 45, 45);
 }
 
 function movePlayer(e) {
