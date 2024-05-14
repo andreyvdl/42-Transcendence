@@ -1,21 +1,29 @@
 let board;
 let context;
-const boardWidth = 800;
-const boardHeight = 800;
 
-const limitMoveUp = 30;
-const limitMoveDown = boardHeight - limitMoveUp;
+const BOARD_WIDTH = 800;
+const BOARD_HEIGHT = 800;
 
-const playerWidth = 10;
-const playerHeight = 100;
-const playerSpeed = 15;
+const LIMIT_MOVE_UP = 30;
+const LIMIT_MOVE_DOWN = BOARD_HEIGHT - LIMIT_MOVE_UP;
+
+const DEFAULT_PLAYER_WIDTH = 10;
+const DEFAULT_PLAYER_HEIGHT = 100;
+const DEFAULT_PLAYER_SPEED = 15;
+
+const DEFAULT_BALL_WIDTH = 12;
+const DEFAULT_BALL_HEIGHT = 12;
+const DEFAULT_BALL_VELOCITY_X = 2;
+const DEFAULT_BALL_VELOCITY_Y = 2;
+const SPEED_INCREMENT = 1.1; // 1.00 - 2.00
+const MAX_BALL_SPEED = 5;
 
 class Player {
     constructor (x, y) {
         this._x = x;
         this._y = y;
-        this._width = playerWidth;
-        this._height = playerHeight;
+        this._width = DEFAULT_PLAYER_WIDTH;
+        this._height = DEFAULT_PLAYER_HEIGHT;
         this._playerScore = 0;
     }
     
@@ -44,50 +52,43 @@ class Player {
     }
 
     moveUp() {
-        if (this._y - playerSpeed < limitMoveUp)
+        if (this._y - DEFAULT_PLAYER_SPEED < LIMIT_MOVE_UP)
             return ;
-        this._y -= playerSpeed;
+        this._y -= DEFAULT_PLAYER_SPEED;
     }
 
     moveDown() {
-        if (this._y + this._height + playerSpeed > limitMoveDown)
+        if (this._y + this._height + DEFAULT_PLAYER_SPEED > LIMIT_MOVE_DOWN)
             return ;
-        this._y += playerSpeed;
+        this._y += DEFAULT_PLAYER_SPEED;
     }
 }
 
-const defaultBallWidth = 12;
-const defaultBallHeight = 12;
-const defaultBallVelocityX = 2;
-const defaultBallVelocityY = 2;
-const speedIncrement = 1.1; // 1.00 - 2.00
-const maxSpeed = 5;
-
 let ball = {
-	x : boardWidth / 2,
-	y : getRandomInt((boardHeight / 2) / 2, boardHeight - (boardHeight / 2) / 2),
-	width : defaultBallWidth,
-	height : defaultBallHeight, 
-	velocityX : defaultBallVelocityX,
-	velocityY : defaultBallVelocityY,
+	x : BOARD_WIDTH / 2,
+	y : getRandomInt((BOARD_HEIGHT / 2) / 2, BOARD_HEIGHT - (BOARD_HEIGHT / 2) / 2),
+	width : DEFAULT_BALL_WIDTH,
+	height : DEFAULT_BALL_HEIGHT, 
+	velocityX : DEFAULT_BALL_VELOCITY_X,
+	velocityY : DEFAULT_BALL_VELOCITY_Y,
 }
 
-let playerOne = new Player(10, boardHeight/2, playerWidth, playerHeight);
-let playerTwo = new Player(boardWidth - 20, boardHeight/2, playerWidth, playerHeight);
+let playerOne = new Player(10, BOARD_HEIGHT/2, DEFAULT_PLAYER_WIDTH, DEFAULT_PLAYER_HEIGHT);
+let playerTwo = new Player(BOARD_WIDTH - 20, BOARD_HEIGHT/2, DEFAULT_PLAYER_WIDTH, DEFAULT_PLAYER_HEIGHT);
 
 function getRandomInt(min, max) {
 	return Math.floor(Math.random() * (max - min) + min);
 }
 
 function restartGame() {
-	ball.x = boardWidth / 2;
-	ball.y = getRandomInt((boardHeight / 2) / 2, boardHeight - (boardHeight / 2) / 2);
-	ball.velocityX = defaultBallVelocityX;
-	ball.velocityY = defaultBallVelocityY;
+	ball.x = BOARD_WIDTH / 2;
+	ball.y = getRandomInt((BOARD_HEIGHT / 2) / 2, BOARD_HEIGHT - (BOARD_HEIGHT / 2) / 2);
+	ball.velocityX = DEFAULT_BALL_VELOCITY_X;
+	ball.velocityY = DEFAULT_BALL_VELOCITY_Y;
 	if (ball.y % 2 == 0) {
-		ball.velocityY = defaultBallVelocityY * -1;
+		ball.velocityY = DEFAULT_BALL_VELOCITY_Y * -1;
 	} else {
-		ball.velocityX = defaultBallVelocityX * -1;
+		ball.velocityX = DEFAULT_BALL_VELOCITY_X * -1;
 	}
 }
 
@@ -102,9 +103,9 @@ var checked = 0;
 function updateBall() {
 	ball.x += ball.velocityX;
 	ball.y += ball.velocityY;
-	if (ball.y < 0 || (ball.y + ball.height > boardHeight)) {
+	if (ball.y < 0 || (ball.y + ball.height > BOARD_HEIGHT)) {
 		ball.velocityY *= -1;
-		ball.velocityY *= (Math.abs(ball.velocityY) < maxSpeed ? speedIncrement : 1);
+		ball.velocityY *= (Math.abs(ball.velocityY) < MAX_BALL_SPEED ? SPEED_INCREMENT : 1);
 	}
 	if (hitted === true && checked <= 100) {
 		checked++;
@@ -117,13 +118,13 @@ function updateBall() {
     if (detectCollision(ball, playerOne) && ball.x > playerOne.x) {
         if (ball.x < playerOne.x + playerTwo.height) {
             ball.velocityX *= -1;
-			ball.velocityX *= (Math.abs(ball.velocityX) < maxSpeed ? speedIncrement : 1);
+			ball.velocityX *= (Math.abs(ball.velocityX) < MAX_BALL_SPEED ? SPEED_INCREMENT : 1);
 			hitted = true;
 		}
     } else if (detectCollision(ball, playerTwo) && ball.x < playerTwo.x) {
         if (ball.x < playerTwo.x + playerTwo.height) {
             ball.velocityX *= -1;
-			ball.velocityX *= (Math.abs(ball.velocityX) < maxSpeed ? speedIncrement : 1);
+			ball.velocityX *= (Math.abs(ball.velocityX) < MAX_BALL_SPEED ? SPEED_INCREMENT : 1);
 			hitted = true;
 		}
     }
@@ -135,8 +136,8 @@ function update() {
 
     // LINE CENTER
     context.fillStyle = "white";
-    for (let i = 10; i < boardHeight; i += 25) {
-        context.fillRect(boardWidth/2 - 10, i, 5, 5);
+    for (let i = 10; i < BOARD_HEIGHT; i += 25) {
+        context.fillRect(BOARD_WIDTH / 2 - 10, i, 5, 5);
     }
 
     // PLAYERS
@@ -149,7 +150,7 @@ function update() {
     context.fillRect(ball.x, ball.y, ball.width, ball.height);
 
     //SCORE
-    if (ball.x + ball.width >= boardWidth) {
+    if (ball.x + ball.width >= BOARD_WIDTH) {
         playerOne.playerScore++;
 		restartGame();
     } else if (ball.x + ball.width <= 0) {
@@ -158,9 +159,8 @@ function update() {
     }
     context.fillStyle = "white";
     context.font = "45px arial";
-    context.fillText(playerOne.playerScore, boardWidth/5, 45);
-    context.fillText(playerTwo.playerScore, boardWidth*4/5 - 45, 45);
-	console.log(ball.velocityX, ball.velocityY);
+    context.fillText(playerOne.playerScore, BOARD_WIDTH / 5, 45);
+    context.fillText(playerTwo.playerScore, BOARD_WIDTH * 4 / 5 - 45, 45);
 }
 
 function movePlayer(e) {
@@ -176,8 +176,8 @@ function movePlayer(e) {
 
 window.onload = function() {
     board = document.getElementById("board");
-    board.height = boardHeight;
-    board.width = boardWidth;
+    board.height = BOARD_HEIGHT;
+    board.width = BOARD_WIDTH;
     context = board.getContext("2d");
 
     document.addEventListener("keyup", movePlayer);
