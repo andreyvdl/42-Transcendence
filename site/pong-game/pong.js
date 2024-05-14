@@ -7,8 +7,8 @@ const limitMoveUp = 30;
 const limitMoveDown = boardHeight - limitMoveUp;
 
 const playerWidth = 10;
-const playerHeight = 80;
-const playerSpeed = 9;
+const playerHeight = 100;
+const playerSpeed = 15;
 
 class Player {
     constructor (x, y) {
@@ -56,56 +56,59 @@ class Player {
     }
 }
 
-const ballWidth = 12;
-const ballHeight = 12;
-const defaultBallVelocityX = 1;
+const defaultBallWidth = 12;
+const defaultBallHeight = 12;
+const defaultBallVelocityX = 2;
 const defaultBallVelocityY = 2;
+const speedIncrement = 1.1; // 1.00 - 2.00
 
-class Ball {
-    constructor(x, y) {
-        this._x = x;
-        this._y = y;
-        this._width = ballWidth;
-        this._height = ballHeight;
-        this._ballVelocityX = defaultBallVelocityX;
-        this._ballVelocityY = defaultBallVelocityY;
-    }
-
-    get x() {
-        return this._x;
-    }
-
-    get y() {
-        return this._y;
-    }
-
-    get width() {
-        return this._width;
-    }
-
-    get height() {
-        return this._height;
-    }
-
-    reset(direction) {
-        this._x = boardWidth/2
-        this._y = Math.floor(Math.random() * boardHeight + 1);
-        this._ballVelocityX = defaultBallVelocityX * direction;
-        this._ballVelocityY = defaultBallVelocityY * direction;
-    }
-
-    move() {
-        this._x += this._ballVelocityX;
-        this._y += this._ballVelocityY;
-        if (this._y < 0 || (this._y + this._height > boardHeight)) {
-            this._ballVelocityY *= -1;
-        }
-    }
+let ball = {
+	x : boardWidth / 2,
+	y : getRandomInt((boardHeight / 2) / 2, boardHeight - (boardHeight / 2) / 2),
+	width : defaultBallWidth,
+	height : defaultBallHeight, 
+	velocityX : defaultBallVelocityX,
+	velocityY : defaultBallVelocityY,
 }
 
 let playerOne = new Player(10, boardHeight/2, playerWidth, playerHeight);
 let playerTwo = new Player(boardWidth - 20, boardHeight/2, playerWidth, playerHeight);
-let ball = new Ball(boardWidth/2, boardHeight/2)
+
+function getRandomInt(min, max) {
+	return Math.floor(Math.random() * (max - min) + min);
+}
+
+function restartGame() {
+	ball.x = boardWidth / 2;
+	ball.y = getRandomInt((boardHeight / 2) / 2, boardHeight - (boardHeight / 2) / 2);
+	ball.velocityX = defaultBallVelocityX;
+	ball.velocityY = defaultBallVelocityY;
+	if (ball.y % 2 == 0) {
+		ball.velocityY = defaultBallVelocityY * -1;
+	} else {
+		ball.velocityX = defaultBallVelocityX * -1;
+	}
+}
+
+function detectCollision(a, b) {
+    return (a.x < b.x + b.width && a.x + a.width > b.x &&
+        a.y < b.y + b.height && a.y + a.height > b.y);
+}
+
+function updateBall() {
+	ball.x += ball.velocityX;
+	ball.y += ball.velocityY;
+	if (ball.y < 0 || (ball.y + ball.height > boardHeight)) {
+		ball.velocityY *= -speedIncrement;
+	}
+    if (detectCollision(ball, playerOne) && ball.x > playerOne.x) {
+        if (ball.x < playerOne.x + playerTwo.height)
+            ball.velocityX *= -speedIncrement;
+    } else if (detectCollision(ball, playerTwo) && ball.x < playerTwo.x) {
+        if (ball.x < playerTwo.x + playerTwo.height)
+            ball.velocityX *= -speedIncrement;
+    }
+}
 
 function update() {
     requestAnimationFrame(update)
@@ -123,23 +126,16 @@ function update() {
 
     // BALL
     context.fillStyle = "grey"
-    ball.move();
-    if (detectCollision(ball, playerOne)) {
-        if (ball.x > playerOne.x && ball.x < playerOne.x + playerTwo.height)
-            ball._ballVelocityX *= -1;
-    } else if (detectCollision(ball, playerTwo)) {
-        if (ball.x < playerTwo.x && ball.x < playerTwo.x + playerTwo.height)
-            ball._ballVelocityX *= -1;
-    }
+	updateBall();
     context.fillRect(ball.x, ball.y, ball.width, ball.height);
 
     //SCORE
     if (ball.x + ball.width >= boardWidth) {
         playerOne.playerScore++;
-        ball.reset(1);
+		restartGame();
     } else if (ball.x + ball.width <= 0) {
         playerTwo.playerScore++;
-        ball.reset(-1);
+		restartGame();
     }
     context.fillStyle = "white";
     context.font = "45px arial";
@@ -156,11 +152,6 @@ function movePlayer(e) {
         playerTwo.moveUp();
     else if (e.code == "ArrowDown")
         playerTwo.moveDown();
-}
-
-function detectCollision(a, b) {
-    return (a.x < b.x + b.width && a.x + a.width > b.x &&
-        a.y < b.y + b.height && a.y + a.height > b.y);
 }
 
 window.onload = function() {
