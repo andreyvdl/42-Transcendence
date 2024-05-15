@@ -11,6 +11,8 @@ debug: down
 down:
 	docker-compose -f $(DOCKER_COMPOSE_PATH) down
 
+restart: down up
+
 clean:
 	docker image prune -af
 

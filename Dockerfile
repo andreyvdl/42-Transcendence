@@ -12,7 +12,8 @@ RUN openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:4096 \
 RUN mkdir -p /var/www/html
 
 COPY ./confs/nginx.conf /etc/nginx/conf.d/nginx.conf
-COPY ./site/ /var/www/html/
+COPY ./site/index.html /var/www/html/index.html
+COPY ./site/pong-game /var/www/html/game
 
 RUN chmod 755 /var/www/html
 RUN chown -R www-data:www-data /var/www/html
