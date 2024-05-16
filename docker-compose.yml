@@ -1,5 +1,9 @@
 version: '3'
 
+networks:
+  transcendence:
+    name: transcendence
+
 services:
   nginx:
     image: nginx:transcendence
@@ -7,6 +11,18 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: nginx
+    networks:
+        - transcendence
     ports:
       - 8080:8080
-    #command: [nginx-debug, '-g', 'daemon off;'] # DEBUG
+
+  django:
+    image: django:transcendence
+    build:
+      context: backend
+      dockerfile: Dockerfile
+    container_name: django
+    networks:
+      - transcendence
+    ports:
+      - 8000:8000
