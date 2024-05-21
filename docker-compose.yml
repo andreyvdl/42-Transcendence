@@ -24,5 +24,3 @@ services:
     container_name: django
     networks:
       - transcendence
-    ports:
-      - 2077:2077
