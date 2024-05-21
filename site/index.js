@@ -2,25 +2,44 @@ window.addEventListener('hashchange', () => {
 	console.log('hashchange', location.hash);
 });
 
-const socket = new WebSocket('ws://localhost:8000/ws');
+window.addEventListener('DOMContentLoaded', () => {
+	const loginSocket = new WebSocket('wss://localhost:5000/wss/login/');
+	const registerSocket = new WebSocket('wss://localhost:5000/wss/register/');
 
-socket.onopen = function (event) {
-	console.log('Connected to WebSocket Server');
-}
+	loginSocket.onopen = function (event) {
+		console.log('Connected to Login WebSocket Server');
+	}
+	registerSocket.onopen = function (event) {
+		console.log('Connected to Register WebSocket Server');
+	}
 
-socket.onmessage = function (event) {
-	const data = JSON.parse(event.data);
-}
+	loginSocket.onmessage = registerSocket.onmessage = function (event) {
+		console.log("Message sent by the server:")
+		console.log(JSON.parse(event.data))
+	}
 
-socket.onclose = function (event) {
-	console.log('Disconnected from WebSocket server');
-}
+	loginSocket.onclose = registerSocket.onclose = function (event) {
+		console.log('Disconnected from WebSocket server');
+	}
 
-document.querySelector('#formContainer').addEventListener('submit', (event) => {
-	event.preventDefault();
-	const formData = new FormData(event.target);
-	const data = Object.fromEntries(formData.entries());
-	const jsonData = JSON.stringify({ email: data.email, password: data.password});
+	document.querySelector('#formContainer').addEventListener('submit', (event) => {
+		event.preventDefault();
+		const email = document.getElementById('email_input').value
+		const password = document.getElementById('pass_input').value
+		loginSocket.send(JSON.stringify({
+			'email': email,
+			'password': password,
+		}));
+	});
 
-	socket.send(jsonData);
-});
+	// document.querySelector('#formContainer').addEventListener('submit', (event) => {
+	// 	event.preventDefault();
+	// 	const email = document.getElementById('email_input').value
+	// 	const password = document.getElementById('pass_input').value
+	// 	registerSocket.send(JSON.stringify({
+	// 		'email': email,
+	// 		'password': password,
+	// 	}));
+	// });
+
+})
