@@ -14,7 +14,7 @@ services:
     networks:
         - transcendence
     ports:
-      - 8080:8080
+      - 5000:5000
 
   django:
     image: django:transcendence
@@ -25,4 +25,4 @@ services:
     networks:
       - transcendence
     ports:
-      - 8000:8000
+      - 2077:2077
