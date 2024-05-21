@@ -6,4 +6,4 @@ COPY . .
 
 RUN pip install -r requirements.txt
 
-CMD ["daphne", "core.asgi:application"]
+CMD ["daphne", "core.asgi:application", "-b", "0.0.0.0", "-p", "2077"]
