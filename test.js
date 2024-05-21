@@ -42,7 +42,7 @@ if (WebGL.isWebGLAvailable()) {
 
 	const ball3d = setupBall();
 	const ground = setupGround();
-	const light = setupLight();
+	const light = [setupLight(20, 20), setupLight(-20, -20), setupLight(-20, 20), setupLight(20, -20)];
 	const player = [setupPlayer(-8, 0xff0000), setupPlayer(8, 0xffff00)];
 	const canvas = [document.createElement('canvas'), document.createElement('canvas')];
 
@@ -63,7 +63,7 @@ if (WebGL.isWebGLAvailable()) {
 	sprites[0].position.set(0, 5, 4);
 	sprites[1].position.set(1, 5, 4);
 	scene.background = new THREE.TextureLoader().load('./assets/xique-xique.jpg');
-	scene.add(ball3d, ground, light);
+	scene.add(ball3d, ground, ...light);
 	scene.add(...player);
 	scene.add(...sprites);
 
@@ -130,11 +130,17 @@ function setupGround() {
 	return ground;
 }
 
-function setupLight(color = 0xffffff) {
+function setupLight(x, z, color = 0xffffff) {
 	const light = new THREE.DirectionalLight(color, 2.0);
 
-	light.position.set(0, 100, 0);
+	light.position.set(x, 10, z);
 	light.castShadow = true;
+	light.shadow.camera.left = -20;
+	light.shadow.camera.right = 20;
+	light.shadow.camera.top = 20;
+	light.shadow.camera.bottom = -20;
+	light.shadow.camera.near = 0.1;
+	light.shadow.camera.far = 2000;
 	return light;
 }
 
