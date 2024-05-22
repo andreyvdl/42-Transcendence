@@ -74,25 +74,28 @@ if (WebGL.isWebGLAvailable()) {
 		camera.aspect = WINDOW.aspect;
 		camera.updateProjectionMatrix();
 	}
-	BALL_VELOCITY.x = (Math.floor(Math.random() * (2 - 1 + 1) + 1) % 2 ? BALL_VELOCITY.defaultX : -BALL_VELOCITY.defaultX);
-	BALL_VELOCITY.z = (Math.floor(Math.random() * (2 - 1 + 1) + 1) % 2 ? BALL_VELOCITY.defaultZ : -BALL_VELOCITY.defaultZ);
 	sprites[0].scale
-
 	camera.position.set(0, 10, 0);
 	camera.lookAt(scene.position);
 	ball3d.position.z = Math.random() * 10 - 5;
+	BALL_VELOCITY.z = (ball3d.position.z > 0 ? BALL_VELOCITY.defaultZ : -BALL_VELOCITY.defaultZ);
+	BALL_VELOCITY.x = (Math.random() < 0.5 ? BALL_VELOCITY.defaultX : -BALL_VELOCITY.defaultX);
+	BALLPAUSE = true;
+	setTimeout(() => { BALLPAUSE = false }, 1000);
+
 	function animate() {
 		requestAnimationFrame(animate);
 
-		scoreUpdate(canvas, sprites);
 		playerMove(player);
 		if (!BALLPAUSE) {
+			scoreUpdate(canvas, sprites);
 			ballMove(ball3d, player);
 			ball3d.rotation.x += BALL_VELOCITY.x;
 			ball3d.rotation.z += -BALL_VELOCITY.z;
 		}
 		renderer.render(scene, camera);
 	}
+
 	animate();
 } else {
 	const warning = WebGL.getWebGLErrorMessage();
@@ -154,14 +157,14 @@ function setupPlayer(x, color = 0x00ffff) {
 }
 
 function playerMove(player) {
-	if (keys["ArrowDown"])
-		player[1].position.z += 0.1;
-	if (keys["ArrowUp"])
-		player[1].position.z -= 0.1;
-	if (keys["s"])
-		player[0].position.z += 0.1;
-	if (keys["w"])
-		player[0].position.z -= 0.1;
+	if (keys["ArrowDown"] && player[1].position.z + 0.2 < 5.9)
+		player[1].position.z += 0.2;
+	if (keys["ArrowUp"] && player[1].position.z - 0.2 > -5.9)
+		player[1].position.z -= 0.2;
+	if (keys["s"] && player[0].position.z + 0.2 < 5.9)
+		player[0].position.z += 0.2;
+	if (keys["w"] && player[0].position.z - 0.2 > -5.9)
+		player[0].position.z -= 0.2;
 }
 
 function ballMove(ball3d, player) {
@@ -174,10 +177,10 @@ function ballMove(ball3d, player) {
 			SCORE.playerTwo++;
 		else
 			SCORE.playerOne++;
-		BALL_VELOCITY.x = (Math.random() < 0.5 ? BALL_VELOCITY.defaultX : -BALL_VELOCITY.defaultX);
-		BALL_VELOCITY.z = (Math.random() < 0.5 ? BALL_VELOCITY.defaultZ : -BALL_VELOCITY.defaultZ);
+		ball3d.position.z = Math.random() * 6 - 3;
 		ball3d.position.x = 0;
-		ball3d.position.z = Math.random() * 8 - 4;
+		BALL_VELOCITY.z = (ball3d.position.z > 0 ? BALL_VELOCITY.defaultZ : -BALL_VELOCITY.defaultZ);
+		BALL_VELOCITY.x = (Math.random() < 0.5 ? BALL_VELOCITY.defaultX : -BALL_VELOCITY.defaultX);
 		BALLPAUSE = true;
 		setTimeout(() => { BALLPAUSE = false }, 500);
 	}
@@ -196,6 +199,10 @@ function playerColision(ball3d, player) {
 	const box = new THREE.Box3().setFromObject(player[0]);
 	const box2 = new THREE.Box3().setFromObject(player[1]);
 
+	if (ball3d.position.x + 0.16 > player[1].position.x)
+		return false;
+	else if (ball3d.position.x - 0.16 < player[0].position.x)
+		return false;
 	return sphere.intersectsBox(box) || sphere.intersectsBox(box2);
 }
 
