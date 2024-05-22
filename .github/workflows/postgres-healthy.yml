@@ -14,10 +14,8 @@ jobs:
         mkdir .db-data &&
         docker compose up db -d &&
         while [[ $(docker container inspect postgres -f '{{.State.Health.Status}}') == "starting" ]]; do
-            echo "Postgres container is still starting..."
-            sleep 2
+            sleep 3
         done
         if [[ $(docker container inspect postgres -f '{{.State.Health.Status}}') != "healthy" ]]; then
           exit 1
         fi;
-        echo "Postgres container is healthy!"
