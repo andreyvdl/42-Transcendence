@@ -17,4 +17,7 @@ jobs:
             echo "Postgres container is still starting..."
             sleep 2
         done
+        if [[ $(docker container inspect postgres -f '{{.State.Health.Status}}') != "healthy" ]]; then
+          exit 1
+        fi;
         echo "Postgres container is healthy!"
