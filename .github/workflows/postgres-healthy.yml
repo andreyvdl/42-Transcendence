@@ -10,4 +10,11 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build the Docker image
-      run: mkdir .db-data && docker compose up db
+      run: |
+        mkdir .db-data &&
+        docker compose up db -d &&
+        while [[ $(docker container inspect postgres -f '{{.State.Health.Status}}') == "starting" ]]; do
+            echo "Postgres container is still starting..."
+            sleep 2
+        done
+        echo "Postgres container is healthy!"
