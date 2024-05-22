@@ -1,20 +1,12 @@
-FROM nginx
+FROM python:3.10-bullseye
 
-RUN apt update && apt install -y openssl
+WORKDIR /app
 
-RUN mkdir -p /etc/nginx/ssl
+COPY . .
 
-RUN openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:4096 \
-	-keyout /etc/nginx/ssl/chave.key \
-	-out /etc/nginx/ssl/certificado.crt \
-	-subj "/C=BR/ST=SP/L=Sao Paulo/O=42SP/OU=Student Project/CN=transcendence0.1"
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
 
-RUN mkdir -p /var/www/html
+RUN chmod +x ./entrypoint.sh
 
-COPY ./confs/nginx.conf /etc/nginx/conf.d/nginx.conf
-COPY ./site /var/www/html
-
-RUN chmod 755 /var/www/html
-RUN chown -R www-data:www-data /var/www/html
-
-CMD ["nginx", "-g", "daemon off;"]
+ENTRYPOINT ["./entrypoint.sh"]
