@@ -4,7 +4,6 @@ import WebGL from 'three/addons/capabilities/WebGL.js'
 var KEYS = {};
 
 var BALLPAUSE = false;
-var RNG = Math.random();
 
 document.addEventListener("keydown", (event) => {
 		KEYS[event.key] = true;
@@ -60,12 +59,33 @@ if (WebGL.isWebGLAvailable()) {
 	const texture = [new THREE.CanvasTexture(canvas[0]), new THREE.CanvasTexture(canvas[1])];
 	const spriteMaterial = [new THREE.SpriteMaterial({map: texture[0]}), new THREE.SpriteMaterial({map: texture[1]})];
 	const sprites = [new THREE.Sprite(spriteMaterial[0]), new THREE.Sprite(spriteMaterial[1])];
+	// const listener = new THREE.AudioListener();
 
-	sprites[0].position.set(0, 5, 4);
-	sprites[1].position.set(1, 5, 4);
+	// camera.add(listener);
+
+	// const sound = new THREE.Audio(listener);
+	// const audioLoader = new THREE.AudioLoader();
+
+	// audioLoader.load('./assets/hino-flamengo.mp3', (buffer) => {
+	// 	sound.setBuffer(buffer);
+	// 	sound.setLoop(true);
+	// 	sound.setVolume(0.5);
+	// 	sound.play();
+	// });
+
+	// document.addEventListener('click', function () {
+	// 	if (listener.context.state === 'suspended') {
+	// 		listener.context.resume();
+	// 	}
+
+	// 	sound.play();
+	// });
+	sprites[0].position.set(-4.2, 0, -6.2);
+	sprites[1].position.set(13.5, 0, -6.2);
 	scene.background = new THREE.TextureLoader().load('./assets/xique-xique.jpg');
 	scene.add(ball3d, ground);
 	scene.add(...light);
+	// scene.add(new THREE.AmbientLight(0xffffff, 0.7));
 	scene.add(...player);
 	scene.add(...sprites);
 
@@ -76,20 +96,26 @@ if (WebGL.isWebGLAvailable()) {
 		camera.aspect = WINDOW.aspect;
 		camera.updateProjectionMatrix();
 	}
-	sprites[0].scale
+
+	sprites[0].scale.set(10, 10, 10);
+	sprites[1].scale.set(10, 10, 10);
 	camera.position.set(0, 10, 0);
 	camera.lookAt(scene.position);
-	ball3d.position.z = RNG * 6 - 3;
+	ball3d.position.z = THREE.MathUtils.randFloat(-7, 7);
 	BALL_VELOCITY.z = (ball3d.position.z > 0 ? BALL_VELOCITY.defaultZ : -BALL_VELOCITY.defaultZ);
-	BALL_VELOCITY.x = (RNG < 0.5 ? BALL_VELOCITY.defaultX : -BALL_VELOCITY.defaultX);
+	BALL_VELOCITY.x = (THREE.MathUtils.randInt(1, 2) == 2 ? BALL_VELOCITY.defaultX : -BALL_VELOCITY.defaultX);
 	BALLPAUSE = true;
 	setTimeout(() => { BALLPAUSE = false }, 1000);
 
 	function animate() {
+		if (SCORE.playerOne == 10 || SCORE.playerTwo == 10) {
+			SCORE.playerOne = 0;
+			SCORE.playerTwo = 0;
+		}
 		playerMove(player);
 		if (!BALLPAUSE) {
 			scoreUpdate(canvas, sprites);
-			ballMove(ball3d, player);
+			ballMove(ball3d, player, scene);
 			ball3d.rotation.x += BALL_VELOCITY.x;
 			ball3d.rotation.z += -BALL_VELOCITY.z;
 		}
@@ -168,21 +194,22 @@ function playerMove(player) {
 		player[0].position.z -= 0.2;
 }
 
-function ballMove(ball3d, player) {
-	RNG = Math.random();
+function ballMove(ball3d, player, scene) {
 	ball3d.position.x += BALL_VELOCITY.x;
 	ball3d.position.z += BALL_VELOCITY.z;
 	if (Math.abs(ball3d.position.z) > 7.5)
-		BALL_VELOCITY.z = -BALL_VELOCITY.z * (RNG * (1.1 - 1.01) + 1.01);
+		BALL_VELOCITY.z = -BALL_VELOCITY.z * THREE.MathUtils.randFloat(1.01, 1.1);
 	else if (Math.abs(ball3d.position.x) > 10) {
-		if (ball3d.position.x < 0)
+		if (ball3d.position.x < 0) {
 			SCORE.playerTwo++;
-		else
+		}
+		else {
 			SCORE.playerOne++;
-		ball3d.position.z = RNG * 6 - 3;
+		}
+		ball3d.position.z = THREE.MathUtils.randFloat(-7, 7);
 		ball3d.position.x = 0;
 		BALL_VELOCITY.z = (ball3d.position.z > 0 ? BALL_VELOCITY.defaultZ : -BALL_VELOCITY.defaultZ);
-		BALL_VELOCITY.x = (RNG < 0.5 ? BALL_VELOCITY.defaultX : -BALL_VELOCITY.defaultX);
+		BALL_VELOCITY.x = (THREE.MathUtils.randInt(1, 2) == 2 ? BALL_VELOCITY.defaultX : -BALL_VELOCITY.defaultX);
 		BALLPAUSE = true;
 		setTimeout(() => { BALLPAUSE = false }, 500);
 	}
@@ -191,7 +218,7 @@ function ballMove(ball3d, player) {
 		return ;
 	}
 	else if (playerColision(ball3d, player)) {
-		BALL_VELOCITY.x = -BALL_VELOCITY.x * (RNG * (1.1 - 1.01) + 1.01);
+		BALL_VELOCITY.x = -BALL_VELOCITY.x * THREE.MathUtils.randFloat(1.01, 1.1);
 		BALL_VELOCITY.timer = 5 / Math.abs(BALL_VELOCITY.x);
 	}
 }
@@ -201,9 +228,9 @@ function playerColision(ball3d, player) {
 	const box = new THREE.Box3().setFromObject(player[0]);
 	const box2 = new THREE.Box3().setFromObject(player[1]);
 
-	if (ball3d.position.x + 0.16 > player[1].position.x)
+	if (ball3d.position.x + 0.15 > player[1].position.x)
 		return false;
-	else if (ball3d.position.x - 0.16 < player[0].position.x)
+	else if (ball3d.position.x - 0.15 < player[0].position.x)
 		return false;
 	return sphere.intersectsBox(box) || sphere.intersectsBox(box2);
 }
@@ -218,4 +245,3 @@ function scoreUpdate(canvas, sprites) {
 	sprites[0].material.map.needsUpdate = true;
 	sprites[1].material.map.needsUpdate = true;
 }
-
