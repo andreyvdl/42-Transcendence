@@ -17,7 +17,7 @@ services:
       - 8000:8000
 
   db:
-    image: postgreskesajelkh
+    image: postgres
     container_name: postgres
     healthcheck:
       test: pg_isready
