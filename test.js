@@ -6,11 +6,11 @@ var KEYS = {};
 var BALLPAUSE = false;
 
 document.addEventListener("keydown", (event) => {
-		KEYS[event.key] = true;
+	KEYS[event.key] = true;
 });
 
 document.addEventListener("keyup", (event) => {
-		KEYS[event.key] = false;
+	KEYS[event.key] = false;
 });
 
 const WINDOW = {
@@ -85,7 +85,7 @@ if (WebGL.isWebGLAvailable()) {
 	scene.background = new THREE.TextureLoader().load('./assets/xique-xique.jpg');
 	scene.add(ball3d, ground);
 	scene.add(...light);
-	// scene.add(new THREE.AmbientLight(0xffffff, 0.7));
+	// scene.add(new THREE.AmbientLight(0xffffff, 1));
 	scene.add(...player);
 	scene.add(...sprites);
 
@@ -108,17 +108,15 @@ if (WebGL.isWebGLAvailable()) {
 	setTimeout(() => { BALLPAUSE = false }, 1000);
 
 	function animate() {
-		if (SCORE.playerOne == 10 || SCORE.playerTwo == 10) {
-			SCORE.playerOne = 0;
-			SCORE.playerTwo = 0;
-		}
+		light.forEach( (light) => { light.target = ball3d; });
 		playerMove(player);
 		if (!BALLPAUSE) {
 			scoreUpdate(canvas, sprites);
 			ballMove(ball3d, player, scene);
-			ball3d.rotation.x += BALL_VELOCITY.x;
-			ball3d.rotation.z += -BALL_VELOCITY.z;
+			ball3d.rotateX(BALL_VELOCITY.z);
+			ball3d.rotateZ(-BALL_VELOCITY.x);
 		}
+
 		requestAnimationFrame(animate);
 		renderer.render(scene, camera);
 	}
@@ -184,26 +182,36 @@ function setupPlayer(x, color = 0x00ffff) {
 }
 
 function playerMove(player) {
-	if (KEYS["ArrowDown"] && player[1].position.z + 0.2 < 5.9)
-		player[1].position.z += 0.2;
-	if (KEYS["ArrowUp"] && player[1].position.z - 0.2 > -5.9)
-		player[1].position.z -= 0.2;
-	if (KEYS["s"] && player[0].position.z + 0.2 < 5.9)
-		player[0].position.z += 0.2;
-	if (KEYS["w"] && player[0].position.z - 0.2 > -5.9)
-		player[0].position.z -= 0.2;
+	if (KEYS["ArrowDown"] && player[1].position.z + 0.2 < 6)
+	player[1].position.z += 0.2;
+	if (KEYS["ArrowUp"] && player[1].position.z - 0.2 > -6)
+	player[1].position.z -= 0.2;
+	if (KEYS["s"] && player[0].position.z + 0.2 < 6)
+	player[0].position.z += 0.2;
+	if (KEYS["w"] && player[0].position.z - 0.2 > -6)
+	player[0].position.z -= 0.2;
 }
 
 function ballMove(ball3d, player, scene) {
 	ball3d.position.x += BALL_VELOCITY.x;
 	ball3d.position.z += BALL_VELOCITY.z;
 	if (Math.abs(ball3d.position.z) > 7.5)
-		BALL_VELOCITY.z = -BALL_VELOCITY.z * THREE.MathUtils.randFloat(1.01, 1.1);
+		BALL_VELOCITY.z = -BALL_VELOCITY.z * (BALL_VELOCITY.z < 1 ? THREE.MathUtils.randFloat(1.1, 1.2) : 1);
 	else if (Math.abs(ball3d.position.x) > 10) {
 		if (ball3d.position.x < 0) {
+			if (SCORE.playerTwo == 2) {
+				alert('Player Two Wins!');
+				SCORE.playerOne = 0;
+				SCORE.playerTwo = -1;
+			}
 			SCORE.playerTwo++;
 		}
 		else {
+			if (SCORE.playerOne == 2) {
+				alert('Player One Wins!');
+				SCORE.playerOne = -1;
+				SCORE.playerTwo = 0;
+			}
 			SCORE.playerOne++;
 		}
 		ball3d.position.z = THREE.MathUtils.randFloat(-7, 7);
@@ -218,8 +226,15 @@ function ballMove(ball3d, player, scene) {
 		return ;
 	}
 	else if (playerColision(ball3d, player)) {
-		BALL_VELOCITY.x = -BALL_VELOCITY.x * THREE.MathUtils.randFloat(1.01, 1.1);
+		let vector;
+
+		BALL_VELOCITY.x = -BALL_VELOCITY.x * (BALL_VELOCITY.x < 1 ? THREE.MathUtils.randFloat(1.1, 1.2) : 1);
 		BALL_VELOCITY.timer = 5 / Math.abs(BALL_VELOCITY.x);
+		if (ball3d.position.x > 0)
+			vector = player[1].position;
+		else
+			vector = player[0].position;
+		BALL_VELOCITY.z = (ball3d.position.z - vector.z) / 10;
 	}
 }
 
