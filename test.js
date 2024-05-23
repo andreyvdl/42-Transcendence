@@ -1,6 +1,19 @@
 import * as THREE from 'three';
 import WebGL from 'three/addons/capabilities/WebGL.js'
 
+var RESOLUTIONS = [
+	{ w: 6400, h: 4800 },
+	{ w: 4096, h: 3072 },
+	{ w: 3200, h: 2400 },
+	{ w: 2048, h: 1536 },
+	{ w: 1152, h: 864 },
+	{ w: 1024, h: 768 },
+	{ w: 800, h: 600 },
+	{ w: 640, h: 480 },
+	{ w: 320, h: 240 },
+	{ w: 160, h: 120 },
+]
+
 var KEYS = {};
 
 var BALLPAUSE = false;
@@ -32,7 +45,22 @@ const SCORE = {
 	playerTwo: 0,
 };
 
+function calculateWindow() {
+	const resolution = RESOLUTIONS.find((resolution) => resolution.w <= window.innerWidth && resolution.h <= window.innerHeight);
+
+	console.log(resolution);
+	if (resolution) {
+		WINDOW.width = resolution.w;
+		WINDOW.height = resolution.h;
+	}
+	else {
+		WINDOW.width = window.innerWidth;
+		WINDOW.height = window.innerHeight;
+	}
+}
+
 if (WebGL.isWebGLAvailable()) {
+	calculateWindow();
 	const renderer = new THREE.WebGLRenderer();
 	const scene = new THREE.Scene();
 	const camera = new THREE.PerspectiveCamera(80, WINDOW.aspect, 0.1, 1000);
@@ -90,8 +118,7 @@ if (WebGL.isWebGLAvailable()) {
 	scene.add(...sprites);
 
 	window.onresize = () => {
-		WINDOW.width = window.innerWidth;
-		WINDOW.height = window.innerHeight;
+		calculateWindow();
 		renderer.setSize(WINDOW.width, WINDOW.height);
 		camera.aspect = WINDOW.aspect;
 		camera.updateProjectionMatrix();
@@ -108,7 +135,7 @@ if (WebGL.isWebGLAvailable()) {
 	setTimeout(() => { BALLPAUSE = false }, 1000);
 
 	function animate() {
-		light.forEach( (light) => { light.target = ball3d; });
+		// light.forEach((light) => { light.target = ball3d; });
 		playerMove(player);
 		if (!BALLPAUSE) {
 			scoreUpdate(canvas, sprites);
@@ -116,7 +143,6 @@ if (WebGL.isWebGLAvailable()) {
 			ball3d.rotateX(BALL_VELOCITY.z);
 			ball3d.rotateZ(-BALL_VELOCITY.x);
 		}
-
 		requestAnimationFrame(animate);
 		renderer.render(scene, camera);
 	}
@@ -159,9 +185,9 @@ function setupGround() {
 }
 
 function setupLight(x, z, color = 0xffffff) {
-	const light = new THREE.DirectionalLight(color, 2.0);
+	const light = new THREE.DirectionalLight(color, 1.0);
 
-	light.position.set(x, 10, z);
+	light.position.set(x, 50, z);
 	light.castShadow = true;
 	light.shadow.camera.left = -20;
 	light.shadow.camera.right = 20;
@@ -199,7 +225,7 @@ function ballMove(ball3d, player, scene) {
 		BALL_VELOCITY.z = -BALL_VELOCITY.z * (BALL_VELOCITY.z < 1 ? THREE.MathUtils.randFloat(1.1, 1.2) : 1);
 	else if (Math.abs(ball3d.position.x) > 10) {
 		if (ball3d.position.x < 0) {
-			if (SCORE.playerTwo == 2) {
+			if (SCORE.playerTwo == 1) {
 				alert('Player Two Wins!');
 				SCORE.playerOne = 0;
 				SCORE.playerTwo = -1;
@@ -207,7 +233,7 @@ function ballMove(ball3d, player, scene) {
 			SCORE.playerTwo++;
 		}
 		else {
-			if (SCORE.playerOne == 2) {
+			if (SCORE.playerOne == 1) {
 				alert('Player One Wins!');
 				SCORE.playerOne = -1;
 				SCORE.playerTwo = 0;
