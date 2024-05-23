@@ -59,6 +59,55 @@ function calculateWindow() {
 	}
 }
 
+document.addEventListener('touchstart', (event) => {
+	const touch = event.touches[0];
+
+	if (touch.pageY < window.innerHeight / 2) {
+		if (touch.pageX < window.innerWidth / 2)
+			KEYS["w"] = true;
+		else
+			KEYS["ArrowUp"] = true;
+	}
+	else {
+		if (touch.pageX < window.innerWidth / 2)
+			KEYS["s"] = true;
+		else
+			KEYS["ArrowDown"] = true;
+	}
+});
+
+document.addEventListener('touchend', (event) => {
+	KEYS["w"] = false;
+	KEYS["s"] = false;
+	KEYS["ArrowUp"] = false;
+	KEYS["ArrowDown"] = false;
+});
+
+document.addEventListener('touchmove', (event) => {
+	const touch = event.touches[0];
+
+	if (touch.pageY < window.innerHeight / 2) {
+		if (touch.pageX < window.innerWidth / 2) {
+			KEYS["w"] = true;
+			KEYS["s"] = false;
+		}
+		else {
+			KEYS["ArrowUp"] = true;
+			KEYS["ArrowDown"] = false;
+		}
+	}
+	else {
+		if (touch.pageX < window.innerWidth / 2) {
+			KEYS["w"] = false;
+			KEYS["s"] = true;
+		}
+		else {
+			KEYS["ArrowUp"] = false;
+			KEYS["ArrowDown"] = true;
+		}
+	}
+})
+
 if (WebGL.isWebGLAvailable()) {
 	calculateWindow();
 	const renderer = new THREE.WebGLRenderer();
