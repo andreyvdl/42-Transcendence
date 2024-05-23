@@ -1,26 +1,53 @@
 version: '3'
 
+services:
+  django:
+    build: .
+    container_name: django
+    image: django:transcendence
+    command: 
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - transcendence
+    env_file:
+      - .env
+    ports:
+      - 8000:8000
+
+  db:
+    image: postgres
+    container_name: postgres
+    healthcheck:
+      test: pg_isready
+      interval: 3s
+      timeout: 3s
+      retries: 5
+    networks:
+      - transcendence
+    volumes:
+      - db-volume:/var/lib/postgresql/data
+    env_file:
+      - .env
+    environment:
+      PGUSER: ${SQL_USER}
+      PGDATABASE: ${SQL_DATABASE}
+      POSTGRES_USER: ${SQL_USER}
+      POSTGRES_PASSWORD: ${SQL_PASSWORD}
+      POSTGRES_DB: ${SQL_DATABASE}
+    ports:
+      - 5432:5432
+
 networks:
   transcendence:
     name: transcendence
 
-services:
-  nginx:
-    image: nginx:transcendence
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: nginx
-    networks:
-        - transcendence
-    ports:
-      - 5000:5000
-
-  django:
-    image: django:transcendence
-    build:
-      context: backend
-      dockerfile: Dockerfile
-    container_name: django
-    networks:
-      - transcendence
+volumes:
+  db-volume:
+    name: db-volume
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: .db-data # change path for goinfree

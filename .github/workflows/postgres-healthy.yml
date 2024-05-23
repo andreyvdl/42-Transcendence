@@ -1,0 +1,21 @@
+name: Postgres Healthy CI
+
+on: push
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build the Docker image
+      run: |
+        mkdir .db-data &&
+        docker compose up db -d &&
+        while [[ $(docker container inspect postgres -f '{{.State.Health.Status}}') == "starting" ]]; do
+            sleep 3
+        done
+        if [[ $(docker container inspect postgres -f '{{.State.Health.Status}}') != "healthy" ]]; then
+          exit 1
+        fi;
