@@ -8,8 +8,9 @@ class RegisterView(View):
         return render(request, "register.html")
 
     def post(self, request):
-        print(f"username: {request.POST['username']}, password: {request.POST['last_name']}", flush = True)
-        person = Person.objects.create(first_name = "bla", last_name = "blu")
+        first_name = request.POST["first_name"]
+        last_name = request.POST["last_name"]
+        person = Person.objects.create(first_name = first_name, last_name = last_name)
         person.save()
-        return HttpResponse(request.body)
+        return HttpResponse(200)
 
