@@ -2,10 +2,9 @@ version: '3'
 
 services:
   django:
-    build: .
+    build: ./app
     container_name: django
     image: django:transcendence
-    command: 
     depends_on:
       db:
         condition: service_healthy
@@ -15,6 +14,17 @@ services:
       - .env
     ports:
       - 8000:8000
+
+  nginx:
+    build: ./nginx
+    container_name: nginx
+    image: nginx:transcendence
+    depends_on:
+      - django
+    networks:
+      - transcendence
+    ports:
+      - 5000:5000
 
   db:
     image: postgres
