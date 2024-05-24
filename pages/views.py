@@ -1,4 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from random import randint, random
 
 def index(request):
-    return render(request, "index.html")
+	return render(request, "index.html")
+
+def redirect_to_login(request):
+	return redirect("/login")
