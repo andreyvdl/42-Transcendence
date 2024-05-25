@@ -2,7 +2,7 @@ version: '3'
 
 services:
   django:
-    build: ./app
+    build: .
     container_name: django
     image: django:transcendence
     depends_on:
