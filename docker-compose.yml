@@ -37,7 +37,7 @@ services:
       POSTGRES_PASSWORD: ${SQL_PASSWORD}
       POSTGRES_DB: ${SQL_DATABASE}
     ports:
-      - 5432:5432
+      - 5433:5432
 
 networks:
   transcendence:
