@@ -8,12 +8,30 @@ class RegisterView(View):
         return render(request, "register.html")
 
     def post(self, request):
-        nickname = request.POST["nickname"]
-        password = request.POST["password"]
-        person = User.objects.create_user(
-            nickname,
+        username = request.POST["username"].strip()
+        password = request.POST["password"].strip()
+
+        if len(username) < 1 or len(password) < 1:
+            ctx = {
+                    'error': True,
+                    'username': username,
+                    'password': password,
+                    'err_msg': "Invalid username or password."
+            }
+            return render(request, "register.html", ctx)
+
+        if User.objects.filter(username = username).exists():
+            ctx = {
+                    'error': True,
+                    'username': username,
+                    'password': password,
+                    'err_msg': "This username already exists, try a new one."
+            }
+            return render(request, "register.html", ctx)
+
+        pong_user = User.objects.create_user(
+            username,
             password = password
         )
-        person.save()
-        return HttpResponse(200)
-
+        pong_user.save()
+        return HttpResponse(201)
