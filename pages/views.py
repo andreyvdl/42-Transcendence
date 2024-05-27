@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.views import View
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import UserCreationForm
@@ -20,12 +20,11 @@ class LoginView(View):
             username = username,
             password = password
         )
-        print(user)
         if user is not None:
             login(request, user)
-            print(user)
-
-        return HttpResponse(200)
+            return redirect('account')
+        ctx = {'err': True, 'err_msg': "Invalid username or password"}
+        return render(request, "login.html", ctx)
 
 
 class RegisterView(View):
