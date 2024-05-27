@@ -43,7 +43,7 @@ class RegisterView(View):
                 'error': True,
                 'err_msg': form.errors,
                 'username': username,
-                'password': password1
+                'password': password
             }
             return render(request, "register.html", ctx)
 
