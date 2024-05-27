@@ -19,6 +19,8 @@ services:
     build: ./nginx
     container_name: nginx
     image: nginx:transcendence
+    volumes:
+      - ./site:/var/www/html
     depends_on:
       - django
     networks:
