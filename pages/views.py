@@ -30,10 +30,7 @@ class LoginView(View):
 
 class RegisterView(View):
     def get(self, request):
-        ctx = {
-            'registered_successfully': False
-        }
-        return render(request, "register.html", ctx)
+        return render(request, "register.html")
 
     def post(self, request):
         username = request.POST["username"]
