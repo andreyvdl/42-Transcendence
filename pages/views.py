@@ -10,7 +10,7 @@ from django.core.exceptions import ValidationError
 class AccountView(View):
     def get(self, request):
         print(request.user)
-        return HttpResponse(200)
+        return render(request, "account.html", {'username': request.user})
 
 class LoginView(View):
     def get(self, request):
