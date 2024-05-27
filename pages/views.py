@@ -1,16 +1,19 @@
 from django.http import HttpResponse
 from django.views import View
 from django.shortcuts import render
-from .models import Person
+from django.contrib.auth.models import User
 
 class RegisterView(View):
     def get(self, request):
         return render(request, "register.html")
 
     def post(self, request):
-        first_name = request.POST["first_name"]
-        last_name = request.POST["last_name"]
-        person = Person.objects.create(first_name = first_name, last_name = last_name)
+        nickname = request.POST["nickname"]
+        password = request.POST["password"]
+        person = User.objects.create_user(
+            nickname,
+            password = password
+        )
         person.save()
         return HttpResponse(200)
 
