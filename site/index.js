@@ -3,22 +3,18 @@ window.addEventListener('hashchange', () => {
 });
 
 window.addEventListener('DOMContentLoaded', () => {
-	const loginSocket = new WebSocket('wss://localhost:5000/wss/login/');
-	const registerSocket = new WebSocket('wss://localhost:5000/wss/register/');
+	const socket = new WebSocket('wss://localhost:5000/wss/');
 
-	loginSocket.onopen = function (event) {
+	socket.onopen = function (event) {
 		console.log('Connected to Login WebSocket Server');
 	}
-	registerSocket.onopen = function (event) {
-		console.log('Connected to Register WebSocket Server');
-	}
 
-	loginSocket.onmessage = registerSocket.onmessage = function (event) {
+	socket.onmessage = function (event) {
 		console.log("Message sent by the server:")
 		console.log(JSON.parse(event.data))
 	}
 
-	loginSocket.onclose = registerSocket.onclose = function (event) {
+	socket.onclose = function (event) {
 		console.log('Disconnected from WebSocket server');
 	}
 
@@ -26,20 +22,9 @@ window.addEventListener('DOMContentLoaded', () => {
 		event.preventDefault();
 		const email = document.getElementById('email_input').value
 		const password = document.getElementById('pass_input').value
-		loginSocket.send(JSON.stringify({
+		socket.send(JSON.stringify({
 			'email': email,
 			'password': password,
 		}));
 	});
-
-	// document.querySelector('#formContainer').addEventListener('submit', (event) => {
-	// 	event.preventDefault();
-	// 	const email = document.getElementById('email_input').value
-	// 	const password = document.getElementById('pass_input').value
-	// 	registerSocket.send(JSON.stringify({
-	// 		'email': email,
-	// 		'password': password,
-	// 	}));
-	// });
-
 })
