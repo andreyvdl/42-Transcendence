@@ -1,4 +1,7 @@
 <h1>Welcome to the Login page!</h1>
+{% if err %}
+	{{ err_msg }}
+{% endif %}
 <form method="post" action="{% url 'login' %}">
 	{% csrf_token %}
 	<label for="username">Username:</label><br>
