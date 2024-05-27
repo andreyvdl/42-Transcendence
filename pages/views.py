@@ -2,30 +2,51 @@ from django.http import HttpResponse
 from django.views import View
 from django.shortcuts import render
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 
-class RegisterView(View):
+class LoginView(View):
     def get(self, request):
-        return render(request, "register.html")
+        return render(request, "login.html")
 
     def post(self, request):
         username = request.POST["username"].strip()
         password = request.POST["password"].strip()
 
-        if len(username) < 1 or len(password) < 1:
-            ctx = {
-                    'error': True,
-                    'username': username,
-                    'password': password,
-                    'err_msg': "Invalid username or password."
-            }
-            return render(request, "register.html", ctx)
+        user = authenticate(
+            request,
+            username = username,
+            password = password
+        )
+        print(user)
+        if user is not None:
+            login(request, user)
+            print(user)
 
-        if User.objects.filter(username = username).exists():
+        return HttpResponse(200)
+
+
+class RegisterView(View):
+    def get(self, request):
+        ctx = {
+            'registered_successfully': False
+        }
+        return render(request, "register.html", ctx)
+
+    def post(self, request):
+        username = request.POST["username"]
+        password = request.POST["password1"]
+        form = UserCreationForm(request.POST)
+
+        # https://docs.djangoproject.com/en/5.0/topics/auth/default/#django.contrib.auth.forms.BaseUserCreationForm
+        if not form.is_valid():
             ctx = {
-                    'error': True,
-                    'username': username,
-                    'password': password,
-                    'err_msg': "This username already exists, try a new one."
+                'error': True,
+                'err_msg': form.errors,
+                'username': username,
+                'password': password1
             }
             return render(request, "register.html", ctx)
 
@@ -34,4 +55,9 @@ class RegisterView(View):
             password = password
         )
         pong_user.save()
-        return HttpResponse(201)
+        ctx = {
+            'registered_successfully': True,
+            'username': username
+        }
+        return render(request, "register.html", ctx)
+
