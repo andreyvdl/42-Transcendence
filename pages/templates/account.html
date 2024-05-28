@@ -3,6 +3,16 @@
 <p>Losses: {{ losses }}</p>
 <img src="{{ avatar }}"/>
 
+<ul>
+	{% for match in matches %}
+		<li>
+			{{ match }} <br>
+		</li>
+	{% empty %}
+		<li>No matches found for this user.</li>
+	{% endfor %}
+</ul>
+
 {% if hide_form is not True %}
 <p>Want to update your username?</p>
 <form method="post" action="{% url 'account' %}">

@@ -5,15 +5,18 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
-from .models import PongUser
+from .models import PongUser, Match
+from django.db.models import Q
 
 class AccountView(View):
     def get(self, request):
+        matches = Match.objects.filter(Q(left_player = request.user.id) | Q(right_player = request.user.id))
         ctx = {
             'username': request.user.username,
             'wins': request.user.get_wins(),
             'losses': request.user.get_losses(),
-            'avatar': request.user.get_avatar()
+            'avatar': request.user.get_avatar(),
+            'matches': matches
         }
         return render(request, "account.html", ctx)
 
