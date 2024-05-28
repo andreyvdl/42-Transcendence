@@ -16,11 +16,11 @@ services:
       - 8000:8000
 
   nginx:
-    build: ./nginx
+    build:
+      context: .
+      dockerfile: ./nginx/Dockerfile
     container_name: nginx
     image: nginx:transcendence
-    volumes:
-      - ./site:/var/www/html
     depends_on:
       - django
     networks:
