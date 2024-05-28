@@ -16,3 +16,16 @@ class PongUser(AbstractUser):
 
     def get_avatar(self):
         return self.avatar
+
+class Match(models.Model):
+    left_player = models.ForeignKey(PongUser,
+                                    on_delete=models.CASCADE,
+                                    related_name = "left_match")
+    right_player = models.ForeignKey(PongUser,
+                                     on_delete=models.CASCADE,
+                                     related_name = "right_match")
+    winner = models.ForeignKey(PongUser, on_delete=models.CASCADE)
+    score = models.CharField(max_length = 3)
+
+    def __str__(self):
+        return f"{self.left_player.username} VS {self.right_player.username} => {self.score}, the winner was {self.winner}"
