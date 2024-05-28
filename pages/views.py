@@ -17,6 +17,32 @@ class AccountView(View):
         }
         return render(request, "account.html", ctx)
 
+    def post(self, request):
+        new_username = request.POST['new_username'].strip()
+        if PongUser.objects.filter(username = new_username).exists():
+            ctx = {
+                'username': request.user.username,
+                'wins': request.user.get_wins(),
+                'losses': request.user.get_losses(),
+                'avatar': request.user.get_avatar(),
+                'hide_form': True,
+                'msg': '🔴 User already exists.'
+            }
+            return render(request, "account.html", ctx)
+        else:
+            curr_user = PongUser.objects.get(username = request.user)
+            curr_user.username = new_username
+            curr_user.save()
+            ctx = {
+                'username': curr_user.username,
+                'wins': curr_user.get_wins(),
+                'losses': curr_user.get_losses(),
+                'avatar': curr_user.get_avatar(),
+                'hide_form': True,
+                'msg': '🟢 Username changed successfully.'
+            }
+            return render(request, "account.html", ctx)
+
 class LoginView(View):
     def get(self, request):
         return render(request, "login.html")

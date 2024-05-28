@@ -2,3 +2,16 @@
 <p>Wins: {{ wins }}</p>
 <p>Losses: {{ losses }}</p>
 <img src="{{ avatar }}"/>
+
+{% if hide_form is not True %}
+<p>Want to update your username?</p>
+<form method="post" action="{% url 'account' %}">
+	{% csrf_token %}
+	<label for="new_username">New username:</label><br>
+	<input type="text" id="new_username" name="new_username" required><br><br>
+	<button type="submit">Change Username</button>
+</form>
+{% endif %}
+{% if msg %}
+<p>{{ msg }}</p>
+{% endif %}
