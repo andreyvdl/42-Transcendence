@@ -1,11 +1,11 @@
 from django.http import HttpResponse
 from django.views import View
 from django.shortcuts import render, redirect
-from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
+from .models import PongUser
 
 class AccountView(View):
     def get(self, request):
@@ -39,19 +39,19 @@ class RegisterView(View):
     def post(self, request):
         username = request.POST["username"]
         password = request.POST["password1"]
-        form = UserCreationForm(request.POST)
+        # form = UserCreationForm(request.POST)
 
         # https://docs.djangoproject.com/en/5.0/topics/auth/default/#django.contrib.auth.forms.BaseUserCreationForm
-        if not form.is_valid():
-            ctx = {
-                'error': True,
-                'err_msg': form.errors,
-                'username': username,
-                'password': password
-            }
-            return render(request, "register.html", ctx)
+        # if not form.is_valid():
+        #     ctx = {
+        #         'error': True,
+        #         'err_msg': form.errors,
+        #         'username': username,
+        #         'password': password
+        #     }
+        #     return render(request, "register.html", ctx)
 
-        pong_user = User.objects.create_user(
+        pong_user = PongUser.objects.create_user(
             username,
             password = password
         )
