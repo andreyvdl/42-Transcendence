@@ -9,8 +9,13 @@ from .models import PongUser
 
 class AccountView(View):
     def get(self, request):
-        print(request.user)
-        return render(request, "account.html", {'username': request.user})
+        ctx = {
+            'username': request.user.username,
+            'wins': request.user.get_wins(),
+            'losses': request.user.get_losses(),
+            'avatar': request.user.get_avatar()
+        }
+        return render(request, "account.html", ctx)
 
 class LoginView(View):
     def get(self, request):
