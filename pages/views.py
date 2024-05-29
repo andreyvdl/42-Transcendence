@@ -2,7 +2,13 @@ from django.shortcuts import render, redirect
 from random import randint, random
 
 def index(request):
-	return render(request, "index.html")
+	return render(request, "base.html")
+
+def login(request):
+    return render(request, "login.html")
+
+def register(request):
+    return render(request, "register.html")
 
 def dashboard(request):
 	nomes = [ "Sonic", "Mario", "Cloud", "Link", "Kratos", "Mrs. Croft", "Master Chief", "Samus", "Doomguy", "Pikachu", "Kirby", "Donkey Kong", "Yoshi", "Snake"]
