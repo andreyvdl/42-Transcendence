@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
@@ -26,6 +27,7 @@ class Match(models.Model):
                                      related_name = "right_match")
     winner = models.ForeignKey(PongUser, on_delete=models.CASCADE)
     score = models.CharField(max_length = 3)
+    date = models.DateTimeField(auto_now = False, auto_now_add = False, default = datetime.now)
 
     def __str__(self):
         return f"{self.left_player.username} VS {self.right_player.username} => {self.score}, the winner was {self.winner}"
