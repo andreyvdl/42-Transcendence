@@ -45,8 +45,3 @@ networks:
 volumes:
   db-volume:
     name: db-volume
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: .db-data # change path for goinfree
