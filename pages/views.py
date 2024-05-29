@@ -1,16 +1,13 @@
-from django.http import HttpResponse
 from django.views import View
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.password_validation import validate_password
-from django.core.exceptions import ValidationError
 from .models import PongUser, Match
 from django.db.models import Q
 
+
 class AccountView(View):
     def get(self, request):
-        matches = Match.objects.filter(Q(left_player = request.user.id) | Q(right_player = request.user.id))
+        matches = Match.objects.filter(Q(left_player=request.user.id) | Q(right_player=request.user.id))
         ctx = {
             'username': request.user.username,
             'wins': request.user.get_wins(),
@@ -22,7 +19,7 @@ class AccountView(View):
 
     def post(self, request):
         new_username = request.POST['new_username'].strip()
-        if PongUser.objects.filter(username = new_username).exists():
+        if PongUser.objects.filter(username=new_username).exists():
             ctx = {
                 'username': request.user.username,
                 'wins': request.user.get_wins(),
@@ -33,7 +30,7 @@ class AccountView(View):
             }
             return render(request, "account.html", ctx)
         else:
-            curr_user = PongUser.objects.get(username = request.user)
+            curr_user = PongUser.objects.get(username=request.user)
             curr_user.username = new_username
             curr_user.save()
             ctx = {
@@ -46,6 +43,7 @@ class AccountView(View):
             }
             return render(request, "account.html", ctx)
 
+
 class LoginView(View):
     def get(self, request):
         return render(request, "login.html")
@@ -56,8 +54,8 @@ class LoginView(View):
 
         user = authenticate(
             request,
-            username = username,
-            password = password
+            username=username,
+            password=password
         )
         if user is not None:
             login(request, user)
@@ -87,7 +85,7 @@ class RegisterView(View):
 
         pong_user = PongUser.objects.create_user(
             username,
-            password = password
+            password=password
         )
         pong_user.save()
         ctx = {
@@ -95,4 +93,3 @@ class RegisterView(View):
             'username': username
         }
         return render(request, "register.html", ctx)
-
