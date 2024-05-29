@@ -20,6 +20,8 @@ var BALLPAUSE = false;
 
 document.addEventListener("keydown", (event) => {
 	KEYS[event.key] = true;
+	if (event.key == " ")
+		alert("");
 });
 
 document.addEventListener("keyup", (event) => {
@@ -147,6 +149,7 @@ if (WebGL.isWebGLAvailable()) {
 		renderer.render(scene, camera);
 	}
 
+	alert("Player One: W S\nPlayer Two: Up Down");
 	animate();
 } else {
 	const warning = WebGL.getWebGLErrorMessage();
