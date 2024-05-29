@@ -34,7 +34,8 @@ def save_match(request, right_pk, score, pk_winner):
 
 
 class AccountView(View):
-    def get(self, request):
+    @staticmethod
+    def get(request):
         matches = Match.objects.filter(Q(left_player=request.user.id) | Q(right_player=request.user.id))
         ctx = {
             'username': request.user.username,
@@ -45,7 +46,8 @@ class AccountView(View):
         }
         return render(request, "account.html", ctx)
 
-    def post(self, request):
+    @staticmethod
+    def post(request):
         new_username = request.POST['new_username'].strip()
         if PongUser.objects.filter(username=new_username).exists():
             ctx = {
@@ -73,10 +75,13 @@ class AccountView(View):
 
 
 class LoginView(View):
-    def get(self, request):
+    @staticmethod
+    def get(request):
+
         return render(request, "login.html")
 
-    def post(self, request):
+    @staticmethod
+    def post(request):
         username = request.POST["username"].strip()
         password = request.POST["password"].strip()
 
@@ -93,10 +98,12 @@ class LoginView(View):
 
 
 class RegisterView(View):
-    def get(self, request):
+    @staticmethod
+    def get(request):
         return render(request, "register.html")
 
-    def post(self, request):
+    @staticmethod
+    def post(request):
         username = request.POST["username"]
         password = request.POST["password1"]
         # form = UserCreationForm(request.POST)
