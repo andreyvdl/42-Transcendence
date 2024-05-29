@@ -1,8 +1,36 @@
+from django.http import JsonResponse
 from django.views import View
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from .models import PongUser, Match
 from django.db.models import Q
+from django.contrib.auth.decorators import login_required
+
+
+@login_required(login_url='login')
+def save_match(request, right_pk, score, pk_winner):
+    left_pk = request.user.id
+    if left_pk == right_pk:
+        return JsonResponse({"error": "How come a player be against himself?"}, status=400)
+    elif pk_winner not in {right_pk, left_pk}:
+        return JsonResponse({"error": "How come a player that's not present in the match be the winner?"}, status=400)
+    elif not PongUser.objects.filter(pk=right_pk).exists():
+        return JsonResponse({'error': 'Right player not found.'}, status=400)
+    elif not PongUser.objects.filter(pk=left_pk).exists():
+        return JsonResponse({'error': 'Left player not found.'}, status=400)
+
+    left_player = PongUser.objects.get(pk=left_pk)
+    right_player = PongUser.objects.get(pk=right_pk)
+    winner = PongUser.objects.get(pk=pk_winner)
+
+    match = Match.objects.create(
+        left_player=left_player,
+        right_player=right_player,
+        winner=winner,
+        score=score
+    )
+
+    return JsonResponse({'match_id': match.id})
 
 
 class AccountView(View):
