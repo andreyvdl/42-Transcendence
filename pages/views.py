@@ -6,6 +6,7 @@ from .models import PongUser, Match, Friendship
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
+from django.utils.datastructures import MultiValueDictKeyError
 
 
 def _get_pending_friend_requests(pk):
@@ -28,6 +29,33 @@ def _get_friends(pk):
         friends.append(f.user2.username if not f.user2 == self_username else f.user1.username)
 
     return friends
+
+
+@csrf_exempt
+@login_required(login_url='login')
+def answer_friend_request(request, username):
+    if request.method == 'POST':
+        try:
+            ans = request.POST['ans']
+        except MultiValueDictKeyError:
+            return JsonResponse({'error': 'Expected an \'ans\' field on json.'}, status=400)
+        try:
+            pong_user = PongUser.objects.get(username=username)
+        except PongUser.DoesNotExist:
+            return JsonResponse({'error': 'That user doesn\'t exist.'}, status=400)
+        if ans not in ['y', 'n']:
+            return JsonResponse({'error': 'Invalid answer'}, status=400)
+
+        friendship = Friendship.objects.filter((Q(user1=request.user.id) & Q(user2=pong_user)) |
+                                               (Q(user2=request.user.id) & Q(user1=pong_user))).first()
+        if ans == 'n':
+            friendship.delete()
+        else:
+            friendship.status = ans
+            friendship.save()
+        return JsonResponse({'friendship': pong_user.id})
+
+    return JsonResponse({'error': 'Expected POST'}, status=400)
 
 
 @csrf_exempt
@@ -126,7 +154,6 @@ class AccountView(View):
 class LoginView(View):
     @staticmethod
     def get(request):
-
         return render(request, "login.html")
 
     @staticmethod
