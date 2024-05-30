@@ -90,3 +90,59 @@ class AnswerFriendRequestTest(TestCase):
             with transaction.atomic():
                 Friendship.objects.create(sent_by=self.sent_by, sent_to=self.sent_to)
                 Friendship.objects.create(sent_by=self.sent_to, sent_to=self.sent_by)
+
+
+class MakeFriendRequestTest(TestCase):
+    def setUp(self):
+        self.sent_by = PongUser.objects.create_user(username='fabin', password='password1')
+        self.sent_to = PongUser.objects.create_user(username='reinan', password='password2')
+        self.url = reverse('make_friends', kwargs={'send_to_user': self.sent_to.username})
+        self.friendship = Friendship.objects.create(sent_by=self.sent_by,
+                                                    sent_to=self.sent_to)
+
+        self.client = Client()
+        self.client.login(username='fabin', password='password1')
+
+    def test_get(self):
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            str(response.content, encoding='utf-8'),
+            expected_data={'error': 'Expected POST'}
+        )
+
+    def test_send_friend_request_to_myself(self):
+        url = reverse('make_friends', kwargs={'send_to_user': self.sent_by.username})
+        response = self.client.post(url)
+
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            str(response.content, encoding='utf-8'),
+            expected_data={'error': 'Can\'t send a friend request to yourself.'}
+        )
+
+    def test_send_friend_request_to_user_that_doesnt_exist(self):
+        url = reverse('make_friends', kwargs={'send_to_user': 'user_that_doesnt_exist'})
+        response = self.client.post(url)
+
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            str(response.content, encoding='utf-8'),
+            expected_data={'error': 'This user does not exist.'}
+        )
+
+    def test_assert_friend_request_to_reinan(self):
+        self.assertEqual(self.friendship.status, 'p')
+        self.assertEqual(self.friendship.id, 1)
+        self.assertEqual(self.friendship.sent_to, self.sent_to)
+        self.assertEqual(self.friendship.sent_by, self.sent_by)
+
+    def test_sending_a_friend_request_again(self):
+        response = self.client.post(self.url)
+
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            str(response.content, encoding='utf-8'),
+            expected_data={'error': 'Friend request already exists.'}
+        )

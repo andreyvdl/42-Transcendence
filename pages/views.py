@@ -60,27 +60,30 @@ def answer_friend_request(request, username):
 
 @csrf_exempt
 @login_required(login_url='login')
-def make_friends(request, send_to: str):
-    if request.user.username == send_to:
-        return JsonResponse({"error": "Can't send a friend request to yourself."}, status=400)
-    if not PongUser.objects.filter(username=send_to).exists():
-        return JsonResponse({"error": "This user does not exist."}, status=400)
+def make_friends(request, send_to_user: str):
+    if request.method == "POST":
+        if request.user.username == send_to_user:
+            return JsonResponse({"error": "Can't send a friend request to yourself."}, status=400)
+        if not PongUser.objects.filter(username=send_to_user).exists():
+            return JsonResponse({"error": "This user does not exist."}, status=400)
 
-    sent_by = PongUser.objects.get(pk=request.user.id)
-    send_to = PongUser.objects.get(username=send_to)
+        sent_by = PongUser.objects.get(pk=request.user.id)
+        send_to_user = PongUser.objects.get(username=send_to_user)
 
-    request_exists = Friendship.objects.filter((Q(sent_by=request.user.id) & Q(sent_to=send_to.id)) |
-                                               (Q(sent_to=request.user.id) & Q(sent_by=send_to.id))).exists()
+        request_exists = Friendship.objects.filter((Q(sent_by=request.user.id) & Q(sent_to=send_to_user.id)) |
+                                                   (Q(sent_to=request.user.id) & Q(sent_by=send_to_user.id))).exists()
 
-    if request_exists:
-        return JsonResponse({"error": "Friend request already exists."}, status=400)
+        if request_exists:
+            return JsonResponse({"error": "Friend request already exists."}, status=400)
 
-    friendship = Friendship.objects.create(
-        sent_by=sent_by,
-        sent_to=send_to
-    )
+        friendship = Friendship.objects.create(
+            sent_by=sent_by,
+            sent_to=send_to_user
+        )
 
-    return JsonResponse({"friendship": friendship.id})
+        return JsonResponse({"friendship": friendship.id})
+
+    return JsonResponse({'error': 'Expected POST'}, status=400)
 
 
 @login_required(login_url='login')

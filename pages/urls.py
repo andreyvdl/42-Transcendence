@@ -9,6 +9,6 @@ urlpatterns = [
     path("login", views.LoginView.as_view(), name="login"),
     path("account", login_required(views.AccountView.as_view(), login_url='login'), name="account"),
     path("save_match/<int:right_pk>/<str:score>/<int:pk_winner>", views.save_match, name="save_match"),
-    path("make_friends/<str:user2>/", views.make_friends, name="make_friends"),
+    path("make_friends/<str:send_to_user>/", views.make_friends, name="make_friends"),
     path("answer_friend_request/<str:username>/", views.answer_friend_request, name="answer_friend_request")
 ]
