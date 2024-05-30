@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.core.exceptions import ObjectDoesNotExist
@@ -8,16 +9,15 @@ from .models import PongUser, Friendship
 class AnswerFriendRequestTest(TestCase):
 
     def setUp(self):
-        self.user1 = PongUser.objects.create_user(username='user1', password='password1')
-        self.user2 = PongUser.objects.create_user(username='user2', password='password2')
-        self.url = reverse('answer_friend_request', kwargs={'username': self.user2.username})
+        self.sent_by = PongUser.objects.create_user(username='fabin', password='password1')
+        self.sent_to = PongUser.objects.create_user(username='reinan', password='password2')
+        self.url = reverse('answer_friend_request', kwargs={'username': self.sent_to.username})
 
-        self.friendship = Friendship.objects.create(user1=self.user1,
-                                                    user2=self.user2,
-                                                    sent_by=self.user1)
+        self.friendship = Friendship.objects.create(sent_by=self.sent_by,
+                                                    sent_to=self.sent_to)
 
         self.client = Client()
-        self.client.login(username='user1', password='password1')
+        self.client.login(username='fabin', password='password1')
 
     def test_get(self):
         response = self.client.get(self.url)
@@ -52,7 +52,7 @@ class AnswerFriendRequestTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
             str(response.content, encoding='utf-8'),
-            expected_data={'friendship': self.user2.id}
+            expected_data={'friendship': self.sent_to.id}
         )
         self.friendship.refresh_from_db()
         self.assertEqual(self.friendship.status, 'y')
@@ -63,7 +63,7 @@ class AnswerFriendRequestTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
             str(response.content, encoding='utf-8'),
-            expected_data={'friendship': self.user2.id}
+            expected_data={'friendship': self.sent_to.id}
         )
         with self.assertRaises(ObjectDoesNotExist):
             Friendship.objects.get(pk=1)
@@ -85,8 +85,8 @@ class AnswerFriendRequestTest(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, f'/pages/login?next={self.url}')
 
-    def test_adding_same_user_twice(self):  # @TODO Move this to another test case, does not belong to answer friend
+    def test_adding_same_user_twice(self):
         with self.assertRaises(IntegrityError):
-            Friendship.objects.create(user1=self.user1,
-                                      user2=self.user2,
-                                      sent_by=self.user1)
+            with transaction.atomic():
+                Friendship.objects.create(sent_by=self.sent_by, sent_to=self.sent_to)
+                Friendship.objects.create(sent_by=self.sent_to, sent_to=self.sent_by)

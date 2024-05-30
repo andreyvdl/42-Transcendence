@@ -46,8 +46,8 @@ def answer_friend_request(request, username):
         if ans not in ['y', 'n']:
             return JsonResponse({'error': 'Invalid answer'}, status=400)
 
-        friendship = Friendship.objects.filter((Q(user1=request.user.id) & Q(user2=pong_user)) |
-                                               (Q(user2=request.user.id) & Q(user1=pong_user))).first()
+        friendship = Friendship.objects.filter((Q(sent_by=request.user.id) & Q(sent_to=pong_user)) |
+                                               (Q(sent_to=request.user.id) & Q(sent_by=pong_user))).first()
         if ans == 'n':
             friendship.delete()
         else:
