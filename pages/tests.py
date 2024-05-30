@@ -1,3 +1,5 @@
+import json
+
 from django.db import transaction
 from django.test import TestCase, Client
 from django.urls import reverse
@@ -34,11 +36,14 @@ class AnswerFriendRequestTest(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertJSONEqual(
             str(response.content, encoding='utf-8'),
-            expected_data={'error': 'Expected an \'ans\' field on json.'}
+            expected_data={'error': 'Expected an \'ans\' field in JSON.'}
         )
 
     def test_send_invalid_ans(self):
-        response = self.client.post(self.url, data={'ans': 'x'})
+        response = self.client.post(self.url,
+                                    data=json.dumps({'ans': 'x'}),
+                                    content_type='application/json'
+                                    )
 
         self.assertEqual(response.status_code, 400)
         self.assertJSONEqual(
@@ -47,7 +52,10 @@ class AnswerFriendRequestTest(TestCase):
         )
 
     def test_accept_friend(self):
-        response = self.client.post(self.url, data={'ans': 'y'})
+        response = self.client.post(self.url,
+                                    data=json.dumps({'ans': 'y'}),
+                                    content_type='application/json'
+                                    )
 
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
@@ -58,7 +66,10 @@ class AnswerFriendRequestTest(TestCase):
         self.assertEqual(self.friendship.status, 'y')
 
     def test_decline_friend(self):
-        response = self.client.post(self.url, data={'ans': 'n'})
+        response = self.client.post(self.url,
+                                    data=json.dumps({'ans': 'n'}),
+                                    content_type='application/json'
+                                    )
 
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
@@ -70,7 +81,10 @@ class AnswerFriendRequestTest(TestCase):
 
     def test_accept_invalid_user(self):
         url = reverse('answer_friend_request', kwargs={'username': 'user_that_doesnt_exist'})
-        response = self.client.post(url, data={'ans': 'y'})
+        response = self.client.post(url,
+                                    data=json.dumps({'ans': 'y'}),
+                                    content_type='application/json'
+                                    )
 
         self.assertEqual(response.status_code, 400)
         self.assertJSONEqual(
