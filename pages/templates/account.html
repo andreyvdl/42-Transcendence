@@ -15,9 +15,15 @@
 
 Pending Friend Requests ({{ pend_friends | length }})
 {% for pend_friend in pend_friends %}
-    <p>{{ pend_friend }}</p>
+    <div>
+        <br>
+            <p id="pend-friend-{{ forloop.counter0 }}" style="display: inline">{{ pend_friend }}</p>
+            <button class="{{ pend_friend }}/" id="accept-btn">Accept</button>
+            <button class="{{ pend_friend }}/" id="decline-btn">Decline</button>
+        <br>
+    </div>
 {% endfor %}
-
+<br>
 Friends ({{ friends | length }}):
 {% for friend in friends %}
     <p>{{ friend }}</p>
@@ -37,3 +43,6 @@ Friends ({{ friends | length }}):
 {% if msg %}
 <p>{{ msg }}</p>
 {% endif %}
+
+{% load static %}
+<script src="{% static 'index.js' %}"></script>
