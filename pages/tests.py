@@ -146,3 +146,10 @@ class MakeFriendRequestTest(TestCase):
             str(response.content, encoding='utf-8'),
             expected_data={'error': 'Friend request already exists.'}
         )
+
+    def test_user_logged_out(self):
+        self.client.logout()
+        response = self.client.post(self.url)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, f'/pages/login?next={self.url}')
