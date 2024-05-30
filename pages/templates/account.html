@@ -12,7 +12,10 @@
 		<li>No matches found for this user.</li>
 	{% endfor %}
 </ul>
-
+Friends ({{ friends | length }}):
+{% for friend in friends %}
+    <p>{{ friend }}</p>
+{% endfor %}
 {% if hide_form is not True %}
 <p>Want to update your username?</p>
 <form method="post" action="{% url 'account' %}">
