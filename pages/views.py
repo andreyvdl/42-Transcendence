@@ -10,23 +10,21 @@ from django.utils.datastructures import MultiValueDictKeyError
 
 
 def _get_pending_friend_requests(pk):
-    self_username = PongUser.objects.get(pk=pk)
-    friendships = Friendship.objects.filter((Q(user1=pk) | Q(user2=pk)) &
-                                            ~Q(sent_by=pk) & Q(status='p'))
+    friendships = Friendship.objects.filter(Q(sent_to=pk) & Q(status='p'))
     pend_friends = []
     for friend in friendships:
-        pend_friends.append(friend.user2.username if not friend.user2 == self_username else friend.user1.username)
+        pend_friends.append(friend.sent_by.username)
 
     return pend_friends
 
 
 def _get_friends(pk):
-    self_username = PongUser.objects.get(pk=pk)
-    friendships = Friendship.objects.filter((Q(user1=pk) | Q(user2=pk)) &
-                                            ~Q(sent_by=pk) & Q(status='y'))
+    self_username = PongUser.objects.get(pk=pk).username
+    friendships = Friendship.objects.filter((Q(sent_to=pk) | Q(sent_by=pk)) &
+                                            Q(status='y'))
     friends = []
     for f in friendships:
-        friends.append(f.user2.username if not f.user2 == self_username else f.user1.username)
+        friends.append(f.sent_by.username if not f.sent_by.username == self_username else f.sent_to.username)
 
     return friends
 
