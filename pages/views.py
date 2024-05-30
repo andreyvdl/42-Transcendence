@@ -14,7 +14,6 @@ def _get_pending_friend_requests(pk):
     for friend in friendships:
         pend_friends.append(friend.user2.username if not friend.user2 == self_username else friend.user1.username)
 
-    print(f"Pendent friends: {pend_friends}")
     return pend_friends
 
 
