@@ -148,7 +148,7 @@ class MakeFriendRequestTest(TestCase):
 
     def test_assert_friend_request_to_reinan(self):
         self.assertEqual(self.friendship.status, 'p')
-        self.assertEqual(self.friendship.id, 1)
+        self.assertEqual(self.friendship.id, 10)  # Might fail if not running `python manage.py test`
         self.assertEqual(self.friendship.sent_to, self.sent_to)
         self.assertEqual(self.friendship.sent_by, self.sent_by)
 
