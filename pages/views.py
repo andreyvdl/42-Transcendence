@@ -10,7 +10,8 @@ from django.views.decorators.csrf import csrf_exempt
 
 def _get_pending_friend_requests(pk):
     self_username = PongUser.objects.get(pk=pk)
-    friendships = Friendship.objects.filter((Q(user1=pk) | Q(user2=pk) & ~Q(sent_by=pk) & Q(status='p')))
+    friendships = Friendship.objects.filter((Q(user1=pk) | Q(user2=pk)) &
+                                            ~Q(sent_by=pk) & Q(status='p'))
     pend_friends = []
     for friend in friendships:
         pend_friends.append(friend.user2.username if not friend.user2 == self_username else friend.user1.username)
@@ -20,7 +21,8 @@ def _get_pending_friend_requests(pk):
 
 def _get_friends(pk):
     self_username = PongUser.objects.get(pk=pk)
-    friendships = Friendship.objects.filter((Q(user1=pk) | Q(user2=pk) & ~Q(sent_by=pk) & Q(status='y')))
+    friendships = Friendship.objects.filter((Q(user1=pk) | Q(user2=pk)) &
+                                            ~Q(sent_by=pk) & Q(status='y'))
     friends = []
     for f in friendships:
         friends.append(f.user2.username if not f.user2 == self_username else f.user1.username)
@@ -74,7 +76,6 @@ def save_match(request, right_pk, score, pk_winner):
     )
 
     return JsonResponse({'match_id': match.id})
-
 
 
 class AccountView(View):
