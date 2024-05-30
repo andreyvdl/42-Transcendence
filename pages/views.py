@@ -71,6 +71,12 @@ def make_friends(request, user2: str):
     user1 = PongUser.objects.get(username=user1_username)
     user2 = PongUser.objects.get(username=user2)
 
+    friend_request_already_exists = Friendship.objects.filter((Q(user1=request.user.id) & Q(user2=user2.id)) |
+                                                              (Q(user2=request.user.id) & Q(user1=user2.id))).exists()
+
+    if friend_request_already_exists:
+        return JsonResponse({"error": "Friend request already exists."}, status=400)
+
     friendship = Friendship.objects.create(
         user1=user1,
         user2=user2,
