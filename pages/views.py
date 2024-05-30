@@ -18,6 +18,16 @@ def _get_pending_friend_requests(pk):
     return pend_friends
 
 
+def _get_friends(pk):
+    self_username = PongUser.objects.get(pk=pk)
+    friendships = Friendship.objects.filter((Q(user1=pk) | Q(user2=pk) & ~Q(sent_by=pk) & Q(status='y')))
+    friends = []
+    for f in friendships:
+        friends.append(f.user2.username if not f.user2 == self_username else f.user1.username)
+
+    return friends
+
+
 
 
 @login_required(login_url='login')
@@ -52,11 +62,13 @@ class AccountView(View):
     def get(request):
         matches = Match.objects.filter(Q(left_player=request.user.id) | Q(right_player=request.user.id))
         pend_friends = _get_pending_friend_requests(request.user.id)
+        friends = _get_friends(request.user.id)
         ctx = {
             'username': request.user.username,
             'wins': request.user.get_wins(),
             'losses': request.user.get_losses(),
             'avatar': request.user.get_avatar(),
+            'friends': friends,
             'matches': matches
         }
         return render(request, "account.html", ctx)
