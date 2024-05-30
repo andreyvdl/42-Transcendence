@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate, login
 from .models import PongUser, Match, Friendship
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
 
 
 def _get_pending_friend_requests(pk):
@@ -27,6 +28,26 @@ def _get_friends(pk):
     return friends
 
 
+@csrf_exempt
+@login_required(login_url='login')
+def make_friends(request, user2: str):
+    user1_username = request.user.username
+
+    if request.user.username == user2:
+        return JsonResponse({"error": "Can't send a friend request to yourself."}, status=400)
+    if not PongUser.objects.filter(username=user2).exists():
+        return JsonResponse({"error": "This user does not exist."}, status=400)
+
+    user1 = PongUser.objects.get(username=user1_username)
+    user2 = PongUser.objects.get(username=user2)
+
+    friendship = Friendship.objects.create(
+        user1=user1,
+        user2=user2,
+        sent_by=user1
+    )
+
+    return JsonResponse({"friendship": friendship.id})
 
 
 @login_required(login_url='login')
