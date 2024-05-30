@@ -1,126 +1,164 @@
-const ESCOLHAS = {pedra: 0, papel: 1, tesoura: 2}
-const JOGADOR = [{escolha: -1, pontos: 0}, {escolha: -1, pontos: 0}];
-const TECLAS = {};
-var TEMPO = 3;
-var TEMPORIZADOR = false;
-let QUADRO = document.getElementById("jogo");
-let CTX = QUADRO.getContext("2d");
+const ESCOLHAS = {
+	pedra: 0,
+	papel: 1,
+	tesoura: 2
+};
 
-document.addEventListener("keydown", (event) => {
-	TECLAS[event.key] = true;
-});
+const JOGADOR = [
+	{ escolha: -1, pontos: 0 },
+	{ escolha: -1, pontos: 0 }
+];
 
-document.addEventListener("keyup", (event) => {
-	TECLAS[event.key] = false;
-});
+const RESULTADOS = [
+	[0, 1, -1],
+	[-1, 0, 1],
+	[1, -1, 0]
+];
 
-window.onresize = () => {
-	QUADRO.setAttribute("width", window.innerWidth);
-	QUADRO.setAttribute("height", window.innerHeight);
-}
+const IMAGENS = {
+	fogo: new Image(),
+	agua: new Image(),
+	neve: new Image(),
+	questao: new Image()
+};
 
-function updatePlayers() {
-	console.log("JOGAS");
-	console.log(JOGADOR);
-	if (TECLAS["a"])
-		JOGADOR[0].escolha = ESCOLHAS.pedra;
-	if (TECLAS["s"])
-		JOGADOR[0].escolha = ESCOLHAS.papel;
-	if (TECLAS["d"])
-		JOGADOR[0].escolha = ESCOLHAS.tesoura;
-	if (TECLAS["j"])
-		JOGADOR[1].escolha = ESCOLHAS.pedra;
-	if (TECLAS["k"])
-		JOGADOR[1].escolha = ESCOLHAS.papel;
-	if (TECLAS["l"])
-		JOGADOR[1].escolha = ESCOLHAS.tesoura;
-}
+var g_tempo = 5;
+var g_temporizador = false;
+var g_imagens = false;
+var g_resultados = false;
+var quadro = document.getElementById("jogo");
+var contexto = quadro.getContext("2d");
+
+quadro.setAttribute("width", window.innerWidth);
+quadro.setAttribute("height", window.innerHeight);
+
+contexto.textAlign = "center";
+contexto.textBaseline = "middle";
+contexto.font = "50px arial";
+IMAGENS.fogo.src = "./assets/fire.png";
+IMAGENS.agua.src = "./assets/water.png";
+IMAGENS.neve.src = "./assets/snow.png";
+IMAGENS.questao.src = "./assets/question.png";
 
 function timer() {
-	TEMPO = 3;
-	TEMPORIZADOR = true;
-	let tempo = setInterval(() => {
-		TEMPO--;
-		if (TEMPO < 0) {
-			clearInterval(tempo);
-			TEMPORIZADOR = false;
+	if (g_temporizador) return;
+	g_temporizador = true;
+	let intervalo = setInterval(() => {
+		g_tempo--;
+		if (g_tempo < 0) {
+			clearInterval(intervalo);
+			g_resultados = true;
+			g_tempo = 0;
 		}
 	}, 1000);
 }
 
-function drawText() {
-	CTX.textAlign = "center";
-	CTX.textBaseline = "middle";
-	CTX.font = "50px arial";
-	CTX.fillStyle = "red";
-	CTX.fillText(TEMPO.toString(), QUADRO.width / 2, 50);
+function desenharEscolhas() {
+	if (!g_imagens) {
+		contexto.drawImage(
+			IMAGENS.questao,
+			quadro.width / 4 - IMAGENS.questao.width / 2,
+			quadro.height / 2 - IMAGENS.questao.height / 2,
+		);
+		contexto.drawImage(
+			IMAGENS.questao,
+			quadro.width / 4 * 3 - IMAGENS.questao.width / 2,
+			quadro.height / 2 - IMAGENS.questao.height / 2,
+		);
+		return
+	}
+	const img = [IMAGENS.fogo, IMAGENS.agua, IMAGENS.neve][JOGADOR[0].escolha];
+
+	contexto.drawImage(
+		img,
+		quadro.width / 4 - img.width / 2,
+		quadro.height / 2 - img.height / 2,
+	);
+
+	const img2 = [IMAGENS.fogo, IMAGENS.agua, IMAGENS.neve][JOGADOR[1].escolha];
+
+	contexto.drawImage(
+		img2,
+		quadro.width / 4 * 3 - IMAGENS.fogo.width / 2,
+		quadro.height / 2 - IMAGENS.fogo.height / 2,
+	);
 }
 
-function drawPlayers() {
-	CTX.fillStyle = "blue";
-	CTX.fillRect(0, 0, QUADRO.width / 2, QUADRO.height);
-	CTX.fillStyle = "green";
-	CTX.fillRect(QUADRO.width / 2, 0, QUADRO.width, QUADRO.height);
-}
-
-function updatePlayers() {
-	if (TEMPO != 0)
-		return;
-	if (JOGADOR[0].escolha == -1)
-		JOGADOR[0].escolha = Math.random() * 3 | 0;
-	if (JOGADOR[1].escolha == -1)
-		JOGADOR[1].escolha = Math.random() * 3 | 0;
-	switch (JOGADOR[0].escolha) {
-		case 0:
-			if (JOGADOR[1].escolha == 0)
-				alert("pedra vs pedra = empate");
-			else if (JOGADOR[1].escolha == 1) {
-				alert("pedra vs papel = Jogador 2 ganhou");
-				JOGADOR[1].pontos++;
-			}
-			else if (JOGADOR[1].escolha == 2) {
-				alert("pedra vs tesoura = Jogador 1 ganhou");
+function checarJogadores() {
+	if (g_resultados) {
+		if (JOGADOR[0].escolha == -1) JOGADOR[0].escolha = gerarAleatorio();
+		if (JOGADOR[1].escolha == -1) JOGADOR[1].escolha = gerarAleatorio();
+		switch (RESULTADOS[JOGADOR[0].escolha][JOGADOR[1].escolha]) {
+			case -1:
 				JOGADOR[0].pontos++;
-			}
-		break;
-		case 1:
-			if (JOGADOR[1].escolha == 0) {
-				alert("papel vs pedra = Jogador 1 ganhou");
-				JOGADOR[0].pontos++;
-			}
-			else if (JOGADOR[1].escolha == 1)
-				alert("papel vs papel = empate");
-			else if (JOGADOR[1].escolha == 2) {
-				alert("papel vs tesoura = Jogador 2 ganhou");
+				break;
+			case 1:
 				JOGADOR[1].pontos++;
-			}
-		break;
-		default:
-			if (JOGADOR[1].escolha == 0) {
-				alert("tesoura vs pedra = Jogador 2 ganhou");
-				JOGADOR[1].pontos++;
-			}
-			else if (JOGADOR[1].escolha == 1) {
-				alert("tesoura vs papel = Jogador 1 ganhou");
-				JOGADOR[0].pontos++;
-			}
-			else if (JOGADOR[1].escolha == 2)
-				alert("tesoura vs tesoura = empate");
-		break;
+				break;
+			default: break;
+		}
+		g_imagens = true;
+		g_resultados = false;
+		setTimeout(() => {
+				g_tempo = 5;
+				JOGADOR[0].escolha = -1;
+				JOGADOR[1].escolha = -1;
+				g_temporizador = false;
+				g_imagens = false;
+			}, 3000
+		);
 	}
 }
 
-function draw() {
-	CTX.clearRect(0, 0, QUADRO.width, QUADRO.height);
-	drawPlayers();
-	drawText();
-	if (TEMPORIZADOR == false)
-		timer();
-	updatePlayers();
-	requestAnimationFrame(draw);
+function renderizador() {
+	contexto.clearRect(0, 0, quadro.width, quadro.height);
+	timer();
+	desenharLados();
+	desenharTexto();
+	checarJogadores();
+	desenharEscolhas();
+	requestAnimationFrame(renderizador);
 }
 
-console.log(JOGADOR);
-QUADRO.setAttribute("width", window.innerWidth);
-QUADRO.setAttribute("height", window.innerHeight);
-draw();
+
+function desenharLados() {
+	contexto.fillStyle = "#009dff";
+	contexto.fillRect(0, 0, quadro.width / 2, quadro.height);
+	contexto.fillStyle = "#ff9400";
+	contexto.fillText(JOGADOR[0].pontos.toString(), quadro.width / 4, 150);
+	contexto.fillStyle = "#fffc00";
+	contexto.fillRect(quadro.width / 2, 0, quadro.width, quadro.height);
+	contexto.fillStyle = "#7200ff";
+	contexto.fillText(JOGADOR[1].pontos.toString(), quadro.width / 4 * 3, 150);
+}
+
+function desenharTexto() {
+	contexto.fillStyle = "#ff0000";
+	contexto.fillText(g_tempo.toString(), quadro.width / 2, 50);
+}
+
+function gerarAleatorio() {
+	return Math.floor(Math.random() * 3);
+}
+
+document.addEventListener("keydown", (event) => {
+	if (event.key == "a") JOGADOR[0].escolha = ESCOLHAS.pedra;
+	if (event.key == "s") JOGADOR[0].escolha = ESCOLHAS.papel;
+	if (event.key == "d") JOGADOR[0].escolha = ESCOLHAS.tesoura;
+	if (event.key == "j") JOGADOR[1].escolha = ESCOLHAS.pedra;
+	if (event.key == "k") JOGADOR[1].escolha = ESCOLHAS.papel;
+	if (event.key == "l") JOGADOR[1].escolha = ESCOLHAS.tesoura;
+});
+
+window.onresize = () => {
+	quadro.setAttribute("width", window.innerWidth);
+	quadro.setAttribute("height", window.innerHeight);
+	g_ratio = window.innerWidth / window.innerHeight;
+};
+
+alert("TUTORIAL\n\
+Jogador 1: teclas 'a', 's' e 'd'\n\
+Jogador 2: teclas 'j', 'k' e 'l'\n\
+Vocês tem 5 segundo para escolher fogo, agua ou gelo\n\
+fogo > gelo > agua > fogo");
+renderizador();
