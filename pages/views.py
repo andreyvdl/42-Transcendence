@@ -1,3 +1,5 @@
+import json
+
 from django.http import JsonResponse
 from django.views import View
 from django.shortcuts import render, redirect
@@ -34,9 +36,10 @@ def _get_friends(pk):
 def answer_friend_request(request, username):
     if request.method == 'POST':
         try:
-            ans = request.POST['ans']
-        except MultiValueDictKeyError:
-            return JsonResponse({'error': 'Expected an \'ans\' field on json.'}, status=400)
+            data = json.loads(request.body)
+            ans = data["ans"]
+        except (json.JSONDecodeError, KeyError):
+            return JsonResponse({'error': 'Expected an \'ans\' field in JSON.'}, status=400)
         try:
             pong_user = PongUser.objects.get(username=username)
         except PongUser.DoesNotExist:
