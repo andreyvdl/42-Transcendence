@@ -34,3 +34,13 @@ class Match(models.Model):
     def __str__(self):
         return (f"{self.left_player.username} VS {self.right_player.username} => {self.score}"
                 f", the winner was {self.winner}")
+
+
+class Friendship(models.Model):
+    user1 = models.ForeignKey(PongUser, on_delete=models.CASCADE, related_name="user1")
+    user2 = models.ForeignKey(PongUser, on_delete=models.CASCADE, related_name="user2")
+    status = models.CharField(max_length=1, default='p')
+    sent_by = models.ForeignKey(PongUser, on_delete=models.CASCADE, related_name="sent_by")
+
+    def __str__(self):
+        return f"{self.sent_by.username} sent a friend request to {self.user2.username}"
