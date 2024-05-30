@@ -36,15 +36,13 @@ class Match(models.Model):
                 f", the winner was {self.winner}")
 
 
-# @TODO talvez nao precise guardar os dois usuários, ja tem o sent_by, na teoria isso ja tem o 'outro usuário' duh
 class Friendship(models.Model):
-    user1 = models.ForeignKey(PongUser, on_delete=models.CASCADE, related_name="user1")
-    user2 = models.ForeignKey(PongUser, on_delete=models.CASCADE, related_name="user2")
-    status = models.CharField(max_length=1, default='p')
     sent_by = models.ForeignKey(PongUser, on_delete=models.CASCADE, related_name="sent_by")
+    sent_to = models.ForeignKey(PongUser, on_delete=models.CASCADE, related_name="sent_to")
+    status = models.CharField(max_length=1, default='p')
 
     class Meta:
-        unique_together = ('user1', 'user2')
+        unique_together = ('sent_by', 'sent_to')
 
     def __str__(self):
-        return f"{self.sent_by.username} sent a friend request to {self.user2.username}"
+        return f"{self.sent_by.username} sent a friend request to {self.sent_to.username}"
