@@ -30,6 +30,10 @@ Friends ({{ friends | length }}):
 {% endfor %}
 <br>
 
+Want to add some friends?
+<input id="friend-text-field" type="text"><br><br>
+<button id="add-friend-btn">Send Friend Request</button>
+
 {% if hide_form is not True %}
 <p>Want to update your username?</p>
 <form method="post" action="{% url 'account' %}">
