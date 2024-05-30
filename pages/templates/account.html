@@ -12,10 +12,18 @@
 		<li>No matches found for this user.</li>
 	{% endfor %}
 </ul>
+
+Pending Friend Requests ({{ pend_friends | length }})
+{% for pend_friend in pend_friends %}
+    <p>{{ pend_friend }}</p>
+{% endfor %}
+
 Friends ({{ friends | length }}):
 {% for friend in friends %}
     <p>{{ friend }}</p>
 {% endfor %}
+<br>
+
 {% if hide_form is not True %}
 <p>Want to update your username?</p>
 <form method="post" action="{% url 'account' %}">
@@ -25,6 +33,7 @@ Friends ({{ friends | length }}):
 	<button type="submit">Change Username</button>
 </form>
 {% endif %}
+
 {% if msg %}
 <p>{{ msg }}</p>
 {% endif %}

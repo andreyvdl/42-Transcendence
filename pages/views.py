@@ -89,6 +89,7 @@ class AccountView(View):
             'wins': request.user.get_wins(),
             'losses': request.user.get_losses(),
             'avatar': request.user.get_avatar(),
+            'pend_friends': pend_friends,
             'friends': friends,
             'matches': matches
         }
