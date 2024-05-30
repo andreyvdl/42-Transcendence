@@ -60,27 +60,24 @@ def answer_friend_request(request, username):
 
 @csrf_exempt
 @login_required(login_url='login')
-def make_friends(request, user2: str):
-    user1_username = request.user.username
-
-    if request.user.username == user2:
+def make_friends(request, send_to: str):
+    if request.user.username == send_to:
         return JsonResponse({"error": "Can't send a friend request to yourself."}, status=400)
-    if not PongUser.objects.filter(username=user2).exists():
+    if not PongUser.objects.filter(username=send_to).exists():
         return JsonResponse({"error": "This user does not exist."}, status=400)
 
-    user1 = PongUser.objects.get(username=user1_username)
-    user2 = PongUser.objects.get(username=user2)
+    sent_by = PongUser.objects.get(pk=request.user.id)
+    send_to = PongUser.objects.get(username=send_to)
 
-    friend_request_already_exists = Friendship.objects.filter((Q(user1=request.user.id) & Q(user2=user2.id)) |
-                                                              (Q(user2=request.user.id) & Q(user1=user2.id))).exists()
+    request_exists = Friendship.objects.filter((Q(sent_by=request.user.id) & Q(sent_to=send_to.id)) |
+                                               (Q(sent_to=request.user.id) & Q(sent_by=send_to.id))).exists()
 
-    if friend_request_already_exists:
+    if request_exists:
         return JsonResponse({"error": "Friend request already exists."}, status=400)
 
     friendship = Friendship.objects.create(
-        user1=user1,
-        user2=user2,
-        sent_by=user1
+        sent_by=sent_by,
+        sent_to=send_to
     )
 
     return JsonResponse({"friendship": friendship.id})
