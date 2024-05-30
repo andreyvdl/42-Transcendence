@@ -2,9 +2,22 @@ from django.http import JsonResponse
 from django.views import View
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
-from .models import PongUser, Match
+from .models import PongUser, Match, Friendship
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
+
+
+def _get_pending_friend_requests(pk):
+    self_username = PongUser.objects.get(pk=pk)
+    friendships = Friendship.objects.filter((Q(user1=pk) | Q(user2=pk) & ~Q(sent_by=pk) & Q(status='p')))
+    pend_friends = []
+    for friend in friendships:
+        pend_friends.append(friend.user2.username if not friend.user2 == self_username else friend.user1.username)
+
+    print(f"Pendent friends: {pend_friends}")
+    return pend_friends
+
+
 
 
 @login_required(login_url='login')
@@ -33,10 +46,12 @@ def save_match(request, right_pk, score, pk_winner):
     return JsonResponse({'match_id': match.id})
 
 
+
 class AccountView(View):
     @staticmethod
     def get(request):
         matches = Match.objects.filter(Q(left_player=request.user.id) | Q(right_player=request.user.id))
+        pend_friends = _get_pending_friend_requests(request.user.id)
         ctx = {
             'username': request.user.username,
             'wins': request.user.get_wins(),
