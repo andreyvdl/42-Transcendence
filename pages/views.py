@@ -1,18 +1,37 @@
+from django.http import HttpRequest
 from django.shortcuts import render, redirect
+from django.views import View
 from random import randint, random
 
-def index(request):
-	return render(request, "base.html")
+def is_ajax(request):
+	return request.headers.get("X-Requested-With") == "XMLHttpRequest"
 
-def login(request):
-    return render(request, "login.html")
+class Login(View):
+	@staticmethod
+	def get(request):
+		if not is_ajax(request):
+			return render(request, "base.html")
+		return render(request, "login.html")
 
-def register(request):
-    return render(request, "register.html")
+	@staticmethod
+	def post(request):
+		return redirect("dashboard")
+
+class Register(View):
+	@staticmethod
+	def get(request):
+		if not is_ajax(request):
+			return render(request, "base.html")
+		return render(request, "register.html")
+
+	@staticmethod
+	def post(request):
+		return redirect("dashboard")
 
 def dashboard(request):
+	if not is_ajax(request):
+		return render(request, "base.html")
 	nomes = [ "Sonic", "Mario", "Cloud", "Link", "Kratos", "Mrs. Croft", "Master Chief", "Samus", "Doomguy", "Pikachu", "Kirby", "Donkey Kong", "Yoshi", "Snake"]
-
 	return render(request, "dashboard.html", {
 		"name": nomes[randint(0, len(nomes)-1)],
 		"ratio": "{:.2f}".format(random()),
