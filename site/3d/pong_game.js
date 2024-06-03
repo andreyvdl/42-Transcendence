@@ -20,6 +20,8 @@ var BALLPAUSE = false;
 
 document.addEventListener("keydown", (event) => {
 	KEYS[event.key] = true;
+	if (event.key == " ")
+		alert("");
 });
 
 document.addEventListener("keyup", (event) => {
@@ -60,6 +62,12 @@ function calculateWindow() {
 }
 
 if (WebGL.isWebGLAvailable()) {
+	alert("TUTORIAL\n\
+Jogador 1: 'w' e 's'\n\
+Jogador 2: 'cima' e 'baixo'\n\
+Espaço pausa o jogo\n\
+Todas as partidas são melhores de 3\n\
+Dica: mire nos cantos")
 	calculateWindow();
 	const renderer = new THREE.WebGLRenderer();
 	const scene = new THREE.Scene();

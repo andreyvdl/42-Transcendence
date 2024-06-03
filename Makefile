@@ -11,6 +11,9 @@ debug: down
 down:
 	docker-compose -f $(DOCKER_COMPOSE_PATH) down
 
+local:
+	./scripts/running-local.sh
+
 restart: down up
 
 clean:
@@ -21,4 +24,4 @@ fclean: down clean
 
 re: fclean all
 
-.PHONY: all up down clean fclean re
+.PHONY: all up down clean fclean re restart run-local debug
