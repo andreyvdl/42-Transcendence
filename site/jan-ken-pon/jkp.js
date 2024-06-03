@@ -39,6 +39,7 @@ IMAGENS.questao.src = "./assets/question.png";
 
 function timer() {
 	if (g_temporizador) return;
+	g_tempo = 5;
 	g_temporizador = true;
 	let intervalo = setInterval(() => {
 		g_tempo--;
@@ -97,7 +98,6 @@ function checarJogadores() {
 		g_imagens = true;
 		g_resultados = false;
 		setTimeout(() => {
-				g_tempo = 5;
 				JOGADOR[0].escolha = -1;
 				JOGADOR[1].escolha = -1;
 				g_temporizador = false;
@@ -161,9 +161,9 @@ window.onresize = () => {
 };
 
 alert("TUTORIAL\n\
-Jogador 1: teclas 'a', 's' e 'd'\n\
-Jogador 2: teclas 'j', 'k' e 'l'\n\
-Vocês tem 5 segundo para escolher fogo, água ou gelo\n\
+Jogador 1: 'a' = fogo, 's' = água e 'd' = gelo\n\
+Jogador 2: 'j' = fogo, 'k' = água e 'l' = gelo\n\
+Vocês tem 5 segundos para escolher fogo, água ou gelo\n\
 fogo > gelo > água > fogo\n\
 Se um dos jogadores não escolher a tempo, será escolhido aleatoriamente");
 renderizador();
