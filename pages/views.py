@@ -3,12 +3,14 @@ import json
 from django.http import JsonResponse
 from django.views import View
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from .models import PongUser, Match, Friendship
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.datastructures import MultiValueDictKeyError
+from django.contrib.auth.signals import user_logged_in, user_logged_out
+from django.dispatch import receiver
 
 
 def _get_pending_friend_requests(pk):
@@ -26,7 +28,7 @@ def _get_friends(pk):
                                             Q(status='y'))
     friends = []
     for f in friendships:
-        friends.append(f.sent_by.username if not f.sent_by.username == self_username else f.sent_to.username)
+        friends.append((f.sent_by.username, f.sent_by.online) if not f.sent_by.username == self_username else (f.sent_to.username, f.sent_to.online))
 
     return friends
 
@@ -87,6 +89,7 @@ def make_friends(request, send_to_user: str):
     return JsonResponse({'error': 'Expected POST'}, status=400)
 
 
+
 @login_required(login_url='login')
 def save_match(request, right_pk, score, pk_winner):
     left_pk = request.user.id
@@ -126,7 +129,7 @@ class AccountView(View):
             'avatar': request.user.get_avatar(),
             'pend_friends': pend_friends,
             'friends': friends,
-            'matches': matches
+            'matches': matches,
         }
         return render(request, "account.html", ctx)
 
@@ -161,6 +164,8 @@ class AccountView(View):
 class LoginView(View):
     @staticmethod
     def get(request):
+        if request.user.is_authenticated:
+            return redirect('account')
         return render(request, "login.html")
 
     @staticmethod
@@ -178,6 +183,19 @@ class LoginView(View):
             return redirect('account')
         ctx = {'err': True, 'err_msg': "Invalid username or password"}
         return render(request, "login.html", ctx)
+
+
+"""
+Essa função é responsável por falar ao django que o usuário está fazendo logout
+@param request a requisição
+"""
+@csrf_exempt
+@login_required(login_url='login')
+def logout_view(request):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Expected POST'}, status=400)
+    logout(request)
+    return render(request, "login.html")
 
 
 class RegisterView(View):
@@ -211,3 +229,27 @@ class RegisterView(View):
             'username': username
         }
         return render(request, "register.html", ctx)
+
+'''
+Essa função identifica o login do usuário e marca seu presença online como true
+@param sender ??
+@param user o usuário
+@param request a requisição
+@param kwargs ??
+'''
+@receiver(user_logged_in)
+def user_online(sender, user, request, **kwargs):
+    user.online = True
+    user.save()
+
+'''
+Essa função identifica o usário deslogado e marca seu presença online como false
+@param sender ??
+@param user o usuário
+@param request a requisição
+@param kwargs ??
+'''
+@receiver(user_logged_out)
+def user_offline(sender, user, request, **kwargs):
+    user.online = False
+    user.save()

@@ -1,4 +1,5 @@
 <h1>Welcome to Pong {{ username }}</h1>
+<button id="logout-btn">Logout</button>
 <p>Wins: {{ wins }}</p>
 <p>Losses: {{ losses }}</p>
 <img alt="avatar" src="{{ avatar }}"/>
@@ -25,8 +26,8 @@ Pending Friend Requests ({{ pend_friends | length }})
 {% endfor %}
 <br>
 Friends ({{ friends | length }}):
-{% for friend in friends %}
-    <p>{{ friend }}</p>
+{% for name, online in friends %}
+    <p>{{ name }} - {% if online == True %} online {% else %} offline {% endif %}</p>
 {% endfor %}
 <br>
 

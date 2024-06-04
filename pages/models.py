@@ -9,6 +9,7 @@ class PongUser(AbstractUser):
     wins = models.IntegerField(default=0)
     losses = models.IntegerField(default=0)
     avatar = models.CharField(default=DEFAULT_ICON)
+    online = models.BooleanField(default=False)
 
     def get_wins(self):
         return self.wins

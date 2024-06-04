@@ -40,3 +40,11 @@ document.getElementById('add-friend-btn').addEventListener('click', (event) => {
         method: 'POST'
     })
 })
+
+document.getElementById('logout-btn').addEventListener('click', (event) => {
+	const url = PREFIX + 'pages/logout';
+
+	fetch(url, {
+		method: 'POST'
+	});
+})
