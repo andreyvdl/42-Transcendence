@@ -1,14 +1,24 @@
 import json
+import base64
 
 from django.http import JsonResponse
 from django.views import View
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
+from .forms import ProfilePictureForm
 from .models import PongUser, Match, Friendship
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
-from django.utils.datastructures import MultiValueDictKeyError
+
+
+def _png_to_base64(image_path):
+    try:
+        with open(image_path, "rb") as image_file:
+            base64_string = base64.b64encode(image_file.read()).decode('utf-8')
+        return "data:image/png;base64," + base64_string
+    except FileNotFoundError:
+        return "File not found. Please provide a valid path to the PNG image."
 
 
 def _get_pending_friend_requests(pk):
@@ -123,8 +133,8 @@ class AccountView(View):
             'username': request.user.username,
             'wins': request.user.get_wins(),
             'losses': request.user.get_losses(),
-            'avatar': request.user.get_avatar(),
             'pend_friends': pend_friends,
+            'picture_url': _png_to_base64(request.user.profile_picture.path),
             'friends': friends,
             'matches': matches
         }
@@ -189,21 +199,12 @@ class RegisterView(View):
     def post(request):
         username = request.POST["username"]
         password = request.POST["password1"]
-        # form = UserCreationForm(request.POST)
-
-        # https://docs.djangoproject.com/en/5.0/topics/auth/default/#django.contrib.auth.forms.BaseUserCreationForm
-        # if not form.is_valid():
-        #     ctx = {
-        #         'error': True,
-        #         'err_msg': form.errors,
-        #         'username': username,
-        #         'password': password
-        #     }
-        #     return render(request, "register.html", ctx)
+        file = request.FILES["file"]
 
         pong_user = PongUser.objects.create_user(
             username,
-            password=password
+            password=password,
+            profile_picture=file
         )
         pong_user.save()
         ctx = {
