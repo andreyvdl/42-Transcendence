@@ -1,11 +1,12 @@
 import json
 import base64
 
+from django.conf import settings
 from django.http import JsonResponse
+from django.utils.datastructures import MultiValueDictKeyError
 from django.views import View
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
-from .forms import ProfilePictureForm
 from .models import PongUser, Match, Friendship
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
@@ -134,7 +135,8 @@ class AccountView(View):
             'wins': request.user.get_wins(),
             'losses': request.user.get_losses(),
             'pend_friends': pend_friends,
-            'picture_url': _png_to_base64(request.user.profile_picture.path),
+            'picture_url': _png_to_base64(request.user.profile_picture.path if request.user.profile_picture
+                                          else settings.DEFAULT_AVATAR),
             'friends': friends,
             'matches': matches
         }
@@ -199,7 +201,11 @@ class RegisterView(View):
     def post(request):
         username = request.POST["username"]
         password = request.POST["password1"]
-        file = request.FILES["file"]
+
+        try:
+            file = request.FILES["file"]
+        except MultiValueDictKeyError:
+            file = None
 
         pong_user = PongUser.objects.create_user(
             username,
