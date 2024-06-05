@@ -14,6 +14,7 @@
     <div class="profile-wrapper">
         <img src="{{ picture_url }}" alt="Profile Picture">
         <h1 class="username">{{ username }}</h1>
+        <button id="logout-btn">Logout</button>
         <div class="match-stats-wrapper">
             <div>
                 <p style="">Matches</p>
@@ -40,8 +41,8 @@
         {% endfor %}
         <br>
         <p>Friends ({{ friends | length }}):</p>
-        {% for friend in friends %}
-            <p>{{ friend }}</p>
+        {% for name, online in friends %}
+            <p>{{ name }} - {% if online %} online {% else %} offline {% endif %}</p>
         {% endfor %}
         <br>
         <p>Want to add some friends?</p>
@@ -56,7 +57,6 @@
                 <button type="submit">Change Username</button>
             </form>
         {% endif %}
-
         {% if msg %}
             <p>{{ msg }}</p>
         {% endif %}

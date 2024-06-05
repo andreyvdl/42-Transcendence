@@ -6,11 +6,15 @@ from django.http import JsonResponse
 from django.utils.datastructures import MultiValueDictKeyError
 from django.views import View
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from .models import PongUser, Match, Friendship
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
+from django.utils.datastructures import MultiValueDictKeyError
+from django.contrib.auth.signals import user_logged_in, user_logged_out
+from django.utils.decorators import method_decorator
+from django.dispatch import receiver
 
 
 def _png_to_base64(image_path):
@@ -37,7 +41,7 @@ def _get_friends(pk):
                                             Q(status='y'))
     friends = []
     for f in friendships:
-        friends.append(f.sent_by.username if not f.sent_by.username == self_username else f.sent_to.username)
+        friends.append((f.sent_by.username, f.sent_by.online) if not f.sent_by.username == self_username else (f.sent_to.username, f.sent_to.online))
 
     return friends
 
@@ -138,7 +142,7 @@ class AccountView(View):
             'picture_url': _png_to_base64(request.user.profile_picture.path if request.user.profile_picture
                                           else settings.DEFAULT_AVATAR),
             'friends': friends,
-            'matches': matches
+            'matches': matches,
         }
         return render(request, "account.html", ctx)
 
@@ -173,6 +177,8 @@ class AccountView(View):
 class LoginView(View):
     @staticmethod
     def get(request):
+        if request.user.is_authenticated:
+            return redirect('account')
         return render(request, "login.html")
 
     @staticmethod
@@ -190,6 +196,50 @@ class LoginView(View):
             return redirect('account')
         ctx = {'err': True, 'err_msg': "Invalid username or password"}
         return render(request, "login.html", ctx)
+
+
+"""
+Essa função é responsável por falar ao database que o usuário está fazendo
+logout.
+@param request a requisição
+"""
+@csrf_exempt
+@login_required(login_url='login')
+def logout_view(request):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Expected POST'}, status=400)
+    logout(request)
+# descobrir porque o redirect não funciona
+    return redirect('login')
+
+
+'''
+Essa função é responsável por falar para o database que a pessoa fechou a aba
+e agora está offline para todos os outros usuários.
+@param request a requisição
+'''
+@csrf_exempt
+@login_required(login_url='login')
+def offline(request):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Expected POST'}, status=400)
+    request.user.online = False
+    request.user.save()
+    return JsonResponse({'msg': 'Goodbye!'})
+
+'''
+Essa função é responsável por falar para o database que a pessoa voltou para
+o site e agora está online para todos os outros usuários.
+@param request a requisição
+'''
+@csrf_exempt
+@login_required(login_url='login')
+def online(request):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Expected POST'}, status=400)
+    request.user.online = True
+    request.user.save()
+    return redirect('account')
 
 
 class RegisterView(View):
@@ -218,3 +268,4 @@ class RegisterView(View):
             'username': username
         }
         return render(request, "register.html", ctx)
+

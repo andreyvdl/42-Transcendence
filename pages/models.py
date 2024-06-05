@@ -6,6 +6,7 @@ from django.contrib.auth.models import AbstractUser
 class PongUser(AbstractUser):
     wins = models.IntegerField(default=0)
     losses = models.IntegerField(default=0)
+    online = models.BooleanField(default=False)
     profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
 
     def get_wins(self):
@@ -13,6 +14,9 @@ class PongUser(AbstractUser):
 
     def get_losses(self):
         return self.losses
+
+    def get_online(self):
+        return self.online
 
 
 class Match(models.Model):
