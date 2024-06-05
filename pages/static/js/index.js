@@ -34,7 +34,7 @@ if (declineBtn) {
 
 document.getElementById('add-friend-btn').addEventListener('click', (event) => {
     const friend = friendToAddTextField.value
-    const url = PREFIX + '/pages/make_friends/' + friend + '/'
+    const url = PREFIX + 'pages/make_friends/' + friend + '/'
 
     fetch(url, {
         method: 'POST'
