@@ -14,6 +14,7 @@
     <div class="profile-wrapper">
         <img src="{{ picture_url }}" alt="Profile Picture">
         <h1 class="username">{{ username }}</h1>
+        <button id="logout-btn">Logout</button>
         <div class="match-stats-wrapper">
             <div>
                 <p style="">Matches</p>
@@ -41,7 +42,7 @@
         <br>
         <p>Friends ({{ friends | length }}):</p>
         {% for name, online in friends %}
-            <p>{{ name }} - {% if online == True %} online {% else %} offline {% endif %}</p>
+            <p>{{ name }} - {% if online %} online {% else %} offline {% endif %}</p>
         {% endfor %}
         <br>
         <p>Want to add some friends?</p>

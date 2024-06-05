@@ -209,7 +209,8 @@ def logout_view(request):
     if request.method != 'POST':
         return JsonResponse({'error': 'Expected POST'}, status=400)
     logout(request)
-    return render(request, "login.html")
+# descobrir porque o redirect não funciona
+    return redirect('login')
 
 
 '''
@@ -268,26 +269,3 @@ class RegisterView(View):
         }
         return render(request, "register.html", ctx)
 
-'''
-Essa função é automáticamente chamada quando o usuário faz login
-@param sender ??
-@param user o usuário
-@param request a requisição
-@param kwargs ??
-'''
-@receiver(user_logged_in)
-def user_online(sender, user, request, **kwargs):
-    user.online = True
-    user.save()
-
-'''
-Essa função é automáticamente chamada quando o usuário faz logout
-@param sender ??
-@param user o usuário
-@param request a requisição
-@param kwargs ??
-'''
-@receiver(user_logged_out)
-def user_offline(sender, user, request, **kwargs):
-    user.online = False
-    user.save()
