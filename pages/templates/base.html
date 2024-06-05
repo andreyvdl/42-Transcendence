@@ -9,30 +9,9 @@
 		<title>Transcendence</title>
 	</head>
 	<body>
-		<nav class="navbar navbar-expand-sm justify-content-center">
-			<div class="container-fluid">
-				<ul class="navbar-nav">
-					<li class="nav-item">
-						<a class="nav-link" href="/login">Login</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="/register">Register</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="/dashboard">Dashboard</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="/pong">Pong</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="/pong-3d">Pong-3D</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="/jan-ken-pon">Jan-Ken-Pon</a>
-					</li>
-				</ul>
-			</div>
-		</nav>
+		<div>
+			{% include "navbar.html" %}
+		</div>
 		<div id="mainContent"></div>
 	</body>
 </html>
