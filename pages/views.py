@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.datastructures import MultiValueDictKeyError
 from django.contrib.auth.signals import user_logged_in, user_logged_out
+from django.utils.decorators import method_decorator
 from django.dispatch import receiver
 
 
@@ -87,7 +88,6 @@ def make_friends(request, send_to_user: str):
         return JsonResponse({"friendship": friendship.id})
 
     return JsonResponse({'error': 'Expected POST'}, status=400)
-
 
 
 @login_required(login_url='login')
@@ -186,7 +186,8 @@ class LoginView(View):
 
 
 """
-Essa função é responsável por falar ao django que o usuário está fazendo logout
+Essa função é responsável por falar ao database que o usuário está fazendo
+logout.
 @param request a requisição
 """
 @csrf_exempt
@@ -196,6 +197,35 @@ def logout_view(request):
         return JsonResponse({'error': 'Expected POST'}, status=400)
     logout(request)
     return render(request, "login.html")
+
+
+'''
+Essa função é responsável por falar para o database que a pessoa fechou a aba
+e agora está offline para todos os outros usuários.
+@param request a requisição
+'''
+@csrf_exempt
+@login_required(login_url='login')
+def offline(request):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Expected POST'}, status=400)
+    request.user.online = False
+    request.user.save()
+    return JsonResponse({'msg': 'Goodbye!'})
+
+'''
+Essa função é responsável por falar para o database que a pessoa voltou para
+o site e agora está online para todos os outros usuários.
+@param request a requisição
+'''
+@csrf_exempt
+@login_required(login_url='login')
+def online(request):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Expected POST'}, status=400)
+    request.user.online = True
+    request.user.save()
+    return JsonResponse({'msg': 'Welcome back!'})
 
 
 class RegisterView(View):
@@ -231,7 +261,7 @@ class RegisterView(View):
         return render(request, "register.html", ctx)
 
 '''
-Essa função identifica o login do usuário e marca seu presença online como true
+Essa função é automáticamente chamada quando o usuário faz login
 @param sender ??
 @param user o usuário
 @param request a requisição
@@ -243,7 +273,7 @@ def user_online(sender, user, request, **kwargs):
     user.save()
 
 '''
-Essa função identifica o usário deslogado e marca seu presença online como false
+Essa função é automáticamente chamada quando o usuário faz logout
 @param sender ??
 @param user o usuário
 @param request a requisição

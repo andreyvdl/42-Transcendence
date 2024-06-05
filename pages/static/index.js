@@ -42,9 +42,25 @@ document.getElementById('add-friend-btn').addEventListener('click', (event) => {
 })
 
 document.getElementById('logout-btn').addEventListener('click', (event) => {
-	const url = PREFIX + 'pages/logout';
+    const url = PREFIX + 'pages/logout';
 
-	fetch(url, {
-		method: 'POST'
-	});
-})
+    fetch(url, {
+        method: 'POST'
+    });
+});
+
+window.addEventListener('load', () => {
+    const url = PREFIX + 'pages/online';
+
+    fetch(url, {
+        method: 'POST'
+    });
+});
+
+window.addEventListener('beforeunload', () => {
+    const url = PREFIX + 'pages/offline';
+
+    fetch(url, {
+        method: 'POST'
+    });
+});

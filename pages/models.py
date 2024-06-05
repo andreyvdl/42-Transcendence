@@ -20,6 +20,9 @@ class PongUser(AbstractUser):
     def get_avatar(self):
         return self.avatar
 
+    def get_online(self):
+        return self.online
+
 
 class Match(models.Model):
     left_player = models.ForeignKey(PongUser,
