@@ -1,7 +1,5 @@
 import json
-import base64
 
-from django.conf import settings
 from django.http import JsonResponse
 from django.views import View
 from django.shortcuts import render, redirect
@@ -11,15 +9,6 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.datastructures import MultiValueDictKeyError
-
-
-def _png_to_base64(image_path):
-    try:
-        with open(image_path, "rb") as image_file:
-            base64_string = base64.b64encode(image_file.read()).decode('utf-8')
-        return "data:image/png;base64," + base64_string
-    except FileNotFoundError:
-        return "File not found. Please provide a valid path to the PNG image."
 
 
 def _get_pending_friend_requests(pk):
@@ -135,8 +124,7 @@ class AccountView(View):
             'wins': request.user.get_wins(),
             'losses': request.user.get_losses(),
             'pend_friends': pend_friends,
-            'picture_url': _png_to_base64(request.user.profile_picture.path if request.user.profile_picture
-                                          else settings.DEFAULT_AVATAR),
+            'picture_url': request.user.profile_picture.url,
             'friends': friends,
             'matches': matches,
         }
