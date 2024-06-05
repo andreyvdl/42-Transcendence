@@ -26,7 +26,8 @@ def _get_friends(pk):
                                             Q(status='y'))
     friends = []
     for f in friendships:
-        friends.append((f.sent_by.username, f.sent_by.online) if not f.sent_by.username == self_username else (f.sent_to.username, f.sent_to.online))
+        friends.append((f.sent_by.username, f.sent_by.online) if not f.sent_by.username == self_username else
+                       (f.sent_to.username, f.sent_to.online))
 
     return friends
 
@@ -187,13 +188,15 @@ Essa função é responsável por falar ao database que o usuário está fazendo
 logout.
 @param request a requisição
 """
+
+
 @csrf_exempt
 @login_required(login_url='login')
 def logout_view(request):
     if request.method != 'POST':
         return JsonResponse({'error': 'Expected POST'}, status=400)
     logout(request)
-# descobrir porque o redirect não funciona
+    # descobrir porque o redirect não funciona
     return redirect('login')
 
 
@@ -202,6 +205,8 @@ Essa função é responsável por falar para o database que a pessoa fechou a ab
 e agora está offline para todos os outros usuários.
 @param request a requisição
 '''
+
+
 @csrf_exempt
 @login_required(login_url='login')
 def offline(request):
@@ -211,11 +216,14 @@ def offline(request):
     request.user.save()
     return JsonResponse({'msg': 'Goodbye!'})
 
+
 '''
 Essa função é responsável por falar para o database que a pessoa voltou para
 o site e agora está online para todos os outros usuários.
 @param request a requisição
 '''
+
+
 @csrf_exempt
 @login_required(login_url='login')
 def online(request):
@@ -252,4 +260,3 @@ class RegisterView(View):
             'username': username
         }
         return render(request, "register.html", ctx)
-
