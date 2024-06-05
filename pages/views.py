@@ -239,7 +239,7 @@ def online(request):
         return JsonResponse({'error': 'Expected POST'}, status=400)
     request.user.online = True
     request.user.save()
-    return JsonResponse({'msg': 'Welcome back!'})
+    return redirect('account')
 
 
 class RegisterView(View):
