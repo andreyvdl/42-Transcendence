@@ -6,6 +6,11 @@ from random import randint, random
 def is_ajax(request):
 	return request.headers.get("X-Requested-With") == "XMLHttpRequest"
 
+def home(request):
+	if not is_ajax(request):
+		return render(request, "base.html")
+	return render(request, "home.html")
+
 class Login(View):
 	@staticmethod
 	def get(request):
