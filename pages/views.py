@@ -3,7 +3,6 @@ import base64
 
 from django.conf import settings
 from django.http import JsonResponse
-from django.utils.datastructures import MultiValueDictKeyError
 from django.views import View
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
@@ -12,9 +11,6 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.datastructures import MultiValueDictKeyError
-from django.contrib.auth.signals import user_logged_in, user_logged_out
-from django.utils.decorators import method_decorator
-from django.dispatch import receiver
 
 
 def _png_to_base64(image_path):
