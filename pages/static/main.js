@@ -7,29 +7,23 @@ window.addEventListener("DOMContentLoaded", () => {
 	});
 });
 
-function initializePageScripts(url) {
-	if (url == '/pong') {
-		initializePongGame();
-	}
-	else if (url == '/pong-3d') {
-		const { initializePongGame3d } = import('/static/pong-game-3d/index.js');
-		initializePongGame3d();
-	}
-};
-
 const handleLocation = async () => {
-	const route = window.location.pathname;
-	await fetch(route, {
+	const currLocation = window.location.pathname;
+	await fetch(currLocation, {
 		headers : {
 			'Accept': 'text/html',
 			'X-Requested-With': 'XMLHttpRequest',
 		},
 	})
-	.then(Response => Response.text())
+	.then(response => {
+		if (!response.ok)
+			return new Error(response.status)
+		return response.text()
+	})
 	.then(html => {
 		document.getElementById("mainContent").innerHTML = html;
-		initializePageScripts(route);
-	});
+	})
+	.catch(error => console.log(error));
 };
 
 const route = (event) => {
