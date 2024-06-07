@@ -3,11 +3,15 @@
 <a href="{% url 'login' %}">Login</a>
 {% else %}
 <h2>Register</h2>
+<p>{{ error }}</p>
 <form method="post" enctype="multipart/form-data" action="{% url 'register' %}">
 	{% csrf_token %}
 	{% if error %}
 		<p> {{ err_msg }} </p>
 	{% endif %}
+	<label for="email">Email:</label><br>
+	<input type="email" id="email" name="email" required><br><br>
+
 	<label for="username">Username:</label><br>
 	<input type="text" id="username" name="username" required><br><br>
 

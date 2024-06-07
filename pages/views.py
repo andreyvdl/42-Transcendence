@@ -9,6 +9,10 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.datastructures import MultiValueDictKeyError
+from django.contrib.auth.signals import user_logged_out
+from django.dispatch import receiver
+import os
+import requests
 
 
 def _get_pending_friend_requests(pk):
@@ -125,7 +129,6 @@ class AccountView(View):
             'wins': request.user.get_wins(),
             'losses': request.user.get_losses(),
             'pend_friends': pend_friends,
-            'picture_url': request.user.profile_picture.url,
             'friends': friends,
             'matches': matches,
         }
@@ -139,7 +142,6 @@ class AccountView(View):
                 'username': request.user.username,
                 'wins': request.user.get_wins(),
                 'losses': request.user.get_losses(),
-                'avatar': request.user.get_avatar(),
                 'hide_form': True,
                 'msg': '🔴 User already exists.'
             }
@@ -152,7 +154,6 @@ class AccountView(View):
                 'username': curr_user.username,
                 'wins': curr_user.get_wins(),
                 'losses': curr_user.get_losses(),
-                'avatar': curr_user.get_avatar(),
                 'hide_form': True,
                 'msg': '🟢 Username changed successfully.'
             }
@@ -168,18 +169,18 @@ class LoginView(View):
 
     @staticmethod
     def post(request):
-        username = request.POST["username"].strip()
+        email = request.POST["email"].strip()
         password = request.POST["password"].strip()
 
         user = authenticate(
             request,
-            username=username,
+            email=email,
             password=password
         )
         if user is not None:
             login(request, user)
             return redirect('account')
-        ctx = {'err': True, 'err_msg': "Invalid username or password"}
+        ctx = {'err': True, 'err_msg': "Invalid email or password"}
         return render(request, "login.html", ctx)
 
 
@@ -241,22 +242,86 @@ class RegisterView(View):
 
     @staticmethod
     def post(request):
+        email = request.POST["email"]
         username = request.POST["username"]
         password = request.POST["password1"]
+        comp = request.POST["password2"]
+
+        if password != comp:
+            ctx = {
+                'registered_successfully': False,
+                'error': "Passwords don't match"
+            }
+            return render(request, "register.html", ctx)
 
         try:
             file = request.FILES["file"]
         except MultiValueDictKeyError:
             file = None
 
-        pong_user = PongUser.objects.create_user(
-            username,
-            password=password,
-            profile_picture=file
-        )
-        pong_user.save()
+        try:
+            pong_user = PongUser.objects.create_user(
+                email=email,
+                username=username,
+                password=password,
+                profile_picture=file
+            )
+            pong_user.save()
+        except:
+            ctx = {
+                'registered_successfully': False,
+                'error': "Email already in use"
+            }
+            return render(request, "register.html", ctx)
         ctx = {
             'registered_successfully': True,
             'username': username
         }
         return render(request, "register.html", ctx)
+
+
+def _call_api(user_code):
+    if user_code is None:
+        return None, 'Error on API response'
+
+    data = {
+        'grant_type': 'authorization_code',
+        # NÃO SUBIR CHAVES PRA PRODUÇÃO E NEM DEV!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        # Pega as chaves no discord e dá um export
+        'client_id': os.getenv('INTRA_UID'),
+        'client_secret': os.getenv('INTRA_SECRET'),
+        'code': user_code,
+        'redirect_uri': 'http://localhost:8000/pages/intra'
+    }
+
+    response = requests.post('https://api.intra.42.fr/oauth/token', data=data)
+
+    if response.status_code != 200:
+        return None, 'Error getting token'
+
+    response = requests.get('https://api.intra.42.fr/v2/me', headers={'Authorization': 'Bearer ' + response.json()['access_token']})
+
+    if response.status_code != 200:
+        return None, 'Error getting user data'
+
+    ctx = {
+        'username': response.json()['login'],
+        'picture_url': response.json()['image']['link'],
+        'email': response.json()['email'],
+    }
+
+    return ctx, None
+
+
+def intra(request):
+    ctx, err = _call_api(request.GET['code'])
+
+    if err is not None:
+        return JsonResponse({'error': err}, status=400)
+    return render(request, 'intra.html', ctx)
+
+
+@receiver(user_logged_out)
+def on_logout(sender, request, user, **kwargs):
+    user.online = False
+    user.save()
