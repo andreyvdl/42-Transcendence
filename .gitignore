@@ -1,4 +1,6 @@
 **/__pycache__
-**/migrations
 .db-data
+**/migrations
+.idea
+media/profile_pics
 .venv
