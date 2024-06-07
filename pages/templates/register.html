@@ -1,19 +1,23 @@
-<nav class="navbar navbar-expand-sm justify-content-center" style="background-color: #06171D">
-	<div class="container-fluid">
-		<ul class="navbar-nav">
-			<li class="nav-item">
-				<a class="nav-link" href="https://localhost:5000">Home</a>
-			</li>
-			<li class="nav-item">
-				<a class="nav-link" href="https://localhost:5000/login">Login</a>
-			</li>
-			<li class="nav-item">
-				<a class="active nav-link" href="https://localhost:5000/register">Register</a>
-			</li>
-		</ul>
-	</div>
-</nav>
+{% if registered_successfully %}
+<h1>Congratulations {{ username }} you registered successfully</h1>
+<a href="{% url 'login' %}">Login</a>
+{% else %}
+<h2>Register</h2>
+<form method="post" enctype="multipart/form-data" action="{% url 'register' %}">
+	{% csrf_token %}
+	{% if error %}
+		<p> {{ err_msg }} </p>
+	{% endif %}
+	<label for="username">Username:</label><br>
+	<input type="text" id="username" name="username" required><br><br>
 
-<div class="container-fluid">
-	<h1>REGISTER PAGE</h1>
-</div>
+	<label for="password1">Password: </label><br>
+	<input type="password" id="password1" name="password1" required><br><br>
+
+	<label for="password2">Repeat password: </label><br>
+	<input type="password" id="password2" name="password2" required><br><br>
+
+    <input type="file" name="file" accept="image/png"><br><br>
+	<button type="submit">Register</button>
+</form>
+{% endif %}
