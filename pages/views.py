@@ -1,4 +1,5 @@
 import json
+import base64
 
 from django.http import JsonResponse
 from django.views import View
@@ -9,6 +10,22 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.datastructures import MultiValueDictKeyError
+from core.settings import DEFAULT_AVATAR
+
+
+def _get_profile_pic(user):
+    if user.profile_picture == '':
+        return _to_base64(DEFAULT_AVATAR)
+    return _to_base64(user.profile_picture.url[1:])
+
+
+def _to_base64(image_path):
+    try:
+        with open(image_path, "rb") as image_file:
+            base64_string = base64.b64encode(image_file.read()).decode('utf-8')
+        return "data:image/png;base64," + base64_string
+    except FileNotFoundError:
+        return "File not found. Please provide a valid path to the PNG image."
 
 
 def _get_pending_friend_requests(pk):
@@ -125,7 +142,7 @@ class AccountView(View):
             'wins': request.user.get_wins(),
             'losses': request.user.get_losses(),
             'pend_friends': pend_friends,
-            'picture_url': request.user.profile_picture.url,
+            'picture_url': _get_profile_pic(request.user),
             'friends': friends,
             'matches': matches,
         }
@@ -139,7 +156,7 @@ class AccountView(View):
                 'username': request.user.username,
                 'wins': request.user.get_wins(),
                 'losses': request.user.get_losses(),
-                'picture_url': request.user.profile_picture.url,
+                'picture_url': _get_profile_pic(request.user),
                 'hide_form': True,
                 'msg': '🔴 User already exists.'
             }
@@ -152,7 +169,7 @@ class AccountView(View):
                 'username': curr_user.username,
                 'wins': curr_user.get_wins(),
                 'losses': curr_user.get_losses(),
-                'picture_url': request.user.profile_picture.url,
+                'picture_url': _get_profile_pic(request.user),
                 'hide_form': True,
                 'msg': '🟢 Username changed successfully.'
             }
@@ -196,8 +213,7 @@ def logout_view(request):
     if request.method != 'POST':
         return JsonResponse({'error': 'Expected POST'}, status=400)
     logout(request)
-    # descobrir porque o redirect não funciona
-    return redirect('login')
+    return JsonResponse({'msg': 'Success'}, status=200)
 
 
 '''
@@ -214,7 +230,7 @@ def offline(request):
         return JsonResponse({'error': 'Expected POST'}, status=400)
     request.user.online = False
     request.user.save()
-    return JsonResponse({'msg': 'Goodbye!'})
+    return redirect('login')
 
 
 '''
