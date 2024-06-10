@@ -1,6 +1,7 @@
 import json
 import base64
 
+from core.settings import DEFAULT_AVATAR
 from django.http import JsonResponse
 from django.views import View
 from django.shortcuts import render, redirect
@@ -12,9 +13,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.datastructures import MultiValueDictKeyError
 from django.contrib.auth.signals import user_logged_out
 from django.dispatch import receiver
+from django.core.files.base import ContentFile
 import os
 import requests
-from core.settings import DEFAULT_AVATAR
 
 
 def _get_profile_pic(user):
@@ -189,12 +190,12 @@ class LoginView(View):
 
     @staticmethod
     def post(request):
-        email = request.POST["email"].strip()
+        username = request.POST["username"].strip()
         password = request.POST["password"].strip()
 
         user = authenticate(
             request,
-            email=email,
+            username=username,
             password=password
         )
         if user is not None:
@@ -318,26 +319,57 @@ def _call_api(user_code):
     if response.status_code != 200:
         return None, 'Error getting token'
 
-    response = requests.get('https://api.intra.42.fr/v2/me', headers={'Authorization': 'Bearer ' + response.json()['access_token']})
+    response = requests.get(
+        'https://api.intra.42.fr/v2/me',
+        headers={'Authorization': 'Bearer ' + response.json()['access_token']}
+    )
 
     if response.status_code != 200:
         return None, 'Error getting user data'
 
+    jsón = response.json()
+
     ctx = {
-        'username': response.json()['login'],
-        'picture_url': response.json()['image']['link'],
-        'email': response.json()['email'],
+        'username': jsón['login'],
+        'picture_url': jsón['image']['link'],
+        'email': jsón['email'],
     }
 
     return ctx, None
 
 
+def _register_intra(request, ctx):
+    try:
+        pong_user = PongUser.objects.create_user(
+            email=ctx['email'],
+            username=ctx['username'],
+            profile_picture=None
+        )
+        pong_user.profile_picture.save(
+            f"{ctx['username']}.png",
+            ContentFile(requests.get(ctx['picture_url']).content)
+        )
+        pong_user.save()
+    except:
+        return JsonResponse({'error': 'Username already in use'}, status=400)
+
+    login(request, pong_user)
+    return redirect('account')
+
+
 def intra(request):
+    if request.method != 'GET':
+        return JsonResponse({'error': 'Expected GET'}, status=400)
     ctx, err = _call_api(request.GET['code'])
 
     if err is not None:
         return JsonResponse({'error': err}, status=400)
-    return render(request, 'intra.html', ctx)
+    if PongUser.objects.filter(email=ctx['email']).exists():
+        user = PongUser.objects.get(email=ctx['email'])
+        login(request, user)
+        return redirect('account')
+    else:
+        return _register_intra(request, ctx)
 
 
 @receiver(user_logged_out)
