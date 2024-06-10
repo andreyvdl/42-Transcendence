@@ -143,7 +143,7 @@ class AccountView(View):
                 'username': request.user.username,
                 'wins': request.user.get_wins(),
                 'losses': request.user.get_losses(),
-                'avatar': request.user.get_avatar(),
+                'picture_url': request.user.profile_picture.url,
                 'hide_form': True,
                 'msg': '🔴 User already exists.'
             }
@@ -156,7 +156,7 @@ class AccountView(View):
                 'username': curr_user.username,
                 'wins': curr_user.get_wins(),
                 'losses': curr_user.get_losses(),
-                'avatar': curr_user.get_avatar(),
+                'picture_url': request.user.profile_picture.url,
                 'hide_form': True,
                 'msg': '🟢 Username changed successfully.'
             }
