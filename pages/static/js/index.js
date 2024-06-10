@@ -39,6 +39,7 @@ document.getElementById('add-friend-btn').addEventListener('click', (event) => {
     fetch(url, {
         method: 'POST'
     })
+    location.href = PREFIX + 'pages/login';
 })
 
 document.getElementById('logout-btn').addEventListener('click', (event) => {
