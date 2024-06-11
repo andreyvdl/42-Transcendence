@@ -1,67 +1,77 @@
-const PREFIX = "http://localhost:8000/"
-const acceptBtn = document.getElementById("accept-btn");
-const declineBtn = document.getElementById("decline-btn");
-const friendToAddTextField = document.getElementById('friend-text-field')
+window.addEventListener("DOMContentLoaded", () => {
+	handleLocation();
+	window.onpopstate = handleLocation;
 
-if (acceptBtn) {
-    acceptBtn.addEventListener('click', (event) => {
-        const userToAccept = event.target.className
-        const url = "http://localhost:8000/pages/answer_friend_request/" + userToAccept
+	// window.addEventListener('click', (event) => {
+	// 	if (event.target instanceof HTMLElement && event.target.hasAttribute("href"))
+	// 		route(event);
+	// }, true);
 
-        fetch(url, {
-            method: 'POST',
-            body: JSON.stringify({
-                'ans': 'y'
-            })
-        })
-    })
-}
+	// window.addEventListener('load', () => {
+	// 	const url = PREFIX + 'pages/online';
 
-if (declineBtn) {
-    document.getElementById('decline-btn').addEventListener('click', (event) => {
-        const userToDecline = event.target.className
-        const url = "http://localhost:8000/pages/answer_friend_request/" + userToDecline
+	// 	fetch(url, {
+	// 		method: 'POST'
+	// 	});
+	// });
 
-        fetch(url, {
-            method: 'POST',
-            body: JSON.stringify({
-                'ans': 'n'
-            })
-        })
-    })
-}
+	window.addEventListener('beforeunload', () => {
+		const url = PREFIX + 'pages/offline';
 
-
-document.getElementById('add-friend-btn').addEventListener('click', (event) => {
-    const friend = friendToAddTextField.value
-    const url = PREFIX + 'pages/make_friends/' + friend + '/'
-
-    fetch(url, {
-        method: 'POST'
-    })
-    location.href = PREFIX + 'pages/login';
-})
-
-document.getElementById('logout-btn').addEventListener('click', (event) => {
-    const url = PREFIX + 'pages/logout';
-
-    fetch(url, {
-        method: 'POST'
-    });
+		fetch(url, {
+			method: 'POST'
+		});
+	});
 });
 
-window.addEventListener('load', () => {
-    const url = PREFIX + 'pages/online';
+const handleLocation = () => {
+	newUrl = window.location.pathname;
+	fetch(newUrl, {
+		headers: {
+			'X-Requested-With': 'XMLHttpRequest',
+		},
+	})
+		.then(response => {
+			if (response.ok || response.status == 302)
+				return response.json();
+			else
+				return new Error(response.status);
+		})
+		.then((data) => {
+			if (data['innerHtml'])
+				document.getElementById('mainContent').innerHTML = data['innerHtml'];
+			else if (data['redirect']) {
+				window.history.pushState({}, "", data.redirect);
+				fetch(data['redirect'], {
+					headers: {
+						'X-Requested-With': 'XMLHttpRequest',
+					}
+				})
+					.then((response) => {
+						if (response.ok)
+							return response.json();
+						else
+							return new Error(response.status);
+					})
+					.then((data) => {
+						if (data['innerHtml'])
+							document.getElementById('mainContent').innerHTML = data['innerHtml'];
+					})
+					.catch(error => console.log(error));
+			} else {
+				document.getElementById('mainContent').innerHTML = "Error";
+			}
+		})
+		.catch(error => console.log(error));
+};
 
-    fetch(url, {
-        method: 'POST'
-    });
-});
+const route = (event) => {
+    event.preventDefault();
 
-window.addEventListener('beforeunload', () => {
-    const url = PREFIX + 'pages/offline';
+	const targetUrl = event.target.href;
+	const currentUrl = window.location.href;
 
-    fetch(url, {
-        method: 'POST'
-    });
-});
+	if (targetUrl != currentUrl)
+		window.history.pushState({}, "", event.target.href);
+    handleLocation();
+};
