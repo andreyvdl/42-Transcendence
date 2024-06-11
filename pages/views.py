@@ -4,9 +4,11 @@ import base64
 from django.http import JsonResponse
 from django.views import View
 from django.shortcuts import render, redirect
+from django.template.loader import render_to_string
 from django.contrib.auth import authenticate, login, logout
 from .models import PongUser, Match, Friendship
 from django.db.models import Q
+from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.datastructures import MultiValueDictKeyError
@@ -27,7 +29,7 @@ def _to_base64(image_path):
     except FileNotFoundError:
         return "File not found. Please provide a valid path to the PNG image."
 
-def is_ajax(request):
+def _ajax(request):
 	return request.headers.get("X-Requested-With") == "XMLHttpRequest"
 
 def _get_pending_friend_requests(pk):
@@ -50,6 +52,10 @@ def _get_friends(pk):
 
     return friends
 
+def home(request):
+    if not _ajax(request):
+        return render(request, 'base.html')
+    return JsonResponse({'innerHtml': render_to_string('home.html')})
 
 @csrf_exempt
 @login_required(login_url='login')
@@ -136,8 +142,12 @@ def save_match(request, right_pk, score, pk_winner):
 class AccountView(View):
     @staticmethod
     def get(request):
-        if not is_ajax(request):
-            return render(request, "base.html")
+        if not _ajax(request):
+            return render(request, 'base.html')
+
+        if not request.user.is_authenticated:
+            return JsonResponse({'redirect': reverse('login')}, status=302)
+
         matches = Match.objects.filter(Q(left_player=request.user.id) | Q(right_player=request.user.id))
         pend_friends = _get_pending_friend_requests(request.user.id)
         friends = _get_friends(request.user.id)
@@ -150,7 +160,8 @@ class AccountView(View):
             'friends': friends,
             'matches': matches,
         }
-        return render(request, "account.html", ctx)
+        inner_html = render_to_string('account.html', ctx, request=request)
+        return JsonResponse({'innerHtml': inner_html})
 
     @staticmethod
     def post(request):
@@ -164,7 +175,6 @@ class AccountView(View):
                 'hide_form': True,
                 'msg': '🔴 User already exists.'
             }
-            return render(request, "account.html", ctx)
         else:
             curr_user = PongUser.objects.get(username=request.user)
             curr_user.username = new_username
@@ -177,15 +187,19 @@ class AccountView(View):
                 'hide_form': True,
                 'msg': '🟢 Username changed successfully.'
             }
-            return render(request, "account.html", ctx)
+
+        inner_html = render_to_string('account.html', ctx)
+        return JsonResponse({'innerHtml': inner_html})
 
 
 class LoginView(View):
     @staticmethod
     def get(request):
+        if not _ajax(request):
+            return render(request, 'base.html')
         if request.user.is_authenticated:
-            return redirect('account')
-        return render(request, "login.html")
+            return JsonResponse({'redirect': reverse('account')}, status=302)
+        return JsonResponse({'innerHtml': render_to_string('login.html', request=request)})
 
     @staticmethod
     def post(request):
@@ -199,9 +213,11 @@ class LoginView(View):
         )
         if user is not None:
             login(request, user)
-            return redirect('account')
+            return JsonResponse({'redirect': reverse('account')}, status=302)
+            # return redirect('account')
         ctx = {'err': True, 'err_msg': "Invalid username or password"}
-        return render(request, "login.html", ctx)
+        inner_html = render_to_string('login.html', ctx, request=request)
+        return JsonResponse({'innerHtml': inner_html})
 
 
 """
@@ -217,7 +233,7 @@ def logout_view(request):
     if request.method != 'POST':
         return JsonResponse({'error': 'Expected POST'}, status=400)
     logout(request)
-    return JsonResponse({'msg': 'Success'}, status=200)
+    return JsonResponse({'redirect': reverse('login')}, status=302)
 
 
 '''
@@ -257,7 +273,10 @@ def online(request):
 class RegisterView(View):
     @staticmethod
     def get(request):
-        return render(request, "register.html")
+        if not _ajax(request):
+            return render(request, 'base.html')
+        inner_html = render_to_string('register.html', request=request)
+        return JsonResponse({'innerHtml': inner_html})
 
     @staticmethod
     def post(request):
@@ -279,4 +298,5 @@ class RegisterView(View):
             'registered_successfully': True,
             'username': username
         }
-        return render(request, "register.html", ctx)
+        inner_html = render_to_string('register.html', ctx, request=request)
+        return JsonResponse({'innerHtml': inner_html})
