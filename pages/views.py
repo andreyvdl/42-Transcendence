@@ -1,5 +1,7 @@
 import json
 import base64
+import os
+import requests
 
 from core.settings import DEFAULT_AVATAR
 from django.http import JsonResponse
@@ -14,8 +16,7 @@ from django.utils.datastructures import MultiValueDictKeyError
 from django.contrib.auth.signals import user_logged_out
 from django.dispatch import receiver
 from django.core.files.base import ContentFile
-import os
-import requests
+from datetime import datetime
 
 
 def _get_profile_pic(user):
@@ -304,10 +305,10 @@ def _call_api(user_code):
     if user_code is None:
         return None, 'Error on API response'
 
+    # NÃO SUBIR CHAVES PRA PRODUÇÃO E NEM DEV!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    # Pega as chaves no discord e dá um export
     data = {
         'grant_type': 'authorization_code',
-        # NÃO SUBIR CHAVES PRA PRODUÇÃO E NEM DEV!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        # Pega as chaves no discord e dá um export
         'client_id': os.getenv('INTRA_UID'),
         'client_secret': os.getenv('INTRA_SECRET'),
         'code': user_code,
@@ -339,6 +340,8 @@ def _call_api(user_code):
 
 
 def _register_intra(request, ctx):
+    if PongUser.objects.filter(username=ctx['username']).exists():
+        ctx['username'] += datetime.now().strftime('%Y%m%d_%H%M%S')
     try:
         pong_user = PongUser.objects.create_user(
             email=ctx['email'],
@@ -351,7 +354,7 @@ def _register_intra(request, ctx):
         )
         pong_user.save()
     except:
-        return JsonResponse({'error': 'Username already in use'}, status=400)
+        return JsonResponse({'error': 'Error creating user'}, status=400)
 
     login(request, pong_user)
     return redirect('account')
