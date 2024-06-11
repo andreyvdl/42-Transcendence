@@ -46,8 +46,6 @@ function changeUsername(event) {
 function sendFriendRequest(event) {
     event.preventDefault();
 
-    console.log("oi");
-
     const friendToAddTextField = document.getElementById('friend-text-field');
     const friend = friendToAddTextField.value;
     const url = PREFIX + 'pages/make_friends/' + friend + '/';
