@@ -4,7 +4,7 @@
 	<a href="{% url 'login' %}">Login</a>
 	{% else %}
 	<h2>Register</h2>
-	<form method="post" enctype="multipart/form-data" action="{% url 'register' %}">
+	<form id="formRegister" onsubmit="submitFormRegister(event)">
 		{% csrf_token %}
 		{% if error %}
 		<p> {{ err_msg }} </p>

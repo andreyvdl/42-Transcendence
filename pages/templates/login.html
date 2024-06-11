@@ -1,9 +1,10 @@
+{% load static %}
 <div>
 	<h1>Welcome to the Login page!</h1>
 	{% if err %}
 	{{ err_msg }}
 	{% endif %}
-	<form method="post" action="{% url 'login' %}">
+	<form id="formLogin" onsubmit="submitFormLogin(event)">
 		{% csrf_token %}
 		<label for="username">Username:</label><br>
 		<input type="text" id="username" name="username" required><br><br>
