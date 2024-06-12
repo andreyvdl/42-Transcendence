@@ -2,10 +2,10 @@ window.addEventListener("DOMContentLoaded", () => {
 	handleLocation();
 	window.onpopstate = handleLocation;
 
-	// window.addEventListener('click', (event) => {
-	// 	if (event.target instanceof HTMLElement && event.target.hasAttribute("href"))
-	// 		route(event);
-	// }, true);
+	window.addEventListener('click', (event) => {
+		if (event.target instanceof HTMLElement && event.target.hasAttribute("href"))
+			route(event);
+	}, true);
 
 	// window.addEventListener('load', () => {
 	// 	const url = PREFIX + 'pages/online';
