@@ -1,30 +1,30 @@
-window.addEventListener("DOMContentLoaded", () => {
-	handleLocation();
-	window.onpopstate = handleLocation;
+function handlePageScripts() {
+	const loginPage = document.getElementById('login-page');
+	const registerPage = document.getElementById('register-page');
+	const accountPage = document.getElementById('account-page');
 
-	window.addEventListener('click', (event) => {
-		if (event.target instanceof HTMLElement && event.target.hasAttribute("href"))
-			route(event);
-	}, true);
+	if (loginPage) {
+		loginPageSetup();
+	} else if (registerPage) {
+		registerPageSetup();
+	} else if (accountPage)  {
+		accountPageSetup();
+	}
+}
 
-	// window.addEventListener('load', () => {
-	// 	const url = PREFIX + 'pages/online';
-
-	// 	fetch(url, {
-	// 		method: 'POST'
-	// 	});
-	// });
-
-	window.addEventListener('beforeunload', () => {
-		const url = PREFIX + 'pages/offline';
-
-		fetch(url, {
-			method: 'POST'
-		});
-	});
+const observer = new MutationObserver((mutationsList) => {
+	for (let mutation of mutationsList) {
+		if (mutation.type == 'childList')
+			handlePageScripts();
+	}
 });
 
-const handleLocation = () => {
+function handleRedirect(url) {
+    window.history.pushState({}, "", url);
+    handleLocation();
+};
+
+function handleLocation() {
 	newUrl = window.location.pathname;
 	fetch(newUrl, {
 		headers: {
@@ -38,34 +38,18 @@ const handleLocation = () => {
 				return new Error(response.status);
 		})
 		.then((data) => {
-			if (data['innerHtml'])
-				document.getElementById('mainContent').innerHTML = data['innerHtml'];
-			else if (data['redirect']) {
-				window.history.pushState({}, "", data.redirect);
-				fetch(data['redirect'], {
-					headers: {
-						'X-Requested-With': 'XMLHttpRequest',
-					}
-				})
-					.then((response) => {
-						if (response.ok)
-							return response.json();
-						else
-							return new Error(response.status);
-					})
-					.then((data) => {
-						if (data['innerHtml'])
-							document.getElementById('mainContent').innerHTML = data['innerHtml'];
-					})
-					.catch(error => console.log(error));
+			if (data.innerHtml)
+                updatePage(data.innerHtml);
+			else if (data.redirect) {
+				handleRedirect(data.redirect);
 			} else {
-				document.getElementById('mainContent').innerHTML = "Error";
+                updatePage("ERROR");
 			}
 		})
 		.catch(error => console.log(error));
 };
 
-const route = (event) => {
+function route(event) {
     event.preventDefault();
 
 	const targetUrl = event.target.href;
@@ -75,3 +59,16 @@ const route = (event) => {
 		window.history.pushState({}, "", event.target.href);
     handleLocation();
 };
+
+window.addEventListener("DOMContentLoaded", () => {
+	handleLocation();
+	window.onpopstate = handleLocation;
+
+	// sidebar
+	window.addEventListener('click', (event) => {
+		if (event.target instanceof HTMLElement && event.target.hasAttribute("href"))
+			route(event);
+	}, true);
+
+	observer.observe(document.getElementById('mainContent'), { childList: true, subtree: true });
+});

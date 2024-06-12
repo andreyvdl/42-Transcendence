@@ -1,9 +1,9 @@
 {% load static %}
-<div class="page-wrapper">
+<div id="account-page" class="page-wrapper">
     <div class="profile-wrapper">
         <img src="{{ picture_url }}" alt="Profile Picture">
         <h1 class="username">{{ username }}</h1>
-        <button id="logout-btn" onclick="logout(event)">Logout</button>
+        <button id="logout-btn">Logout</button>
         <div class="match-stats-wrapper">
             <div>
                 <p style="">Matches</p>
@@ -23,8 +23,8 @@
             <div>
                 <br>
                 <p id="pend-friend-{{ forloop.counter0 }}" style="display: inline">{{ pend_friend }}</p>
-                <button class="{{ pend_friend }}/" id="accept-btn" onclick="acceptFriendRequest(event)">Accept</button>
-                <button class="{{ pend_friend }}/" id="decline-btn" onclick="declineFriendRequest(event)">Decline</button>
+                <button class="{{ pend_friend }}/" id="accept-btn">Accept</button>
+                <button class="{{ pend_friend }}/" id="decline-btn">Decline</button>
                 <br>
             </div>
         {% endfor %}
@@ -36,10 +36,10 @@
         <br>
         <p>Want to add some friends?</p>
         <input id="friend-text-field" type="text"><br>
-        <button id="add-friend-btn" onclick="sendFriendRequest(event)">Send Friend Request</button><br>
+        <button id="add-friend-btn">Send Friend Request</button><br>
         {% if hide_form is not True %}
             <p>Want to update your username?</p><br>
-            <form id="formChangeUsername" onsubmit="changeUsername(event)">
+            <form id="formChangeUsername">
                 {% csrf_token %}
                 <label for="new_username">New username:</label><br>
                 <input type="text" id="new_username" name="new_username" required><br><br>
