@@ -9,13 +9,16 @@ function changeUsername(event) {
 
     fetch(url, {
         method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken')
+        },
         body: formData,
     })
         .then((response) => {
             return response.json();
         })
         .then((data) => {
-            if (data.innerHTML)
+            if (data.innerHtml)
                 document.getElementById('mainContent').innerHTML = data.innerHtml;
         })
         .catch((error) => {
@@ -116,6 +119,7 @@ function accountPageSetup() {
     const declineBtn = document.getElementById('decline-btn');
     const addFriend = document.getElementById('add-friend-btn');
     const logoutBtn = document.getElementById('logout-btn');
+    const changeUsernameForm = document.getElementById('formChangeUsername');
 
     userOnline();
 
@@ -123,6 +127,7 @@ function accountPageSetup() {
     attachEvent(declineBtn, 'click', declineFriendRequest);
     attachEvent(addFriend, 'click', sendFriendRequest);
     attachEvent(logoutBtn, 'click', logout);
+    attachEvent(changeUsernameForm, 'submit', changeUsername);
 
     attachEvent(window, 'beforeunload', userOffline);
 }

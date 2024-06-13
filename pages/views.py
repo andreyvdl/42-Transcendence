@@ -166,27 +166,26 @@ class AccountView(View):
     @staticmethod
     def post(request):
         new_username = request.POST['new_username'].strip()
+        matches = Match.objects.filter(Q(left_player=request.user.id) | Q(right_player=request.user.id))
+        pend_friends = _get_pending_friend_requests(request.user.id)
+        friends = _get_friends(request.user.id)
+        ctx = {
+            'username': request.user.username,
+            'wins': request.user.get_wins(),
+            'losses': request.user.get_losses(),
+            'picture_url': _get_profile_pic(request.user),
+            'friends': friends,
+            'pend_friends': pend_friends,
+            'matches': matches,
+        }
         if PongUser.objects.filter(username=new_username).exists():
-            ctx = {
-                'username': request.user.username,
-                'wins': request.user.get_wins(),
-                'losses': request.user.get_losses(),
-                'picture_url': _get_profile_pic(request.user),
-                'hide_form': True,
-                'msg': '🔴 User already exists.'
-            }
+            ctx['msg'] = '🔴 User already exists.'
         else:
             curr_user = PongUser.objects.get(username=request.user)
             curr_user.username = new_username
             curr_user.save()
-            ctx = {
-                'username': curr_user.username,
-                'wins': curr_user.get_wins(),
-                'losses': curr_user.get_losses(),
-                'picture_url': _get_profile_pic(request.user),
-                'hide_form': True,
-                'msg': '🟢 Username changed successfully.'
-            }
+            ctx['username'] = curr_user.username
+            ctx['msg'] = '🟢 Username changed successfully.'
 
         inner_html = render_to_string('account.html', ctx)
         return JsonResponse({'innerHtml': inner_html})

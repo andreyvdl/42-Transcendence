@@ -37,17 +37,15 @@
         <p>Want to add some friends?</p>
         <input id="friend-text-field" type="text"><br>
         <button id="add-friend-btn">Send Friend Request</button><br>
-        {% if hide_form is not True %}
-            <p>Want to update your username?</p><br>
-            <form id="formChangeUsername">
-                {% csrf_token %}
-                <label for="new_username">New username:</label><br>
-                <input type="text" id="new_username" name="new_username" required><br><br>
-                <button type="submit">Change Username</button>
-            </form>
-        {% endif %}
+        <p>Want to update your username?</p><br>
         {% if msg %}
             <p>{{ msg }}</p>
         {% endif %}
+        <form id="formChangeUsername">
+            {% csrf_token %}
+            <label for="new_username">New username:</label><br>
+            <input type="text" id="new_username" name="new_username" required><br><br>
+            <button type="submit">Change Username</button>
+        </form>
     </div>
 </div>
