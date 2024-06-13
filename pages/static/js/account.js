@@ -19,7 +19,7 @@ function changeUsername(event) {
         })
         .then((data) => {
             if (data.innerHtml)
-                document.getElementById('mainContent').innerHTML = data.innerHtml;
+                updatePage(data.innerHtml);
         })
         .catch((error) => {
             console.error(error);

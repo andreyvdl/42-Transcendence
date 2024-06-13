@@ -64,7 +64,7 @@ window.addEventListener("DOMContentLoaded", () => {
 	handleLocation();
 	window.onpopstate = handleLocation;
 
-	// sidebar
+	// navbar
 	window.addEventListener('click', (event) => {
 		if (event.target instanceof HTMLElement && event.target.hasAttribute("href"))
 			route(event);

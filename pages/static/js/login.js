@@ -2,14 +2,13 @@ function submitFormLogin(event) {
     event.preventDefault();
 
     const url = "http://localhost:8000/pages/login";
-    const csrftoken = getCookie('csrftoken');
     const formLogin = document.getElementById('formLogin');
     const formData = new FormData(formLogin);
 
     fetch(url, {
         method: 'POST',
         headers: {
-            'X-CSRFToken': csrftoken,
+            'X-CSRFToken': getCookie('csrftoken'),
         },
         body: formData,
     })
