@@ -232,6 +232,8 @@ logout.
 def logout_view(request):
     if request.method != 'POST':
         return JsonResponse({'error': 'Expected POST'}, status=400)
+    request.user.online = False
+    request.user.save()
     logout(request)
     return JsonResponse({'redirect': reverse('login')}, status=302)
 
@@ -250,7 +252,7 @@ def offline(request):
         return JsonResponse({'error': 'Expected POST'}, status=400)
     request.user.online = False
     request.user.save()
-    return redirect('login')
+    return JsonResponse({'msg': 'offline'})
 
 
 '''
@@ -267,7 +269,7 @@ def online(request):
         return JsonResponse({'error': 'Expected POST'}, status=400)
     request.user.online = True
     request.user.save()
-    return redirect('account')
+    return JsonResponse({'msg': 'online'})
 
 
 class RegisterView(View):
@@ -275,6 +277,8 @@ class RegisterView(View):
     def get(request):
         if not _ajax(request):
             return render(request, 'base.html')
+        if request.user.is_authenticated:
+            return JsonResponse({'redirect': reverse('account')}, status=302)
         inner_html = render_to_string('register.html', request=request)
         return JsonResponse({'innerHtml': inner_html})
 

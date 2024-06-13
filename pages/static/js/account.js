@@ -95,32 +95,34 @@ function logout(event) {
         .catch(error => console.error(error));
 };
 
+function userOnline() {
+    const url = PREFIX + 'pages/online';
+
+    fetch(url, {
+        method: 'POST'
+    })
+}
+
+function userOffline() {
+    const url = PREFIX + 'pages/offline';
+
+    fetch(url, {
+        method: 'POST'
+    })
+}
+
 function accountPageSetup() {
     const acceptBtn = document.getElementById('accept-btn');
     const declineBtn = document.getElementById('decline-btn');
     const addFriend = document.getElementById('add-friend-btn');
     const logoutBtn = document.getElementById('logout-btn');
 
+    userOnline();
+
     attachEvent(acceptBtn, 'click', acceptFriendRequest);
     attachEvent(declineBtn, 'click', declineFriendRequest);
     attachEvent(addFriend, 'click', sendFriendRequest);
     attachEvent(logoutBtn, 'click', logout);
 
-    // Online and offline not work '-'
-    // window.addEventListener('load', () => {
-    // 	const url = PREFIX + 'pages/online';
-
-    // 	fetch(url, {
-    // 		method: 'POST'
-    // 	});
-    // });
-
-    // window.addEventListener('beforeunload', () => {
-    // 	const url = PREFIX + 'pages/offline';
-
-    // 	fetch(url, {
-    // 		method: 'POST'
-    // 	});
-    // });
-
+    attachEvent(window, 'beforeunload', userOffline);
 }
