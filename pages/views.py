@@ -329,12 +329,15 @@ def _call_api(user_code):
         return None, 'Error getting user data'
 
     jsón = response.json()
-
     ctx = {
         'username': jsón['login'],
-        'picture_url': jsón['image']['link'],
         'email': jsón['email'],
     }
+
+    if jsón.get('image') is None or not jsón['image']['link']:
+        ctx['picture_url'] = None
+    else:
+        ctx['picture_url'] = jsón['image']['link']
 
     return ctx, None
 
@@ -348,10 +351,11 @@ def _register_intra(request, ctx):
             username=ctx['username'],
             profile_picture=None
         )
-        pong_user.profile_picture.save(
-            f"{ctx['username']}.png",
-            ContentFile(requests.get(ctx['picture_url']).content)
-        )
+        if ctx['picture_url'] is not None:
+            pong_user.profile_picture.save(
+                f"{ctx['username']}.png",
+                ContentFile(requests.get(ctx['picture_url']).content)
+            )
         pong_user.save()
     except:
         return JsonResponse({'error': 'Error creating user'}, status=400)
