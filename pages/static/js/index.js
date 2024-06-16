@@ -1,66 +1,75 @@
-const PREFIX = location.origin + "/";
-const acceptBtn = document.getElementById("accept-btn");
-const declineBtn = document.getElementById("decline-btn");
-const friendToAddTextField = document.getElementById('friend-text-field')
+function handlePageScripts() {
+	const loginPage = document.getElementById('login-page');
+	const registerPage = document.getElementById('register-page');
+	const accountPage = document.getElementById('account-page');
 
-if (acceptBtn) {
-    acceptBtn.addEventListener('click', (event) => {
-        const userToAccept = event.target.className
-        const url = PREFIX + "pages/answer_friend_request/" + userToAccept;
-
-        fetch(url, {
-            method: 'POST',
-            body: JSON.stringify({
-                'ans': 'y'
-            })
-        })
-    })
+	if (loginPage) {
+		loginPageSetup();
+	} else if (registerPage) {
+		registerPageSetup();
+	} else if (accountPage)  {
+		accountPageSetup();
+	}
 }
 
-if (declineBtn) {
-    document.getElementById('decline-btn').addEventListener('click', (event) => {
-        const userToDecline = event.target.className
-        const url = PREFIX + "pages/answer_friend_request/" + userToDecline;
-
-        fetch(url, {
-            method: 'POST',
-            body: JSON.stringify({
-                'ans': 'n'
-            })
-        })
-    })
-}
-
-document.getElementById('add-friend-btn').addEventListener('click', (event) => {
-    const friend = friendToAddTextField.value
-    const url = PREFIX + "pages/make_friends/" + friend + "/";
-
-    fetch(url, {
-        method: 'POST'
-    })
-})
-
-document.getElementById('logout-btn').addEventListener('click', (event) => {
-    const url = PREFIX + "pages/logout";
-
-    fetch(url, {
-        method: 'POST'
-    })
-    .then(() => location.href = PREFIX + "pages/login");
+const observer = new MutationObserver((mutationsList) => {
+	for (let mutation of mutationsList) {
+		if (mutation.type == 'childList')
+			handlePageScripts();
+	}
 });
 
-window.addEventListener('load', () => {
-    const url = PREFIX + "pages/online";
+function handleRedirect(url) {
+    window.history.pushState({}, "", url);
+    handleLocation();
+};
 
-    fetch(url, {
-        method: 'POST'
-    });
-});
+function handleLocation() {
+	newUrl = window.location.pathname;
+	fetch(newUrl, {
+		headers: {
+			'X-Requested-With': 'XMLHttpRequest',
+		},
+	})
+		.then(response => {
+			if (response.ok || response.status == 302)
+				return response.json();
+			else
+				return new Error(response.status);
+		})
+		.then((data) => {
+			if (data.innerHtml)
+                updatePage(data.innerHtml);
+			else if (data.redirect) {
+				handleRedirect(data.redirect);
+			} else {
+                updatePage("ERROR");
+			}
+		})
+		.catch(error => console.log(error));
+};
 
-window.addEventListener('beforeunload', () => {
-    const url = PREFIX + "pages/offline";
+function route(event) {
+    event.preventDefault();
 
-    fetch(url, {
-        method: 'POST'
-    });
+	const targetUrl = event.target.href;
+	const currentUrl = window.location.href;
+
+	if (targetUrl != currentUrl)
+		window.history.pushState({}, "", event.target.href);
+    handleLocation();
+};
+
+window.addEventListener("DOMContentLoaded", () => {
+	handleLocation();
+	window.onpopstate = handleLocation;
+
+	// navbar
+	window.addEventListener('click', (event) => {
+		const target = event.target;
+		if (target instanceof HTMLElement && target.classList.contains('nav-link') && target.hasAttribute("href"))
+			route(event);
+	}, true);
+
+	observer.observe(document.getElementById('mainContent'), { childList: true, subtree: true });
 });
