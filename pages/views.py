@@ -219,7 +219,6 @@ class LoginView(View):
         if user is not None:
             login(request, user)
             return JsonResponse({'redirect': reverse('account')}, status=302)
-            # return redirect('account')
         ctx = {'err': True, 'err_msg': "Invalid username or password"}
         inner_html = render_to_string('login.html', ctx, request=request)
         return JsonResponse({'innerHtml': inner_html})
