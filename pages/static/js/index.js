@@ -66,7 +66,8 @@ window.addEventListener("DOMContentLoaded", () => {
 
 	// navbar
 	window.addEventListener('click', (event) => {
-		if (event.target instanceof HTMLElement && event.target.hasAttribute("href"))
+		const target = event.target;
+		if (target instanceof HTMLElement && target.classList.contains('nav-link') && target.hasAttribute("href"))
 			route(event);
 	}, true);
 
