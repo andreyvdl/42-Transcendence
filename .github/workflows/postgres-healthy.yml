@@ -11,7 +11,7 @@ jobs:
     - uses: actions/checkout@v4
     - name: Build the Docker image
       run: |
-        mkdir .db-data &&
+        echo -e "SQL_DATABASE=postgres-db\nSQL_USER=wuser\nSQL_PASSWORD=wpass\nSQL_HOST=db\nSQL_PORT=5433" > .env &&
         docker compose up db -d &&
         while [[ $(docker container inspect postgres -f '{{.State.Health.Status}}') == "starting" ]]; do
             sleep 3
