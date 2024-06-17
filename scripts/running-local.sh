@@ -34,9 +34,8 @@ if ! [ -d $VENV_PATH ]; then
 		$PIP_BIN install virtualenv
 	fi
 
-	$PYTHON_BIN -m venv $VENV_PATH
-	source "$VENV_PATH/bin/activate"
-
+	$PYTHON_BIN -m venv $VENV_PATH && \
+	source "$VENV_PATH/bin/activate" && \
 	$PIP_BIN install --upgrade pip && \
 	$PIP_BIN install -r requirements.txt && deactivate
 fi
@@ -52,10 +51,9 @@ else
 	exit 1
 fi
 
-
 if ! [ "$( docker container inspect -f '{{.State.Running}}' postgres )" = "true" ]; then
 	docker-compose up -d db
-	sleep 2 # Timeout for database to initialize
+	sleep 3 # Timeout for database to initialize
 fi
 
 $PYTHON_BIN manage.py makemigrations && $PYTHON_BIN manage.py migrate && \
