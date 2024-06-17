@@ -53,7 +53,13 @@ fi
 
 if ! [ "$( docker container inspect -f '{{.State.Running}}' postgres )" = "true" ]; then
 	docker-compose up -d db
-	sleep 3 # Timeout for database to initialize
+	while [[ $(docker container inspect postgres -f '{{.State.Health.Status}}') == "starting" ]]; do
+		sleep 3
+	done
+	if [[ $(docker container inspect postgres -f '{{.State.Health.Status}}') != "healthy" ]]; then
+		echo "ERROR: Database error"
+		exit 1
+	fi;
 fi
 
 $PYTHON_BIN manage.py makemigrations && $PYTHON_BIN manage.py migrate && \
