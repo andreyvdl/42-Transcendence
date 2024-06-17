@@ -3,3 +3,4 @@
 .idea
 media/profile_pics
 venv
+.env
