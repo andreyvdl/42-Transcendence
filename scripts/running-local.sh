@@ -1,8 +1,10 @@
 #!/bin/bash
 
+DB_PORT=5433
 DJANGO_PORT=8000
 MINIMUM_VERSION=3.10 # Django 5.0 requires Python 3.10 or higher
-VENV_PATH="./.venv"
+ENV_FILE="./.env"
+VENV_PATH="./venv"
 
 validPythonVersion () {
 	python -c \
@@ -22,7 +24,7 @@ elif command -v python3 > /dev/null && validPythonVersion python3; then
 	PIP_BIN=pip3
 	PYTHON_BIN=python3
 else
-	echo "ERROR: Python version 3.10 or higher not available or installed"
+	echo "ERROR: Python version $MINIMUM_VERSION or higher not available or installed"
 	exit 1
 fi
 
@@ -31,16 +33,30 @@ if ! [ -d $VENV_PATH ]; then
 		$PIP_BIN install -U pip
 		$PIP_BIN install virtualenv
 	fi
-	$PYTHON_BIN -m venv ./.venv && source "$VENV_PATH/bin/activate" && \
-	$PIP_BIN install -r requirements.txt && dectivate
+
+	$PYTHON_BIN -m venv $VENV_PATH
+	source "$VENV_PATH/bin/activate"
+
+	$PIP_BIN install --upgrade pip && \
+	$PIP_BIN install -r requirements.txt && deactivate
 fi
 
 source "$VENV_PATH/bin/activate"
-if [ "$( docker container inspect -f '{{.State.Running}}' postgres )" = "true" ]; then
-	$PYTHON_BIN manage.py runserver $DJANGO_PORT
+if [ -f $ENV_FILE ]; then
+	export $(grep -v '^#' $ENV_FILE | xargs)
+
+	export SQL_HOST="localhost"
+	export SQL_PORT=$DB_PORT
 else
-	docker-compose up -d db
-	$PYTHON_BIN manage.py makemigrations
-	$PYTHON_BIN manage.py migrate
-	$PYTHON_BIN manage.py runserver $DJANGO_PORT
+	echo "ERROR: .env not found in path $ENV_FILE"
+	exit 1
 fi
+
+
+if ! [ "$( docker container inspect -f '{{.State.Running}}' postgres )" = "true" ]; then
+	docker-compose up -d db
+	sleep 2 # Timeout for database to initialize
+fi
+
+$PYTHON_BIN manage.py makemigrations && $PYTHON_BIN manage.py migrate && \
+$PYTHON_BIN manage.py runserver $DJANGO_PORT

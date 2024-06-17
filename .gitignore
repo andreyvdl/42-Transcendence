@@ -2,4 +2,4 @@
 **/migrations
 .idea
 media/profile_pics
-.venv
+venv
