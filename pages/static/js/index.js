@@ -2,13 +2,16 @@ function handlePageScripts() {
 	const loginPage = document.getElementById('login-page');
 	const registerPage = document.getElementById('register-page');
 	const accountPage = document.getElementById('account-page');
+	const homePage = document.getElementById('home-page');
 
 	if (loginPage) {
 		loginPageSetup();
 	} else if (registerPage) {
 		registerPageSetup();
-	} else if (accountPage)  {
+	} else if (accountPage) {
 		accountPageSetup();
+	} else if (homePage) {
+		homePageSetup();
 	}
 }
 
@@ -71,5 +74,5 @@ window.addEventListener("DOMContentLoaded", () => {
 			route(event);
 	}, true);
 
-	observer.observe(document.getElementById('mainContent'), { childList: true, subtree: true });
+	observer.observe(document.getElementById('mainContent'), { childList: true });
 });

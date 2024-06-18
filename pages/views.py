@@ -58,10 +58,16 @@ def _get_friends(pk):
 
     return friends
 
+
 def home(request):
-    if not _ajax(request):
-        return render(request, 'base.html')
-    return JsonResponse({'innerHtml': render_to_string('home.html')})
+    if request.method == 'GET':
+        if not _ajax(request):
+            return render(request, 'base.html')
+        # elif not request.user.is_authenticated:
+        #     return JsonResponse({'redirect': reverse('login')}, status=302)
+        return JsonResponse({'innerHtml': render_to_string('home.html')})
+    return JsonResponse({'msg': 'implementar isso no futuro aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'}, status=501)
+
 
 @csrf_exempt
 @login_required(login_url='login')
