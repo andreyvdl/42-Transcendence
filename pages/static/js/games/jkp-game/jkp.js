@@ -1,4 +1,4 @@
-import jkpGameInit from './jkp-game/index.js'
+import jkpGameInit from './index.js'
 
 export default function jkpGamePageSetup() {
     jkpGameInit();

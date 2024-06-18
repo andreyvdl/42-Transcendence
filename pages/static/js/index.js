@@ -1,4 +1,4 @@
-import * as Setup from './pages_setup.js'
+import * as pages from './pages.js'
 
 function handlePageScripts() {
 	const loginPage = document.getElementById('login-page');
@@ -8,15 +8,15 @@ function handlePageScripts() {
 	const jpkGamePage = document.getElementById('jkp-game-page');
 
 	if (loginPage) {
-		Setup.loginPageSetup();
+		pages.loginPageSetup();
 	} else if (registerPage) {
-		Setup.registerPageSetup();
+		pages.registerPageSetup();
 	} else if (accountPage)  {
-		Setup.accountPageSetup();
+		pages.accountPageSetup();
 	} else if (pongGamePage) {
-		Setup.pongGamePageSetup();
+		pages.pongGamePageSetup();
 	} else if (jpkGamePage) {
-		Setup.jkpGamePageSetup();
+		pages.jkpGamePageSetup();
 	}
 }
 
