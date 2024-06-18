@@ -16,10 +16,15 @@
 
 		<main id="mainContent"></main>
 
+		<script type="importmap">
+			{
+				"imports": {
+					"three": "https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js",
+					"three/addons/": "https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/"
+				}
+			}
+		</script>
 		<script src="{% static 'js/utils.js' %}"></script>
-		<script src="{% static 'js/index.js' %}"></script>
-		<script src="{% static 'js/login.js' %}"></script>
-		<script src="{% static 'js/register.js' %}"></script>
-		<script src="{% static 'js/account.js' %}"></script>
+		<script src="{% static 'js/index.js' %}" type="module"></script>
 	</body>
 </html>
