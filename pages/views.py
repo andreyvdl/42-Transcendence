@@ -63,6 +63,11 @@ def home(request):
         return render(request, 'base.html')
     return JsonResponse({'innerHtml': render_to_string('home.html')})
 
+def pong(request):
+    if not _ajax(request):
+        return render(request, 'base.html')
+    return JsonResponse({'innerHtml': render_to_string('pong.html')})
+
 @csrf_exempt
 @login_required(login_url='login')
 def answer_friend_request(request, username):
