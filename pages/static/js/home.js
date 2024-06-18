@@ -1,4 +1,4 @@
-function homePageSetup() {
+export default function homePageSetup() {
 	const modeRadios = document.querySelectorAll('input[name="mode"]');
 	const gameForm = document.getElementById("form-game");
 
