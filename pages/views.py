@@ -61,17 +61,17 @@ def _get_friends(pk):
 def home(request):
     if not _ajax(request):
         return render(request, 'base.html')
-    return JsonResponse({'innerHtml': render_to_string('home.html')})
+    return JsonResponse({'innerHtml': render_to_string('pages/home.html')})
 
 def pong(request):
     if not _ajax(request):
         return render(request, 'base.html')
-    return JsonResponse({'innerHtml': render_to_string('pong.html')})
+    return JsonResponse({'innerHtml': render_to_string('pages/pong.html')})
 
 def jkp(request):
     if not _ajax(request):
         return render(request, 'base.html')
-    return JsonResponse({'innerHtml': render_to_string('jkp.html')})
+    return JsonResponse({'innerHtml': render_to_string('pages/jkp.html')})
 
 @csrf_exempt
 @login_required(login_url='login')
@@ -176,7 +176,7 @@ class AccountView(View):
             'friends': friends,
             'matches': matches,
         }
-        inner_html = render_to_string('account.html', ctx, request=request)
+        inner_html = render_to_string('pages/account.html', ctx, request=request)
         return JsonResponse({'innerHtml': inner_html})
 
     @staticmethod
@@ -203,7 +203,7 @@ class AccountView(View):
             ctx['username'] = curr_user.username
             ctx['msg'] = '🟢 Username changed successfully.'
 
-        inner_html = render_to_string('account.html', ctx)
+        inner_html = render_to_string('pages/account.html', ctx)
         return JsonResponse({'innerHtml': inner_html})
 
 
@@ -214,7 +214,7 @@ class LoginView(View):
             return render(request, 'base.html')
         if request.user.is_authenticated:
             return JsonResponse({'redirect': reverse('account')}, status=302)
-        return JsonResponse({'innerHtml': render_to_string('login.html', request=request)})
+        return JsonResponse({'innerHtml': render_to_string('pages/login.html', request=request)})
 
     @staticmethod
     def post(request):
@@ -230,7 +230,7 @@ class LoginView(View):
             login(request, user)
             return JsonResponse({'redirect': reverse('account')}, status=302)
         ctx = {'err': True, 'err_msg': "Invalid username or password"}
-        inner_html = render_to_string('login.html', ctx, request=request)
+        inner_html = render_to_string('pages/login.html', ctx, request=request)
         return JsonResponse({'innerHtml': inner_html})
 
 
@@ -293,7 +293,7 @@ class RegisterView(View):
             return render(request, 'base.html')
         if request.user.is_authenticated:
             return JsonResponse({'redirect': reverse('account')}, status=302)
-        inner_html = render_to_string('register.html', request=request)
+        inner_html = render_to_string('pages/register.html', request=request)
         return JsonResponse({'innerHtml': inner_html})
 
     @staticmethod
@@ -306,9 +306,11 @@ class RegisterView(View):
         if password != comp:
             ctx = {
                 'registered_successfully': False,
-                'error': "Passwords don't match"
+                'error': True,
+                'err_msg': "Passwords don't match",
             }
-            return render(request, "register.html", ctx)
+            inner_html = render_to_string('pages/register.html', ctx, request=request)
+            return JsonResponse({'innerHtml': inner_html})
 
         try:
             file = request.FILES["file"]
@@ -326,14 +328,17 @@ class RegisterView(View):
         except:
             ctx = {
                 'registered_successfully': False,
-                'error': "Email already in use"
+                'error': True,
+                'err_msg': "Email already in use",
             }
-            return render(request, "register.html", ctx)
+            inner_html = render_to_string('pages/register.html', ctx, request=request)
+            return JsonResponse({'innerHtml': inner_html})
+
         ctx = {
             'registered_successfully': True,
             'username': username
         }
-        inner_html = render_to_string('register.html', ctx, request=request)
+        inner_html = render_to_string('pages/register.html', ctx, request=request)
         return JsonResponse({'innerHtml': inner_html})
 
 
@@ -341,8 +346,6 @@ def _call_api(user_code):
     if user_code is None:
         return None, 'Error on API response'
 
-    # NÃO SUBIR CHAVES PRA PRODUÇÃO E NEM DEV!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    # Pega as chaves no discord e dá um export
     data = {
         'grant_type': 'authorization_code',
         'client_id': os.getenv('INTRA_UID'),
