@@ -114,7 +114,7 @@ function userOffline() {
     })
 }
 
-function accountPageSetup() {
+export default function accountPageSetup() {
     const acceptBtn = document.getElementById('accept-btn');
     const declineBtn = document.getElementById('decline-btn');
     const addFriend = document.getElementById('add-friend-btn');

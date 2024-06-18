@@ -1,14 +1,22 @@
+import * as Setup from './pages_setup.js'
+
 function handlePageScripts() {
 	const loginPage = document.getElementById('login-page');
 	const registerPage = document.getElementById('register-page');
 	const accountPage = document.getElementById('account-page');
+	const pongGamePage = document.getElementById('pong-game-page');
+	const jpkGamePage = document.getElementById('jkp-game-page');
 
 	if (loginPage) {
-		loginPageSetup();
+		Setup.loginPageSetup();
 	} else if (registerPage) {
-		registerPageSetup();
+		Setup.registerPageSetup();
 	} else if (accountPage)  {
-		accountPageSetup();
+		Setup.accountPageSetup();
+	} else if (pongGamePage) {
+		Setup.pongGamePageSetup();
+	} else if (jpkGamePage) {
+		Setup.jkpGamePageSetup();
 	}
 }
 
@@ -25,7 +33,7 @@ function handleRedirect(url) {
 };
 
 function handleLocation() {
-	newUrl = window.location.pathname;
+	const newUrl = window.location.pathname;
 	fetch(newUrl, {
 		headers: {
 			'X-Requested-With': 'XMLHttpRequest',
@@ -71,5 +79,5 @@ window.addEventListener("DOMContentLoaded", () => {
 			route(event);
 	}, true);
 
-	observer.observe(document.getElementById('mainContent'), { childList: true, subtree: true });
+	observer.observe(document.getElementById('mainContent'), { childList: true });
 });

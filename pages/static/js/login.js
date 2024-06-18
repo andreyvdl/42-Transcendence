@@ -27,7 +27,7 @@ function submitFormLogin(event) {
         .catch(error => console.log(error));
 }
 
-function loginPageSetup() {
+export default function loginPageSetup() {
     const formLogin = document.getElementById('formLogin');
 
     attachEvent(formLogin, 'submit', submitFormLogin);

@@ -25,7 +25,7 @@ function submitFormRegister(event) {
         .catch((error) => console.error(error));
 }
 
-function registerPageSetup() {
+export default function registerPageSetup() {
     const formRegister = document.getElementById('formRegister');
 
     attachEvent(formRegister, 'submit', submitFormRegister);
