@@ -1,8 +1,9 @@
 import * as THREE from 'three';
 import WebGL from 'three/addons/capabilities/WebGL.js'
 
-export default function jkpGameInit() {
 
+export default function pongGameInit() {
+	GAME_RUNNING = true;
 	var RESOLUTIONS = [
 		{ w: 6400, h: 4800 },
 		{ w: 4096, h: 3072 },
@@ -57,7 +58,6 @@ export default function jkpGameInit() {
 	function calculateWindow() {
 		const resolution = RESOLUTIONS.find((resolution) => resolution.w <= window.innerWidth && resolution.h <= window.innerHeight);
 
-		console.log(resolution);
 		if (resolution) {
 			WINDOW.width = resolution.w;
 			WINDOW.height = resolution.h;
@@ -142,6 +142,8 @@ export default function jkpGameInit() {
 			if (ball3d.position.x < 0) {
 				if (SCORE.playerTwo == 1) {
 					alert('Player Two Wins!');
+					GAME_RUNNING = false;
+					// enviar resultado para o server
 					SCORE.playerOne = 0;
 					SCORE.playerTwo = -1;
 				}
@@ -150,6 +152,8 @@ export default function jkpGameInit() {
 			else {
 				if (SCORE.playerOne == 1) {
 					alert('Player One Wins!');
+					GAME_RUNNING = false;
+					// enviar resultado para o server
 					SCORE.playerOne = -1;
 					SCORE.playerTwo = 0;
 				}
@@ -237,33 +241,12 @@ Dica: mire nos cantos")
 		const texture = [new THREE.CanvasTexture(canvas[0]), new THREE.CanvasTexture(canvas[1])];
 		const spriteMaterial = [new THREE.SpriteMaterial({ map: texture[0] }), new THREE.SpriteMaterial({ map: texture[1] })];
 		const sprites = [new THREE.Sprite(spriteMaterial[0]), new THREE.Sprite(spriteMaterial[1])];
-		// const listener = new THREE.AudioListener();
-
-		// camera.add(listener);
-
-		// const sound = new THREE.Audio(listener);
-		// const audioLoader = new THREE.AudioLoader();
-
-		// audioLoader.load('./assets/hino-flamengo.mp3', (buffer) => {
-		// 	sound.setBuffer(buffer);
-		// 	sound.setLoop(true);
-		// 	sound.setVolume(0.5);
-		// 	sound.play();
-		// });
-
-		// document.addEventListener('click', function () {
-		// 	if (listener.context.state === 'suspended') {
-		// 		listener.context.resume();
-		// 	}
-
-		// 	sound.play();
-		// });
 		sprites[0].position.set(-4.2, 0, -6.2);
 		sprites[1].position.set(13.5, 0, -6.2);
 		scene.background = new THREE.TextureLoader().load(backgroundImg);
 		scene.add(ball3d, ground);
-		scene.add(...light);
-		// scene.add(new THREE.AmbientLight(0xffffff, 1));
+		// scene.add(...light);
+		scene.add(new THREE.AmbientLight(0xffffff, 2));
 		scene.add(...player);
 		scene.add(...sprites);
 
@@ -285,7 +268,11 @@ Dica: mire nos cantos")
 		setTimeout(() => { BALLPAUSE = false }, 1000);
 
 		function animate() {
-			// light.forEach((light) => { light.target = ball3d; });
+			if (!GAME_RUNNING) {
+				window.onresize = null;
+				handleRedirect('/pages/home');
+				return;
+			}
 			playerMove(player);
 			if (!BALLPAUSE) {
 				scoreUpdate(canvas, sprites);

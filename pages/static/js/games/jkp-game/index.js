@@ -1,4 +1,5 @@
-export default function pongGameInit() {
+export default function jkpGameInit() {
+	GAME_RUNNING = true;
 	const ESCOLHAS = {
 		pedra: 0,
 		papel: 1,
@@ -106,10 +107,24 @@ export default function pongGameInit() {
 				g_imagens = false;
 			}, 3000
 			);
+			if (JOGADOR[0].pontos == 2 || JOGADOR[1].pontos == 2) {
+				GAME_RUNNING = false;
+			}
 		}
 	}
 
 	function renderizador() {
+		if (!GAME_RUNNING) {
+			if (JOGADOR[0].pontos > JOGADOR[1].pontos) {
+				alert("Jogador 1 venceu");
+			}
+			else {
+				alert("Jogador 2 venceu");
+			}
+			window.onresize = null;
+			handleRedirect("/pages/home");
+			return;
+		}
 		contexto.clearRect(0, 0, quadro.width, quadro.height);
 		contexto.textAlign = "center";
 		contexto.textBaseline = "middle";
