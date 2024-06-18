@@ -68,6 +68,11 @@ def pong(request):
         return render(request, 'base.html')
     return JsonResponse({'innerHtml': render_to_string('pong.html')})
 
+def jkp(request):
+    if not _ajax(request):
+        return render(request, 'base.html')
+    return JsonResponse({'innerHtml': render_to_string('jkp.html')})
+
 @csrf_exempt
 @login_required(login_url='login')
 def answer_friend_request(request, username):

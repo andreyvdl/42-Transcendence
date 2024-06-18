@@ -17,4 +17,5 @@ urlpatterns = [
     path("online", views.online, name="online"),
     path("intra", views.intra, name="intra"),
     path("pong", views.pong, name="pong"),
+    path("jkp", views.jkp, name="jkp"),
 ]
