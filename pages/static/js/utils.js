@@ -65,3 +65,5 @@ function attachEvent(element, event, handler) {
 function updatePage(innerHtml) {
     document.getElementById('mainContent').innerHTML = innerHtml;
 }
+
+var GAME_RUNNING = false;
