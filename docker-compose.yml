@@ -5,6 +5,9 @@ services:
     build: .
     container_name: django
     image: django:transcendence
+    volumes:
+      - media-volume:/app/media
+      - static-volume:/app/static
     depends_on:
       db:
         condition: service_healthy
@@ -21,6 +24,9 @@ services:
       dockerfile: ./nginx/Dockerfile
     container_name: nginx
     image: nginx:transcendence
+    volumes:
+      - media-volume:/var/www/html/media
+      - static-volume:/var/www/html/static
     depends_on:
       - django
     networks:
@@ -57,4 +63,5 @@ networks:
 
 volumes:
   db-volume:
-    name: db-volume
+  media-volume:
+  static-volume:
