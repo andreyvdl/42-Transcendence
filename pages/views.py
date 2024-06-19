@@ -8,13 +8,12 @@ from django.http import JsonResponse
 from django.views import View
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
-from django.contrib.auth import authenticate, login, logout
-from .models import PongUser, Match, Friendship
+from django.contrib.auth import login
+from main.models import PongUser, Match, Friendship
 from django.db.models import Q
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
-from django.utils.datastructures import MultiValueDictKeyError
 from django.contrib.auth.signals import user_logged_out
 from django.dispatch import receiver
 from django.core.files.base import ContentFile
@@ -35,8 +34,10 @@ def _to_base64(image_path):
     except FileNotFoundError:
         return "File not found. Please provide a valid path to the PNG image."
 
+
 def _ajax(request):
-	return request.headers.get("X-Requested-With") == "XMLHttpRequest"
+    return request.headers.get("X-Requested-With") == "XMLHttpRequest"
+
 
 def _get_pending_friend_requests(pk):
     friendships = Friendship.objects.filter(Q(sent_to=pk) & Q(status='p'))
@@ -219,58 +220,6 @@ class AccountView(View):
         return JsonResponse({'innerHtml': inner_html})
 
 
-class LoginView(View):
-    @staticmethod
-    def get(request):
-        if not _ajax(request):
-            return render(request, 'base.html')
-        if request.user.is_authenticated:
-            return JsonResponse({'redirect': reverse('account')}, status=302)
-        return JsonResponse({'innerHtml': render_to_string('pages/login.html', request=request)})
-
-    @staticmethod
-    def post(request):
-        username = request.POST["username"].strip()
-        password = request.POST["password"].strip()
-
-        user = authenticate(
-            request,
-            username=username,
-            password=password
-        )
-        if user is not None:
-            login(request, user)
-            return JsonResponse({'redirect': reverse('account')}, status=302)
-        ctx = {'err': True, 'err_msg': "Invalid username or password"}
-        inner_html = render_to_string('pages/login.html', ctx, request=request)
-        return JsonResponse({'innerHtml': inner_html})
-
-
-"""
-Essa função é responsável por falar ao database que o usuário está fazendo
-logout.
-@param request a requisição
-"""
-
-
-@csrf_exempt
-@login_required(login_url='login')
-def logout_view(request):
-    if request.method != 'POST':
-        return JsonResponse({'error': 'Expected POST'}, status=400)
-    request.user.online = False
-    request.user.save()
-    logout(request)
-    return JsonResponse({'redirect': reverse('login')}, status=302)
-
-
-'''
-Essa função é responsável por falar para o database que a pessoa fechou a aba
-e agora está offline para todos os outros usuários.
-@param request a requisição
-'''
-
-
 @csrf_exempt
 @login_required(login_url='login')
 def offline(request):
@@ -281,12 +230,6 @@ def offline(request):
     return JsonResponse({'msg': 'offline'})
 
 
-'''
-Essa função é responsável por falar para o database que a pessoa voltou para
-o site e agora está online para todos os outros usuários.
-@param request a requisição
-'''
-
 
 @csrf_exempt
 @login_required(login_url='login')
@@ -296,62 +239,6 @@ def online(request):
     request.user.online = True
     request.user.save()
     return JsonResponse({'msg': 'online'})
-
-
-class RegisterView(View):
-    @staticmethod
-    def get(request):
-        if not _ajax(request):
-            return render(request, 'base.html')
-        if request.user.is_authenticated:
-            return JsonResponse({'redirect': reverse('account')}, status=302)
-        inner_html = render_to_string('pages/register.html', request=request)
-        return JsonResponse({'innerHtml': inner_html})
-
-    @staticmethod
-    def post(request):
-        email = request.POST["email"]
-        username = request.POST["username"]
-        password = request.POST["password1"]
-        comp = request.POST["password2"]
-
-        if password != comp:
-            ctx = {
-                'registered_successfully': False,
-                'error': True,
-                'err_msg': "Passwords don't match",
-            }
-            inner_html = render_to_string('pages/register.html', ctx, request=request)
-            return JsonResponse({'innerHtml': inner_html})
-
-        try:
-            file = request.FILES["file"]
-        except MultiValueDictKeyError:
-            file = None
-
-        try:
-            pong_user = PongUser.objects.create_user(
-                email=email,
-                username=username,
-                password=password,
-                profile_picture=file
-            )
-            pong_user.save()
-        except:
-            ctx = {
-                'registered_successfully': False,
-                'error': True,
-                'err_msg': "Email already in use",
-            }
-            inner_html = render_to_string('pages/register.html', ctx, request=request)
-            return JsonResponse({'innerHtml': inner_html})
-
-        ctx = {
-            'registered_successfully': True,
-            'username': username
-        }
-        inner_html = render_to_string('pages/register.html', ctx, request=request)
-        return JsonResponse({'innerHtml': inner_html})
 
 
 def _call_api(user_code):
