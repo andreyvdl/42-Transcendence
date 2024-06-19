@@ -5,6 +5,7 @@ from django.conf import settings
 
 urlpatterns = [
     path("pages/", include("pages.urls")),
+    path('auth/', include("src_auth.urls")),
     path("admin/", admin.site.urls),
 ]
 

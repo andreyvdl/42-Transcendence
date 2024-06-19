@@ -15,7 +15,7 @@ DEBUG = os.environ.get('DJANGO_DEBUG')
 
 ALLOWED_HOSTS = ["*"]
 
-AUTH_USER_MODEL = "pages.PongUser"
+AUTH_USER_MODEL = "main.PongUser"
 
 # Application definition
 
@@ -27,6 +27,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'pages',
+    'src_auth',
+    'main'
 ]
 
 MIDDLEWARE = [
