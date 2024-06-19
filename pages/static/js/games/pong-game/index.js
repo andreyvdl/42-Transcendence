@@ -143,7 +143,18 @@ export default function pongGameInit() {
 				if (SCORE.playerTwo == 1) {
 					alert('Player Two Wins!');
 					GAME_RUNNING = false;
-					// enviar resultado para o server
+					SCORE.playerTwo = 2;
+					fetch("/pages/save_match/" + scoreToStr(PLAYER2, SCORE, PLAYER2))
+					.then(response => {
+						if (response.status !== 200) {
+							return new Error(response.status)
+						}
+						return response.json()
+					})
+					.then(data => {
+						console.log(data);
+					})
+					.catch(error => console.log(error));
 					SCORE.playerOne = 0;
 					SCORE.playerTwo = -1;
 				}
@@ -153,7 +164,18 @@ export default function pongGameInit() {
 				if (SCORE.playerOne == 1) {
 					alert('Player One Wins!');
 					GAME_RUNNING = false;
-					// enviar resultado para o server
+					SCORE.playerOne = 2;
+					fetch("/pages/save_match/" + scoreToStr(PLAYER2, SCORE, PLAYER1))
+					.then(response => {
+						if (response.status !== 200) {
+							return new Error(response.status)
+						}
+						return response.json()
+					})
+					.then(data => {
+						console.log(data);
+					})
+					.catch(error => console.log(error));
 					SCORE.playerOne = -1;
 					SCORE.playerTwo = 0;
 				}
@@ -288,5 +310,9 @@ Dica: mire nos cantos")
 	} else {
 		const warning = WebGL.getWebGLErrorMessage();
 		document.querySelector('#pong_canvas').appendChild(warning);
+	}
+
+	function scoreToStr(player, scores, winner) {
+		return player + "/" + scores.playerOne + "v" + scores.playerTwo + "/" + winner;
 	}
 }
