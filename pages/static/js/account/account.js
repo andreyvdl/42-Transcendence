@@ -80,7 +80,7 @@ function declineFriendRequest(event) {
 function logout(event) {
     event.preventDefault();
 
-    const url = PREFIX + 'pages/logout';
+    const url = "http://localhost:8000/auth/logout"
 
     fetch(url, {
         method: 'POST'
