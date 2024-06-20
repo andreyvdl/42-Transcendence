@@ -1,16 +1,5 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <title>Account</title>
-</head>
-<body>
-<div class="page-wrapper">
+{% load static %}
+<div id="account-page" class="page-wrapper">
     <div class="profile-wrapper">
         <img src="{{ picture_url }}" alt="Profile Picture">
         <h1 class="username">{{ username }}</h1>
@@ -48,20 +37,15 @@
         <p>Want to add some friends?</p>
         <input id="friend-text-field" type="text"><br>
         <button id="add-friend-btn">Send Friend Request</button><br>
-        {% if hide_form is not True %}
-            <p>Want to update your username?</p><br>
-            <form method="post" action="{% url 'account' %}">
-                {% csrf_token %}
-                <label for="new_username">New username:</label><br>
-                <input type="text" id="new_username" name="new_username" required><br><br>
-                <button type="submit">Change Username</button>
-            </form>
-        {% endif %}
+        <p>Want to update your username?</p><br>
         {% if msg %}
             <p>{{ msg }}</p>
         {% endif %}
+        <form id="formChangeUsername">
+            {% csrf_token %}
+            <label for="new_username">New username:</label><br>
+            <input type="text" id="new_username" name="new_username" required><br><br>
+            <button type="submit">Change Username</button>
+        </form>
     </div>
 </div>
-<script src="{% static 'js/index.js' %}"></script>
-</body>
-</html>

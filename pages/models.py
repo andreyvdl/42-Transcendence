@@ -8,6 +8,7 @@ class PongUser(AbstractUser):
     losses = models.IntegerField(default=0)
     online = models.BooleanField(default=False)
     profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
+    email = models.EmailField(unique=True)
 
     def get_wins(self):
         return self.wins

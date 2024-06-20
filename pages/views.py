@@ -1,16 +1,24 @@
 import json
 import base64
+import os
+import requests
 
+from core.settings import DEFAULT_AVATAR
 from django.http import JsonResponse
 from django.views import View
 from django.shortcuts import render, redirect
+from django.template.loader import render_to_string
 from django.contrib.auth import authenticate, login, logout
 from .models import PongUser, Match, Friendship
 from django.db.models import Q
+from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.datastructures import MultiValueDictKeyError
-from core.settings import DEFAULT_AVATAR
+from django.contrib.auth.signals import user_logged_out
+from django.dispatch import receiver
+from django.core.files.base import ContentFile
+from datetime import datetime
 
 
 def _get_profile_pic(user):
@@ -27,6 +35,8 @@ def _to_base64(image_path):
     except FileNotFoundError:
         return "File not found. Please provide a valid path to the PNG image."
 
+def _ajax(request):
+	return request.headers.get("X-Requested-With") == "XMLHttpRequest"
 
 def _get_pending_friend_requests(pk):
     friendships = Friendship.objects.filter(Q(sent_to=pk) & Q(status='p'))
@@ -48,6 +58,10 @@ def _get_friends(pk):
 
     return friends
 
+def home(request):
+    if not _ajax(request):
+        return render(request, 'base.html')
+    return JsonResponse({'innerHtml': render_to_string('home.html')})
 
 @csrf_exempt
 @login_required(login_url='login')
@@ -134,6 +148,12 @@ def save_match(request, right_pk, score, pk_winner):
 class AccountView(View):
     @staticmethod
     def get(request):
+        if not _ajax(request):
+            return render(request, 'base.html')
+
+        if not request.user.is_authenticated:
+            return JsonResponse({'redirect': reverse('login')}, status=302)
+
         matches = Match.objects.filter(Q(left_player=request.user.id) | Q(right_player=request.user.id))
         pend_friends = _get_pending_friend_requests(request.user.id)
         friends = _get_friends(request.user.id)
@@ -146,42 +166,45 @@ class AccountView(View):
             'friends': friends,
             'matches': matches,
         }
-        return render(request, "account.html", ctx)
+        inner_html = render_to_string('account.html', ctx, request=request)
+        return JsonResponse({'innerHtml': inner_html})
 
     @staticmethod
     def post(request):
         new_username = request.POST['new_username'].strip()
+        matches = Match.objects.filter(Q(left_player=request.user.id) | Q(right_player=request.user.id))
+        pend_friends = _get_pending_friend_requests(request.user.id)
+        friends = _get_friends(request.user.id)
+        ctx = {
+            'username': request.user.username,
+            'wins': request.user.get_wins(),
+            'losses': request.user.get_losses(),
+            'picture_url': _get_profile_pic(request.user),
+            'friends': friends,
+            'pend_friends': pend_friends,
+            'matches': matches,
+        }
         if PongUser.objects.filter(username=new_username).exists():
-            ctx = {
-                'username': request.user.username,
-                'wins': request.user.get_wins(),
-                'losses': request.user.get_losses(),
-                'picture_url': _get_profile_pic(request.user),
-                'hide_form': True,
-                'msg': '🔴 User already exists.'
-            }
-            return render(request, "account.html", ctx)
+            ctx['msg'] = '🔴 User already exists.'
         else:
             curr_user = PongUser.objects.get(username=request.user)
             curr_user.username = new_username
             curr_user.save()
-            ctx = {
-                'username': curr_user.username,
-                'wins': curr_user.get_wins(),
-                'losses': curr_user.get_losses(),
-                'picture_url': _get_profile_pic(request.user),
-                'hide_form': True,
-                'msg': '🟢 Username changed successfully.'
-            }
-            return render(request, "account.html", ctx)
+            ctx['username'] = curr_user.username
+            ctx['msg'] = '🟢 Username changed successfully.'
+
+        inner_html = render_to_string('account.html', ctx)
+        return JsonResponse({'innerHtml': inner_html})
 
 
 class LoginView(View):
     @staticmethod
     def get(request):
+        if not _ajax(request):
+            return render(request, 'base.html')
         if request.user.is_authenticated:
-            return redirect('account')
-        return render(request, "login.html")
+            return JsonResponse({'redirect': reverse('account')}, status=302)
+        return JsonResponse({'innerHtml': render_to_string('login.html', request=request)})
 
     @staticmethod
     def post(request):
@@ -195,9 +218,10 @@ class LoginView(View):
         )
         if user is not None:
             login(request, user)
-            return redirect('account')
+            return JsonResponse({'redirect': reverse('account')}, status=302)
         ctx = {'err': True, 'err_msg': "Invalid username or password"}
-        return render(request, "login.html", ctx)
+        inner_html = render_to_string('login.html', ctx, request=request)
+        return JsonResponse({'innerHtml': inner_html})
 
 
 """
@@ -212,8 +236,10 @@ logout.
 def logout_view(request):
     if request.method != 'POST':
         return JsonResponse({'error': 'Expected POST'}, status=400)
+    request.user.online = False
+    request.user.save()
     logout(request)
-    return JsonResponse({'msg': 'Success'}, status=200)
+    return JsonResponse({'redirect': reverse('login')}, status=302)
 
 
 '''
@@ -230,7 +256,7 @@ def offline(request):
         return JsonResponse({'error': 'Expected POST'}, status=400)
     request.user.online = False
     request.user.save()
-    return redirect('login')
+    return JsonResponse({'msg': 'offline'})
 
 
 '''
@@ -247,32 +273,139 @@ def online(request):
         return JsonResponse({'error': 'Expected POST'}, status=400)
     request.user.online = True
     request.user.save()
-    return redirect('account')
+    return JsonResponse({'msg': 'online'})
 
 
 class RegisterView(View):
     @staticmethod
     def get(request):
-        return render(request, "register.html")
+        if not _ajax(request):
+            return render(request, 'base.html')
+        if request.user.is_authenticated:
+            return JsonResponse({'redirect': reverse('account')}, status=302)
+        inner_html = render_to_string('register.html', request=request)
+        return JsonResponse({'innerHtml': inner_html})
 
     @staticmethod
     def post(request):
+        email = request.POST["email"]
         username = request.POST["username"]
         password = request.POST["password1"]
+        comp = request.POST["password2"]
+
+        if password != comp:
+            ctx = {
+                'registered_successfully': False,
+                'error': "Passwords don't match"
+            }
+            return render(request, "register.html", ctx)
 
         try:
             file = request.FILES["file"]
         except MultiValueDictKeyError:
             file = None
 
-        pong_user = PongUser.objects.create_user(
-            username,
-            password=password,
-            profile_picture=file
-        )
-        pong_user.save()
+        try:
+            pong_user = PongUser.objects.create_user(
+                email=email,
+                username=username,
+                password=password,
+                profile_picture=file
+            )
+            pong_user.save()
+        except:
+            ctx = {
+                'registered_successfully': False,
+                'error': "Email already in use"
+            }
+            return render(request, "register.html", ctx)
         ctx = {
             'registered_successfully': True,
             'username': username
         }
-        return render(request, "register.html", ctx)
+        inner_html = render_to_string('register.html', ctx, request=request)
+        return JsonResponse({'innerHtml': inner_html})
+
+
+def _call_api(user_code):
+    if user_code is None:
+        return None, 'Error on API response'
+
+    # NÃO SUBIR CHAVES PRA PRODUÇÃO E NEM DEV!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    # Pega as chaves no discord e dá um export
+    data = {
+        'grant_type': 'authorization_code',
+        'client_id': os.getenv('INTRA_UID'),
+        'client_secret': os.getenv('INTRA_SECRET'),
+        'code': user_code,
+        'redirect_uri': 'http://localhost:8000/pages/intra'
+    }
+
+    response = requests.post('https://api.intra.42.fr/oauth/token', data=data)
+
+    if response.status_code != 200:
+        return None, 'Error getting token'
+
+    response = requests.get(
+        'https://api.intra.42.fr/v2/me',
+        headers={'Authorization': 'Bearer ' + response.json()['access_token']}
+    )
+
+    if response.status_code != 200:
+        return None, 'Error getting user data'
+
+    jsón = response.json()
+    ctx = {
+        'username': jsón['login'],
+        'email': jsón['email'],
+    }
+
+    if jsón.get('image') is None or not jsón['image']['link']:
+        ctx['picture_url'] = None
+    else:
+        ctx['picture_url'] = jsón['image']['link']
+
+    return ctx, None
+
+
+def _register_intra(request, ctx):
+    if PongUser.objects.filter(username=ctx['username']).exists():
+        ctx['username'] += datetime.now().strftime('%Y%m%d_%H%M%S')
+    try:
+        pong_user = PongUser.objects.create_user(
+            email=ctx['email'],
+            username=ctx['username'],
+            profile_picture=None
+        )
+        if ctx['picture_url'] is not None:
+            pong_user.profile_picture.save(
+                f"{ctx['username']}.png",
+                ContentFile(requests.get(ctx['picture_url']).content)
+            )
+        pong_user.save()
+    except:
+        return JsonResponse({'error': 'Error creating user'}, status=400)
+
+    login(request, pong_user)
+    return redirect('account')
+
+
+def intra(request):
+    if request.method != 'GET':
+        return JsonResponse({'error': 'Expected GET'}, status=400)
+    ctx, err = _call_api(request.GET['code'])
+
+    if err is not None:
+        return JsonResponse({'error': err}, status=400)
+    if PongUser.objects.filter(email=ctx['email']).exists():
+        user = PongUser.objects.get(email=ctx['email'])
+        login(request, user)
+        return redirect('account')
+    else:
+        return _register_intra(request, ctx)
+
+
+@receiver(user_logged_out)
+def on_logout(sender, request, user, **kwargs):
+    user.online = False
+    user.save()

@@ -38,3 +38,18 @@ img {
     width: 100%;
     justify-content: space-between;
 }
+
+.navbar-light {
+    background-color: #f1f1f1 !important;
+}
+
+.nav-link {
+    border-radius: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
+    color: #ffffff !important;
+}
+
+.nav-link:hover {
+    background-color: #77f388 !important;
+}
