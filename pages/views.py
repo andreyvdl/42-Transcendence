@@ -99,18 +99,31 @@ def pong(request):
         'p2': str(data['player2']),
     }
     if not PongUser.objects.filter(username=ctx['p1']).exists():
-        return JsonResponse({'error': 'One or both players do not exist.'}, status=400)
+        ctx['err_msg'] = 'Player 1 does not exist.'
+        return JsonResponse({'innerHtml': render_to_string('pages/home.html', ctx, request=request)})
     if not PongUser.objects.filter(username=ctx['p2']).exists():
-        return JsonResponse({'error': 'One or both players do not exist.'}, status=400)
+        ctx['err_msg'] = 'Player 2 does not exist.'
+        return JsonResponse({'innerHtml': render_to_string('pages/home.html', ctx, request=request)})
     if ctx['p1'] == ctx['p2']:
-        return JsonResponse({'error': 'How come a player be against himself?'}, status=400)
+        ctx['err_msg'] = 'How come a player be against himself?'
+        return JsonResponse({'innerHtml': render_to_string('pages/home.html', ctx, request=request)})
     return JsonResponse({'innerHtml': render_to_string('pages/pong.html', ctx, request=request)})
 
 def jkp(request):
+    data = json.loads(request.body)
     ctx = {
-        'p1': request.POST['player1'],
-        'p2': request.POST['player2'],
+        'p1': str(data['player1']),
+        'p2': str(data['player2']),
     }
+    if not PongUser.objects.filter(username=ctx['p1']).exists():
+        ctx['err_msg'] = 'Player 1 does not exist.'
+        return JsonResponse({'innerHtml': render_to_string('pages/home.html', ctx, request=request)})
+    if not PongUser.objects.filter(username=ctx['p2']).exists():
+        ctx['err_msg'] = 'Player 2 does not exist.'
+        return JsonResponse({'innerHtml': render_to_string('pages/home.html', ctx, request=request)})
+    if ctx['p1'] == ctx['p2']:
+        ctx['err_msg'] = 'How come a player be against himself?'
+        return JsonResponse({'innerHtml': render_to_string('pages/home.html', ctx, request=request)})
     return JsonResponse({'innerHtml': render_to_string('pages/jkp.html', ctx, request=request)})
 
 
