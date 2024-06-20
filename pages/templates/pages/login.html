@@ -1,17 +1,35 @@
-{% load static %}
-<div id="login-page">
-	<h1>Welcome to the Login page!</h1>
+<div style="
+height: 100%;
+background-color: black;
+background-image: url('https://s.hdnux.com/photos/01/31/65/24/23549203/3/rawImage.jpg');
+background-size: cover;
+background-repeat: no-repeat;
+background-attachment: fixed;
+background-position: center;
+">
+	<div class="d-flex" style="margin-bottom: 37vh;"></div>
+	<h1 style="color: white; text-align: center;">FT_PONGAS</h1>
 	{% if err %}
-	{{ err_msg }}
+		{{ err_msg }}
 	{% endif %}
-	<form id="formLogin">
-		{% csrf_token %}
-		<label for="username">Username:</label><br>
-		<input type="text" id="username" name="username" required><br><br>
-		<label for="password">Password: </label><br>
-		<input type="text" id="password" name="password" required><br><br>
-		<button type="submit">Login</button>
-	</form>
-	Don't have an account? <a href="{% url 'register' %}">Create one!</a>
-	or login via <a href="https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-b03d3e34ca48d59cf52b525eef892e52f49bc88e15972bf41e3dc501fdbf7968&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fpages%2Fintra&response_type=code">Intra</a>
+	<div class="container-fluid text-center " style="width: 260px;">
+		<form method="post" action="{% url 'login' %}" style="margin-top: 40px; width: 240px;">
+			{% csrf_token %}
+			<input required id="username" name="username" class="form-control" placeholder="Username">
+			<input required id="password" name="password" type="password" class="form-control" placeholder="Password">
+			<button type="submit" class="btn btn-dark" style="width: 240px; margin-top: 8px;">Sign in</button>
+		</form>
+	</div>
+	<div class=" d-flex justify-content-center mt-2">
+		<p class="shadow-lg bg-black rounded" style="color: white; margin-right: 4px;">Don't have an account?</p>
+		<a class="shadow-lg bg-black rounded" href="{% url 'register' %}" style="color: white;"> Register Now</a>
+	</div>
+	<div class="container text-center">
+		<p class="shadow-lg bg-black rounded"style="color: white;">Or sign in with:</p>
+		<a href="https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-b03d3e34ca48d59cf52b525eef892e52f49bc88e15972bf41e3dc501fdbf7968&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fpages%2Fintra&response_type=code" 
+			class="btn btn-dark btn" style=" width: 50px;"><img src="https://auth.42.fr/auth/resources/yyzrk/login/students/img/42_logo.svg">
+		</a>
+
+		</a>
+	</div>
 </div>
