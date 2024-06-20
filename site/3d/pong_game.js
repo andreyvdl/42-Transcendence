@@ -145,7 +145,7 @@ Dica: mire nos cantos")
 	function animate() {
 		// light.forEach((light) => { light.target = ball3d; });
 		playerMove(player);
-		AI(ball3d, player);
+		// AI(ball3d, player);
 		if (!BALLPAUSE) {
 			scoreUpdate(canvas, sprites);
 			ballMove(ball3d, player, scene);
@@ -301,7 +301,6 @@ var timer = 0;
 
 function AI(ball3d, player){
 	console.log("AI");
-	//fix flickering up and down
 	let predicted = {x: 0, z: 0};
 	if(timer > 0) {
 		console.log("timer");
@@ -318,7 +317,7 @@ function AI(ball3d, player){
 	if(player[1].position.z - 0.6 < predicted.z){
 		KEYS["ArrowDown"] = true;
 	}
-	else if(player[1].position.z + 0.6 > predicted.z){
+	if(player[1].position.z + 0.6 > predicted.z){
 		KEYS["ArrowUp"] = true;
 	}
 	playerMove(player);
@@ -337,7 +336,7 @@ function prediction(ball3d){
 	let x = ball3d.position.x;
 	let velocity = BALL_VELOCITY.x;
 	let direction = BALL_VELOCITY.z;
-	while(iter < 2){
+	while(iter < 3){
 		x += velocity;
 		z += direction;
 		if(Math.abs(z) > 7.5){
