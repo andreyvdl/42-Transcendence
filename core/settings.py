@@ -39,6 +39,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://localhost:5000/*',
+]
+
 ROOT_URLCONF = 'core.urls'
 
 TEMPLATES = [
@@ -109,7 +113,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-DEFAULT_AVATAR = os.path.join(BASE_DIR, 'pages/static/avatar/default_avatar.png')
+DEFAULT_AVATAR = os.path.join(BASE_DIR, 'static/avatar/default_avatar.png')
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [

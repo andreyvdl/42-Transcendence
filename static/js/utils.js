@@ -66,4 +66,5 @@ function updatePage(innerHtml) {
     document.getElementById('mainContent').innerHTML = innerHtml;
 }
 
+const BASE_URL = window.location.protocol + "//" + window.location.host;
 var GAME_RUNNING = false;

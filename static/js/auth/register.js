@@ -1,13 +1,14 @@
 function submitFormRegister(event) {
     event.preventDefault();
 
-    const url = "http://localhost:8000/pages/register";
+    const url = BASE_URL + "/pages/register";
     const csrftoken = getCookie('csrftoken');
     const formRegister = document.getElementById('formRegister');
     const formData = new FormData(formRegister);
     
     fetch(url, {
         method: 'POST',
+		mode: 'same-origin',
         headers: {
             'X-CSRFToken': csrftoken,
         },
