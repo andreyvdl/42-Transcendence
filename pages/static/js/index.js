@@ -7,18 +7,18 @@ function handlePageScripts() {
 	const homePage = document.getElementById('home-page');
 	const pongGamePage = document.getElementById('pong-game-page');
 	const jpkGamePage = document.getElementById('jkp-game-page');
-	
+
 	if (loginPage) {
 		pages.loginPageSetup();
 	} else if (registerPage) {
 		pages.registerPageSetup();
 	} else if (homePage) {
 		pages.homePageSetup();
-	} else if (accountPage)  {
+	} else if (accountPage) {
 		pages.accountPageSetup();
 	} else if (pongGamePage) {
 		const script = document.createElement('script');
-		
+
 		pages.pongGamePageSetup();
 		script.text = document.getElementById('script-game').textContent;
 		pongGamePage.appendChild(script);
