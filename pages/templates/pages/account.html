@@ -22,15 +22,15 @@
 						<li class="nav-item mt-3">
 							<h5>Change Avatar</h5>
 							<form class="d-flex mt-2" role="add" id="">
-								<input id="friend-text-field" class="form-control" type="file" name="file" accept="image/png;" placeholder="Avatar URL">
-								<button id="add-friend-btn" class="btn btn-outline-success" type="submit">Change Avatar</button>
+								<input id="ava" class="form-control" type="file" name="file" accept="image/png;" placeholder="Avatar URL">
+								<button id="ava" class="btn btn-outline-success" type="submit">Change Avatar</button>
 							</form>
 						</li>
 						<li class="nav-item mt-3 mb-3">
 							<h5>Add Friends</h5>
-								<form class="d-flex mt-3" role="add">
+								<form  class="d-flex mt-3">
 									<input id="friend-text-field" class="form-control" type="text" placeholder="Nickname">
-									<button id="add-friend-btn" class="btn btn-outline-success" type="add">Add Friend</button>
+									<button id="add-friend-btn" class="btn btn-outline-success" >Add Friend</button>
 								</form>
 						</li>
 						<h5 class="mt-5 mb-3">Friend Requests ({{pend_friends | length}})</h5>
@@ -39,10 +39,10 @@
 							<li>
 								<h5 style="margin-left: 1vw;">
 									<p id="pend-friend-{{ forloop.counter0 }}" style="display: inline">{{ pend_friend }}</p>
-									<button id="accept-btn" class="{{ pend_friend }}/ btn btn-outline-success ">
+									<button id="accept-btn" value="{{ pend_friend }}/" class="btn btn-outline-success">
 										Accept
 									</button>
-									<button id="decline-btn" class="{{ pend_friend }}/ btn btn-outline-danger">
+									<button id="decline-btn" value="{{ pend_friend }}/" class="btn btn-outline-danger">
 										Decline
 									</button>
 								</h5> 
