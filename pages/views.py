@@ -363,7 +363,7 @@ def _call_api(user_code):
         'client_id': os.getenv('INTRA_UID'),
         'client_secret': os.getenv('INTRA_SECRET'),
         'code': user_code,
-        'redirect_uri': 'http://localhost:8000/pages/intra'
+        'redirect_uri': 'https://localhost:5000/pages/intra'
     }
 
     response = requests.post('https://api.intra.42.fr/oauth/token', data=data)
