@@ -145,6 +145,7 @@ Dica: mire nos cantos")
 	function animate() {
 		// light.forEach((light) => { light.target = ball3d; });
 		playerMove(player);
+		// AI(ball3d, player);
 		if (!BALLPAUSE) {
 			scoreUpdate(canvas, sprites);
 			ballMove(ball3d, player, scene);
@@ -293,4 +294,51 @@ function scoreUpdate(canvas, sprites) {
 	context[1].fillText(SCORE.playerTwo, 0, 256);
 	sprites[0].material.map.needsUpdate = true;
 	sprites[1].material.map.needsUpdate = true;
+}
+
+var timerToggle = false;
+var timer = 0;
+
+function AI(ball3d, player){
+	let predicted = {x: 0, z: 0};
+	if(timer > 0) {
+		predicted = prediction(ball3d);
+	}
+	else if (timerToggle == false) {
+		setTimeout(() => {timer = 1000; timerToggle = false;}, 1000);
+		timerToggle = true;
+	}
+	if ((predicted.x == 0 && predicted.z == 0) || (player[1].position.z == predicted.z)){
+		return;
+	}
+	if(player[1].position.z - 0.6 < predicted.z){
+		KEYS["ArrowDown"] = true;
+	}
+	if(player[1].position.z + 0.6 > predicted.z){
+		KEYS["ArrowUp"] = true;
+	}
+	playerMove(player);
+	KEYS["ArrowDown"] = false;
+	KEYS["ArrowUp"] = false;
+	timer--;
+}
+
+function prediction(ball3d){
+	if (ball3d.position.x < 0 || BALL_VELOCITY.x < 0){
+		return {x: 0, z: 0};
+	}
+	let iter = 0
+	let z = ball3d.position.z;
+	let x = ball3d.position.x;
+	let velocity = BALL_VELOCITY.x;
+	let direction = BALL_VELOCITY.z;
+	while(iter < 3){
+		x += velocity;
+		z += direction;
+		if(Math.abs(z) > 7.5){
+			direction = -direction;
+		}
+		iter++;
+	}
+	return {x, z};
 }
