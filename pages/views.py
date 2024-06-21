@@ -68,21 +68,63 @@ def home(request):
         return JsonResponse({'innerHtml': render_to_string('pages/home.html')})
     elif request.method == 'POST':
         if request.POST['game'] == 'pong':
-            return JsonResponse({'redirect': reverse('pong')}, status=302)
+            return JsonResponse(
+                {
+                    'redirect': reverse('pong'),
+                    'payload':
+                        {
+                            'player1': request.user.username,
+                            'player2': request.POST['player2'],
+                        },
+                },
+                status=302)
         elif request.POST['game'] == 'jkp':
-            return JsonResponse({'redirect': reverse('jkp')}, status=302)
+            return JsonResponse(
+                {
+                    'redirect': reverse('jkp'),
+                    'payload':
+                        {
+                            'player1': request.user.username,
+                            'player2': request.POST['player2'],
+                        }
+                },
+                status=302)
     JsonResponse({'error': 'SOMETHING WENT WRONG!'}, status=400)
 
 
 def pong(request):
-    if not _ajax(request):
-        return render(request, 'base.html')
-    return JsonResponse({'innerHtml': render_to_string('pages/pong.html')})
+    data = json.loads(request.body)
+    ctx = {
+        'player1': str(data['player1']),
+        'player2': str(data['player2']),
+    }
+    if not PongUser.objects.filter(username=ctx['player1']).exists():
+        ctx['err_msg'] = 'Player 1 does not exist.'
+        return JsonResponse({'innerHtml': render_to_string('pages/home.html', ctx, request=request)})
+    if not PongUser.objects.filter(username=ctx['player2']).exists():
+        ctx['err_msg'] = 'Player 2 does not exist.'
+        return JsonResponse({'innerHtml': render_to_string('pages/home.html', ctx, request=request)})
+    if ctx['player1'] == ctx['player2']:
+        ctx['err_msg'] = 'How come a player be against himself?'
+        return JsonResponse({'innerHtml': render_to_string('pages/home.html', ctx, request=request)})
+    return JsonResponse({'innerHtml': render_to_string('pages/pong.html', ctx, request=request)})
 
 def jkp(request):
-    if not _ajax(request):
-        return render(request, 'base.html')
-    return JsonResponse({'innerHtml': render_to_string('pages/jkp.html')})
+    data = json.loads(request.body)
+    ctx = {
+        'player1': str(data['player1']),
+        'player2': str(data['player2']),
+    }
+    if not PongUser.objects.filter(username=ctx['player1']).exists():
+        ctx['err_msg'] = 'Player 1 does not exist.'
+        return JsonResponse({'innerHtml': render_to_string('pages/home.html', ctx, request=request)})
+    if not PongUser.objects.filter(username=ctx['player2']).exists():
+        ctx['err_msg'] = 'Player 2 does not exist.'
+        return JsonResponse({'innerHtml': render_to_string('pages/home.html', ctx, request=request)})
+    if ctx['player1'] == ctx['player2']:
+        ctx['err_msg'] = 'How come a player be against himself?'
+        return JsonResponse({'innerHtml': render_to_string('pages/home.html', ctx, request=request)})
+    return JsonResponse({'innerHtml': render_to_string('pages/jkp.html', ctx, request=request)})
 
 
 @csrf_exempt
@@ -141,21 +183,20 @@ def make_friends(request, send_to_user: str):
     return JsonResponse({'error': 'Expected POST'}, status=400)
 
 
-@login_required(login_url='login')
-def save_match(request, right_pk, score, pk_winner):
-    left_pk = request.user.id
-    if left_pk == right_pk:
+def save_match(request, right_name, score, name_winner):
+    left_name = request.user.username
+    if left_name == right_name:
         return JsonResponse({"error": "How come a player be against himself?"}, status=400)
-    elif pk_winner not in {right_pk, left_pk}:
+    elif name_winner not in {right_name, left_name}:
         return JsonResponse({"error": "How come a player that's not present in the match be the winner?"}, status=400)
-    elif not PongUser.objects.filter(pk=right_pk).exists():
+    elif not PongUser.objects.filter(username=right_name).exists():
         return JsonResponse({'error': 'Right player not found.'}, status=400)
-    elif not PongUser.objects.filter(pk=left_pk).exists():
+    elif not PongUser.objects.filter(username=left_name).exists():
         return JsonResponse({'error': 'Left player not found.'}, status=400)
 
-    left_player = PongUser.objects.get(pk=left_pk)
-    right_player = PongUser.objects.get(pk=right_pk)
-    winner = PongUser.objects.get(pk=pk_winner)
+    left_player = PongUser.objects.get(username=left_name)
+    right_player = PongUser.objects.get(username=right_name)
+    winner = PongUser.objects.get(username=name_winner)
 
     match = Match.objects.create(
         left_player=left_player,
