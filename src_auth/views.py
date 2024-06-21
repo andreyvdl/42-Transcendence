@@ -171,6 +171,7 @@ def _register_intra(request, ctx):
         return JsonResponse({'error': 'Error creating user'}, status=400)
 
     login(request, pong_user)
+    return redirect('account')
 
 
 def intra(request):
