@@ -1,6 +1,19 @@
 import * as THREE from 'three';
 import WebGL from 'three/addons/capabilities/WebGL.js'
 
+function sendResult(p2, scores, winner) {
+	fetch("/pages/save_match/" + p2 + "/" + scores.playerOne + "v" + scores.playerTwo + "/" + winner)
+		.then(response => {
+			if (response.status !== 200) {
+				return new Error(response.status)
+			}
+			return response.json()
+		})
+		.then(data => {
+			console.log(data);
+		})
+		.catch(error => console.log(error));
+}
 
 export default function pongGameInit() {
 	GAME_RUNNING = true;
@@ -99,20 +112,6 @@ export default function pongGameInit() {
 		return ground;
 	}
 
-	function setupLight(x, z, color = 0xffffff) {
-		const light = new THREE.DirectionalLight(color, 1.0);
-
-		light.position.set(x, 50, z);
-		light.castShadow = true;
-		light.shadow.camera.left = -20;
-		light.shadow.camera.right = 20;
-		light.shadow.camera.top = 20;
-		light.shadow.camera.bottom = -20;
-		light.shadow.camera.near = 0.1;
-		light.shadow.camera.far = 2000;
-		return light;
-	}
-
 	function setupPlayer(x, color = 0x00ffff) {
 		const player = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.3, 1.2), new THREE.MeshStandardMaterial({ color: color }));
 
@@ -144,17 +143,7 @@ export default function pongGameInit() {
 					alert('Player Two Wins!');
 					GAME_RUNNING = false;
 					SCORE.playerTwo = 2;
-					fetch("/pages/save_match/" + scoreToStr(PLAYER2, SCORE, PLAYER2))
-					.then(response => {
-						if (response.status !== 200) {
-							return new Error(response.status)
-						}
-						return response.json()
-					})
-					.then(data => {
-						console.log(data);
-					})
-					.catch(error => console.log(error));
+					sendResult(PLAYER2, SCORE, PLAYER2);
 					SCORE.playerOne = 0;
 					SCORE.playerTwo = -1;
 				}
@@ -165,17 +154,7 @@ export default function pongGameInit() {
 					alert('Player One Wins!');
 					GAME_RUNNING = false;
 					SCORE.playerOne = 2;
-					fetch("/pages/save_match/" + scoreToStr(PLAYER2, SCORE, PLAYER1))
-					.then(response => {
-						if (response.status !== 200) {
-							return new Error(response.status)
-						}
-						return response.json()
-					})
-					.then(data => {
-						console.log(data);
-					})
-					.catch(error => console.log(error));
+					sendResult(PLAYER2, SCORE, PLAYER1);
 					SCORE.playerOne = -1;
 					SCORE.playerTwo = 0;
 				}
@@ -246,7 +225,6 @@ Dica: mire nos cantos")
 
 		const ball3d = setupBall();
 		const ground = setupGround();
-		const light = [setupLight(20, 20), setupLight(-20, -20), setupLight(-20, 20), setupLight(20, -20)];
 		const player = [setupPlayer(-8, 0xff0000), setupPlayer(8, 0xffff00)];
 		const canvas = [document.createElement('canvas'), document.createElement('canvas')];
 
@@ -267,7 +245,6 @@ Dica: mire nos cantos")
 		sprites[1].position.set(13.5, 0, -6.2);
 		scene.background = new THREE.TextureLoader().load(backgroundImg);
 		scene.add(ball3d, ground);
-		// scene.add(...light);
 		scene.add(new THREE.AmbientLight(0xffffff, 2));
 		scene.add(...player);
 		scene.add(...sprites);
@@ -310,9 +287,5 @@ Dica: mire nos cantos")
 	} else {
 		const warning = WebGL.getWebGLErrorMessage();
 		document.querySelector('#pong_canvas').appendChild(warning);
-	}
-
-	function scoreToStr(player, scores, winner) {
-		return player + "/" + scores.playerOne + "v" + scores.playerTwo + "/" + winner;
 	}
 }
