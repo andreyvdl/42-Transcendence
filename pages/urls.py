@@ -4,7 +4,6 @@ from . import views
 
 # https://docs.djangoproject.com/en/dev/topics/class-based-views/intro/#decorating-in-urlconf
 urlpatterns = [
-    path("home", views.home, name="home"),
     path("account", views.AccountView.as_view(), name="account"),
     path("save_match/<int:right_pk>/<str:score>/<int:pk_winner>", views.save_match, name="save_match"),
     path("make_friends/<str:send_to_user>/", views.make_friends, name="make_friends"),
