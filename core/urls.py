@@ -9,7 +9,8 @@ urlpatterns = [
     path("api/", include("api.urls")),
     path("games/", include("games.urls")),
     path("home/", views.home, name='home'),
-    path('auth/', include("src_auth.urls"))
+    path('auth/', include("src_auth.urls")),
+    path("account/", views.AccountView.as_view(), name="account"),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
