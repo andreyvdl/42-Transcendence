@@ -114,5 +114,3 @@ class AccountView(View):
 
         inner_html = render_to_string('pages/account.html', ctx)
         return JsonResponse({'innerHtml': inner_html})
-
-
