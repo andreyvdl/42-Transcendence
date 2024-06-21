@@ -300,14 +300,11 @@ var timerToggle = false;
 var timer = 0;
 
 function AI(ball3d, player){
-	console.log("AI");
 	let predicted = {x: 0, z: 0};
 	if(timer > 0) {
-		console.log("timer");
 		predicted = prediction(ball3d);
 	}
 	else if (timerToggle == false) {
-		console.log("setTimeout");
 		setTimeout(() => {timer = 1000; timerToggle = false;}, 1000);
 		timerToggle = true;
 	}
@@ -327,7 +324,6 @@ function AI(ball3d, player){
 }
 
 function prediction(ball3d){
-	console.log("prediction");
 	if (ball3d.position.x < 0 || BALL_VELOCITY.x < 0){
 		return {x: 0, z: 0};
 	}
