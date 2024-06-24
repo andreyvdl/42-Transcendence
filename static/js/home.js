@@ -43,7 +43,7 @@ function updatePlayerCount() {
 function redirToGame(event) {
 	event.preventDefault();
 
-	const url = BASE_URL + "pages/home";
+	const url = BASE_URL + "/home/";
 	const formGame = document.getElementById('form-game');
 	const formData = new FormData(formGame);
 
