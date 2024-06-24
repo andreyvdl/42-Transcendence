@@ -1,0 +1,31 @@
+<div class="container-fluid" id="home-page">
+	<h1>HOME PAGE</h1>
+	{% if err_msg %}
+		<p>{{ err_msg }}</p>
+	{% endif %}
+	<form id="form-game">
+		{% csrf_token %}
+		Select game:
+		<label for="pong">Pong</label>
+		<input type="radio" id="pong" name="game" value="pong" required/>
+		<label for="jankenpon">JanKenPon</label>
+		<input type="radio" id="jankenpon" name="game" value="jkp" required/>
+
+		<br/>
+
+		Select mode:
+		<label for="x1">1v1</label>
+		<input type="radio" id="x1" name="mode" value="x1" required/>
+		<label for="tournament">Tournament</label>
+		<input type="radio" id="tournament" name="mode" value="torneio" required/>
+
+		<br/>
+
+		<div id="players"></div>
+
+		<button id="startGame" type="submit" disabled>Start</button>
+	</form>
+	{% if error %}
+		<p>{{ error_msg }}</p>
+	{% endif %}
+</div>
