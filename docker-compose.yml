@@ -49,13 +49,14 @@ services:
     env_file:
       - .env
     environment:
+      PGPORT: ${SQL_PORT}
       PGUSER: ${SQL_USER}
       PGDATABASE: ${SQL_DATABASE}
       POSTGRES_USER: ${SQL_USER}
       POSTGRES_PASSWORD: ${SQL_PASSWORD}
       POSTGRES_DB: ${SQL_DATABASE}
     ports:
-      - ${SQL_PORT}:5432
+      - ${SQL_PORT}:${SQL_PORT}
 
 networks:
   transcendence:
