@@ -42,7 +42,7 @@ function acceptFriendRequest(event) {
     event.preventDefault();
 
     const userToAccept = event.target.className
-    const url = "http://localhost:8000/api/answer_friend_request/" + userToAccept
+    const url = PREFIX + "api/answer_friend_request/" + userToAccept
 
     fetch(url, {
         method: 'POST',
@@ -56,7 +56,7 @@ function declineFriendRequest(event) {
     event.preventDefault();
 
     const userToDecline = event.target.className
-    const url = "http://localhost:8000/api/answer_friend_request/" + userToDecline
+    const url = PREFIX + "api/answer_friend_request/" + userToDecline
 
     fetch(url, {
         method: 'POST',
@@ -80,7 +80,7 @@ function declineFriendRequest(event) {
 function logout(event) {
     event.preventDefault();
 
-    const url = "http://localhost:8000/auth/logout"
+    const url = PREFIX + "/auth/logout"
 
     fetch(url, {
         method: 'POST'

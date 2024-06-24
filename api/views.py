@@ -17,11 +17,11 @@ def answer_friend_request(request, username):
             data = json.loads(request.body)
             ans = data["ans"]
         except (json.JSONDecodeError, KeyError):
-            return JsonResponse({'error': 'Expected an \'ans\' field in JSON.'}, status=400)
+            return JsonResponse({"error": "Expected an 'ans' field in JSON."}, status=400)
         try:
             pong_user = PongUser.objects.get(username=username)
         except PongUser.DoesNotExist:
-            return JsonResponse({'error': 'That user doesn\'t exist.'}, status=400)
+            return JsonResponse({"error": "That user doesn't exist."}, status=400)
         if ans not in ['y', 'n']:
             return JsonResponse({'error': 'Invalid answer'}, status=400)
 
