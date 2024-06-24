@@ -1,7 +1,7 @@
 function submitFormLogin(event) {
     event.preventDefault();
 
-    const url = "http://localhost:8000/pages/login";
+    const url = "http://localhost:8000/auth/login";
     const formLogin = document.getElementById('formLogin');
     const formData = new FormData(formLogin);
 
