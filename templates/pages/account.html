@@ -47,5 +47,10 @@
             <input type="text" id="new_username" name="new_username" required><br><br>
             <button type="submit">Change Username</button>
         </form>
+        <form id="formChangePicture">
+            {% csrf_token %}
+            <input type="file" name="file" accept="image/png"><br><br>
+            <button type="submit">Change Picture</button>
+        </form>
     </div>
 </div>
