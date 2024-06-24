@@ -1,7 +1,7 @@
 function changeUsername(event) {
     event.preventDefault();
 
-    const url = BASE_URL + "/pages/account";
+    const url = BASE_URL + "/auth/account";
     const formChangeUsername = document.getElementById('formChangeUsername');
     const formData = new FormData(formChangeUsername);
 
