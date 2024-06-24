@@ -7,4 +7,5 @@ urlpatterns = [
     path("make_friends/<str:send_to_user>/", views.make_friends, name="make_friends"),
     path("save_match/<int:right_pk>/<str:score>/<int:pk_winner>", views.save_match, name="save_match"),
     path("answer_friend_request/<str:username>/", views.answer_friend_request, name="answer_friend_request"),
+    path("update_picture/", views.update_picture, name="update_picture"),
 ]
