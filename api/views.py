@@ -1,6 +1,8 @@
 import json
 
 from django.http import JsonResponse
+from django.utils.datastructures import MultiValueDictKeyError
+
 from main.models import PongUser, Match, Friendship
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
@@ -89,6 +91,21 @@ def save_match(request, right_pk, score, pk_winner):
     )
 
     return JsonResponse({'match_id': match.id})
+
+
+@csrf_exempt
+@login_required(login_url='login')
+def update_picture(request):
+    if request.method == "POST":
+        try:
+            file = request.FILES["file"]
+        except MultiValueDictKeyError:
+            file = None
+        request.user.profile_picture = file
+        request.user.save()
+
+        return JsonResponse({"success": True})
+
 
 @csrf_exempt
 @login_required(login_url='login')
