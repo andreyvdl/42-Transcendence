@@ -26,6 +26,32 @@ function changeUsername(event) {
         });
 }
 
+function changePicture(event) {
+    event.preventDefault();
+
+    const url = PREFIX + 'api/update_picture/'
+    const formChangePicture = document.getElementById('formChangePicture');
+    const formData = new FormData(formChangePicture);
+
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: formData,
+    })
+        .then((response) => {
+            return response.json();
+        })
+        .then((data) => {
+            if (data.innerHtml)
+                updatePage(data.innerHtml);
+        })
+        .catch((error) => {
+            console.error(error);
+        });
+}
+
 function sendFriendRequest(event) {
     event.preventDefault();
 
@@ -120,6 +146,7 @@ export default function accountPageSetup() {
     const addFriend = document.getElementById('add-friend-btn');
     const logoutBtn = document.getElementById('logout-btn');
     const changeUsernameForm = document.getElementById('formChangeUsername');
+    const changePictureForm = document.getElementById('formChangePicture')
 
     userOnline();
 
@@ -128,6 +155,7 @@ export default function accountPageSetup() {
     attachEvent(addFriend, 'click', sendFriendRequest);
     attachEvent(logoutBtn, 'click', logout);
     attachEvent(changeUsernameForm, 'submit', changeUsername);
+    attachEvent(changePictureForm, 'submit', changePicture);
 
     attachEvent(window, 'beforeunload', userOffline);
 }
