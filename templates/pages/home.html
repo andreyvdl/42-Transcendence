@@ -1,5 +1,8 @@
 <div class="container-fluid" id="home-page">
 	<h1>HOME PAGE</h1>
+	{% if err_msg %}
+		<p>{{ err_msg }}</p>
+	{% endif %}
 	<form id="form-game">
 		{% csrf_token %}
 		Select game:

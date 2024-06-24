@@ -6,7 +6,7 @@ ENV_FILE="./.env"
 VENV_PATH="./venv"
 
 validPythonVersion () {
-	python -c \
+	$1 -c \
 	"import sys"\
 	"min_version = tuple(map(int, '$MINIMUM_VERSION'.split('.')))"\
 	"current_version = sys.version_info[:3]"\

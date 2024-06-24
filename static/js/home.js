@@ -59,7 +59,21 @@ function redirToGame(event) {
 		})
 		.then((data) => {
 			if (data.redirect)
-				handleRedirect(data.redirect);
+				fetch(data.redirect, {
+					method: 'POST',
+					headers: {
+						'X-CSRFToken': getCookie('csrftoken'),
+					},
+					body: JSON.stringify(data.payload),
+				})
+					.then(response2 => {
+						if (!response2.ok) throw new Error("OPS!");
+						return response2.json();
+					})
+					.then(data2 => {
+						if (data2.innerHtml) updatePage(data2.innerHtml);
+					})
+					.catch(error => console.log(error));
 		})
-		.catch(error => console.log(error));
 }
+

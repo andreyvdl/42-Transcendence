@@ -11,11 +11,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-+uu(jx0yjuec-9_eztuu$vnneck&^2$qcdh42b_#pfrj&)cyjf'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DJANGO_DEBUG')
+DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
-AUTH_USER_MODEL = "pages.PongUser"
+AUTH_USER_MODEL = "main.PongUser"
 
 # Application definition
 
@@ -26,7 +26,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'pages',
+    'src_auth',
+    'main',
+    'api'
 ]
 
 MIDDLEWARE = [
@@ -122,6 +124,7 @@ STATICFILES_DIRS = [
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = 'media/'
+STATICFILES_DIRS = [BASE_DIR / "static"]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

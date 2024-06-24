@@ -27,7 +27,7 @@ function changeUsername(event) {
 function sendFriendRequest(event) {
     event.preventDefault();
 
-    const url = BASE_URL + '/pages/make_friends/' + friend + '/';
+    const url = BASE_URL + '/api/make_friends/' + friend + '/';
     const friendToAddTextField = document.getElementById('friend-text-field');
     const friend = friendToAddTextField.value;
 
@@ -40,7 +40,7 @@ function acceptFriendRequest(event) {
     event.preventDefault();
 
     const userToAccept = event.target.className
-    const url = BASE_URL + "/pages/answer_friend_request/" + userToAccept
+    const url = BASE_URL + "/api/answer_friend_request/" + userToAccept
 
     fetch(url, {
         method: 'POST',
@@ -54,7 +54,7 @@ function declineFriendRequest(event) {
     event.preventDefault();
 
     const userToDecline = event.target.className
-    const url = BASE_URL + "/pages/answer_friend_request/" + userToDecline
+    const url = BASE_URL + "/api/answer_friend_request/" + userToDecline
 
     fetch(url, {
         method: 'POST',
@@ -78,7 +78,7 @@ function declineFriendRequest(event) {
 function logout(event) {
     event.preventDefault();
 
-    const url = BASE_URL + '/pages/logout';
+    const url = BASE_URL + '/auth/logout';
 
     fetch(url, {
         method: 'POST'
@@ -97,7 +97,7 @@ function logout(event) {
 };
 
 function userOnline() {
-    const url = BASE_URL + '/pages/online';
+    const url = BASE_URL + '/api/online';
 
     fetch(url, {
         method: 'POST'
@@ -105,7 +105,7 @@ function userOnline() {
 }
 
 function userOffline() {
-    const url = BASE_URL + '/pages/offline';
+    const url = BASE_URL + '/api/offline';
 
     fetch(url, {
         method: 'POST'

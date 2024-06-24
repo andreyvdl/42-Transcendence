@@ -20,6 +20,7 @@ function handleLocation() {
 		headers: {
 			'X-Requested-With': 'XMLHttpRequest',
 		},
+		body: payload,
 	})
 		.then(response => {
 			if (response.ok || response.status == 302)
@@ -68,3 +69,6 @@ function updatePage(innerHtml) {
 
 const BASE_URL = window.location.protocol + "//" + window.location.host;
 var GAME_RUNNING = false;
+var PLAYER1 = "";
+var PLAYER2 = "";
+var payload = null;
