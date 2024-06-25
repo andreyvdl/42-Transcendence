@@ -44,6 +44,7 @@ if [ -f $ENV_FILE ]; then
 	export $(grep -v '^#' $ENV_FILE | xargs)
 
 	export SQL_HOST="localhost"
+	export INTRA_REDIRECT="http://localhost:8000/auth/intra"
 else
 	echo "ERROR: .env not found in path $ENV_FILE"
 	exit 1
