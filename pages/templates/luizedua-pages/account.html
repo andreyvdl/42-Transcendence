@@ -1,0 +1,169 @@
+
+<div id="account-page" class="overflow-hidden" style="background-color: rgb(34, 34, 34); height: 100%;">
+	<nav id="nav" class="navbar  border-body " data-bs-theme="dark" style="background-color: rgb(54, 54, 54); width: 55vw; margin-left:24vw">
+		<div class="container-fluid">
+			<a class="navbar-brand" href="#">Pongas</a>
+			<button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">	
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+				<div class="offcanvas-header" style="background-color: rgb(54, 54, 54);">
+					<h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menu</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+				</div>
+				<div class="offcanvas-body" style="background-color: rgb(54, 54, 54);">
+					<ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+						<h5>Change Nickname</h5>
+						<form class="d-flex mt-1" id="formChangeUsername">
+							{% csrf_token %}
+							<input id="new_username" class="form-control" type="add" name="new_username" placeholder="New Nickname" required>
+							<button id="changeNick" class="btn btn-outline-success" type="submit">Change Nick</button>
+						</form>
+						<li class="nav-item mt-2">
+							<h5>Change Avatar</h5>
+							<form class="d-flex mt-2" role="add" id="formChangePicture">
+								<input id="ava" class="form-control" type="file" name="file" accept="image/png;" style="height: fit-content;"	>
+								<button id="ava" class="btn btn-outline-success" type="submit">Send</button>
+							</form>
+						</li>
+						<li class="nav-item mt-3 mb-1">
+							<h5>Add Friends</h5>
+								<form  class="d-flex mt-2">
+									<input id="friend-text-field" class="form-control" type="text" placeholder="Nickname">
+									<button id="add-friend-btn" class="btn btn-outline-success" >Add Friend</button>
+								</form>
+						</li>
+						<h5 class="mt-3 mb-3">Friend Requests ({{pend_friends | length}})</h5>
+						<div class="list-group overflow-auto" style="max-height: 200px;">
+							{% for pend_friend in pend_friends %}
+							<li>
+								<h5 style="margin-left: 1vw;">
+									<p id="pend-friend-{{ forloop.counter0 }}" style="display: inline">{{ pend_friend }}</p>
+									<button id="accept-btn" value="{{ pend_friend }}/" class="btn btn-outline-success">
+										Accept
+									</button>
+									<button id="decline-btn" value="{{ pend_friend }}/" class="btn btn-outline-danger">
+										Decline
+									</button>
+								</h5> 
+							</li>
+							{% endfor %}
+						</div>
+						<button id="logout-btn" class="btn btn-outline-danger" style="margin-top:30vh;" >Logout</button>
+					</ul>
+				
+
+				</div>
+			</div>
+		</div>
+	</nav>
+	<div id="profileHeader" class="d-flex" style="background-color: rgb(54, 54, 54); height: 25vh; width: 55vw; margin-left: 24vw; color: white; font-size: 24px;" >
+		<div class="d-flex justify-content-start mt-1 ms-4">
+			<img src="{{ picture_url }}" alt="Profile Picture">
+		</div>
+		<div class="container" style="margin-left: 2vw">
+			<h3 class="username"  style="margin-top: 8vh; width: fit-content;color: white;">
+				{{ username }}
+			</h3>
+			{% if msg %}
+				<br>
+				<p>{{ msg }}</p>
+			{% endif %}
+			<div class="d-flex">
+				<div class="container">
+					<h5 style="text-align: center; margin-top: 2vh;">Matches</h5>
+					<p style="text-align: center;">0</p>
+				</div>
+				<div class="container">
+					<h5 style="text-align: center; margin-top: 2vh;">Win</h5>
+					<p style="text-align: center;">0</p>
+				</div>
+				<div class="container">
+					<h5 style="text-align: center; margin-top: 2vh;">Loss</h5>
+					<p style="text-align: center;">0</p>
+				</div>
+				<div class="container">
+					<h5 style="text-align: center; margin-top: 2vh;">WinRate</h5>
+					<p style="text-align: center;">0%</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="profileBody" class="d-flex" style="background-color: rgb(54, 54, 54); height: 70%; width: 55vw; margin-left: 24vw; margin-right: 1vw; font-size: 24px;">
+		<div class="col mt-5" style="margin-left: 2vw; margin-right: 2vw;">
+			<div class="card text-bg-dark">
+				<div class="card-header text-bg-dark">
+					Matches
+				</div>
+				<div class="card-body overflow-auto shadow" style="height: 40vh;">
+					<table class="table table-dark table-bordered">
+						<tr class="table-dark">
+							<td class="d-flex align-items-center">
+								<p>06-06-24</p>
+								<p style="margin-left: 5vw; margin-right: 5vw;">0x1</p>
+								<p>Loss</p>
+							</td>
+						</tr>
+						<tr class="table-dark">
+							<td class="d-flex align-items-center">
+								<p>06-06-24</p>
+								<p style="margin-left: 5vw; margin-right: 5vw;">0x1</p>
+								<p>Loss</p>
+							</td>
+						</tr>
+						<tr class="table-dark">
+							<td class="d-flex align-items-center">
+								<p>06-06-24</p>
+								<p style="margin-left: 5vw; margin-right: 5vw;">0x1</p>
+								<p>Loss</p>
+							</td>
+						</tr>
+						<tr class="table-dark">
+							<td class="d-flex align-items-center">
+								<p>06-06-24</p>
+								<p style="margin-left: 5vw; margin-right: 5vw;">0x1</p>
+								<p>Loss</p>
+							</td>
+						</tr>
+						<tr class="table-dark">
+							<td class="d-flex align-items-center">
+								<p>06-06-24</p>
+								<p style="margin-left: 5vw; margin-right: 5vw;">0x1</p>
+								<p>Loss</p>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+		<div class="col mt-5" style="margin-right: 2vw; margin-left: 2vw;">
+			<div class="card text-bg-dark">
+				<div class="card-header">
+					Friends ({{ friends | length }})
+				</div>
+				<div class="card-body overflow-auto shadow" style="height: 40vh;">
+					<table class="table table-dark table-bordered">
+						{% for name, online in friends %}
+						<tr class="table-dark">
+							<td>
+								{% if online %}
+									<p class="d-flex justify-content-start" style="color: lightgreen;">
+										{{ name }}
+									</p>
+								{% else %} 
+									<p class="d-flex justify-content-start" style="color: grey;">
+										{{ name }}
+									</p>
+								{% endif %}
+								<p style="font-size: 14px;"> 
+									w/l
+								</p>
+							</td>
+						</tr>
+						{% endfor %}
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
