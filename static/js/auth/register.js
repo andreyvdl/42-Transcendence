@@ -8,7 +8,6 @@ function submitFormRegister(event) {
     
     fetch(url, {
         method: 'POST',
-		mode: 'same-origin',
         headers: {
             'X-CSRFToken': csrftoken,
         },
