@@ -19,7 +19,7 @@ def home(request):
             return render(request, 'base.html')
         elif not request.user.is_authenticated:
             return JsonResponse({'redirect': reverse('login')}, status=302)
-        return JsonResponse({'innerHtml': render_to_string('pages/home.html')})
+        return JsonResponse({'innerHtml': render_to_string('pages/home.html', request=request)})
     elif request.method == 'POST':
         if request.POST['game'] == 'pong':
             return JsonResponse({'redirect': reverse('pong')}, status=302)
