@@ -1,7 +1,7 @@
 function changeUsername(event) {
     event.preventDefault();
 
-    const url = BASE_URL + "/auth/account";
+    const url = BASE_URL + "/account/";
     const formChangeUsername = document.getElementById('formChangeUsername');
     const formData = new FormData(formChangeUsername);
 
@@ -27,9 +27,9 @@ function changeUsername(event) {
 function sendFriendRequest(event) {
     event.preventDefault();
 
-    const url = BASE_URL + '/api/make_friends/' + friend + '/';
     const friendToAddTextField = document.getElementById('friend-text-field');
     const friend = friendToAddTextField.value;
+    const url = BASE_URL + '/api/make_friends/' + friend + '/';
 
     fetch(url, {
         method: 'POST'
