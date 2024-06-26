@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import WebGL from 'three/addons/capabilities/WebGL.js'
 
 function sendResult(p2, scores, winner) {
-	fetch("/pages/save_match/" + p2 + "/" + scores.playerOne + "v" + scores.playerTwo + "/" + winner)
+	fetch("/api/save_match/" + p2 + "/" + scores.playerOne + "v" + scores.playerTwo + "/" + winner)
 		.then(response => {
 			if (response.status !== 200) {
 				return new Error(response.status)
@@ -269,7 +269,7 @@ Dica: mire nos cantos")
 		function animate() {
 			if (!GAME_RUNNING) {
 				window.onresize = null;
-				handleRedirect('/pages/home');
+				handleRedirect('/home/');
 				return;
 			}
 			playerMove(player);

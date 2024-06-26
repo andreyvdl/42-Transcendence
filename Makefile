@@ -21,6 +21,7 @@ clean:
 
 fclean: down clean
 	docker system prune -af
+	docker volume rm db-volume static-volume media-volume
 
 re: fclean all
 

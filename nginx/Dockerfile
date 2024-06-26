@@ -12,7 +12,7 @@ RUN openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:4096 \
 COPY ./nginx/nginx.conf /etc/nginx/conf.d/nginx.conf
 
 RUN mkdir -p /var/www/html
-COPY ./site /var/www/html
+COPY ./static /var/www/html/static
 RUN chmod 755 /var/www/html
 RUN chown -R www-data:www-data /var/www/html
 
