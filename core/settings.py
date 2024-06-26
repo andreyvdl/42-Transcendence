@@ -118,9 +118,6 @@ USE_TZ = True
 DEFAULT_AVATAR = os.path.join(BASE_DIR, 'static/avatar/default_avatar.png')
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-]
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = 'media/'
