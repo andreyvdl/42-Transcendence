@@ -1,6 +1,5 @@
 #!/bin/bash
 
-DB_PORT=5433
 DJANGO_PORT=8000
 MINIMUM_VERSION=3.10 # Django 5.0 requires Python 3.10 or higher
 ENV_FILE="./.env"
@@ -45,7 +44,7 @@ if [ -f $ENV_FILE ]; then
 	export $(grep -v '^#' $ENV_FILE | xargs)
 
 	export SQL_HOST="localhost"
-	export SQL_PORT=$DB_PORT
+	export INTRA_REDIRECT="http://localhost:8000/auth/intra"
 else
 	echo "ERROR: .env not found in path $ENV_FILE"
 	exit 1
@@ -62,5 +61,7 @@ if ! [ "$( docker container inspect -f '{{.State.Running}}' postgres )" = "true"
 	fi;
 fi
 
-$PYTHON_BIN manage.py makemigrations main && $PYTHON_BIN manage.py migrate && \
+
+$PYTHON_BIN manage.py makemigrations main && \
+$PYTHON_BIN manage.py migrate && \
 $PYTHON_BIN manage.py runserver $DJANGO_PORT

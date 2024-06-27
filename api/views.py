@@ -68,20 +68,20 @@ def make_friends(request, send_to_user: str):
 
 
 @login_required(login_url='login')
-def save_match(request, right_pk, score, pk_winner):
-    left_pk = request.user.id
-    if left_pk == right_pk:
+def save_match(request, right_name, score, name_winner):
+    left_name = request.user.username
+    if left_name == right_name:
         return JsonResponse({"error": "How come a player be against himself?"}, status=400)
-    elif pk_winner not in {right_pk, left_pk}:
+    elif name_winner not in {right_name, left_name}:
         return JsonResponse({"error": "How come a player that's not present in the match be the winner?"}, status=400)
-    elif not PongUser.objects.filter(pk=right_pk).exists():
+    elif not PongUser.objects.filter(username=right_name).exists():
         return JsonResponse({'error': 'Right player not found.'}, status=400)
-    elif not PongUser.objects.filter(pk=left_pk).exists():
+    elif not PongUser.objects.filter(username=left_name).exists():
         return JsonResponse({'error': 'Left player not found.'}, status=400)
 
-    left_player = PongUser.objects.get(pk=left_pk)
-    right_player = PongUser.objects.get(pk=right_pk)
-    winner = PongUser.objects.get(pk=pk_winner)
+    left_player = PongUser.objects.get(username=left_name)
+    right_player = PongUser.objects.get(username=right_name)
+    winner = PongUser.objects.get(username=name_winner)
 
     match = Match.objects.create(
         left_player=left_player,

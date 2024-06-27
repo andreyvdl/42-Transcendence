@@ -1,9 +1,7 @@
-const PREFIX = "http://localhost:8000/"
-
 function changeUsername(event) {
     event.preventDefault();
 
-    const url = "http://localhost:8000/pages/account";
+    const url = BASE_URL + "/account/";
     const formChangeUsername = document.getElementById('formChangeUsername');
     const formData = new FormData(formChangeUsername);
 
@@ -57,7 +55,7 @@ function sendFriendRequest(event) {
 
     const friendToAddTextField = document.getElementById('friend-text-field');
     const friend = friendToAddTextField.value;
-    const url = PREFIX + 'api/make_friends/' + friend + '/';
+    const url = BASE_URL + '/api/make_friends/' + friend + '/';
 
     fetch(url, {
         method: 'POST'
@@ -68,7 +66,7 @@ function acceptFriendRequest(event) {
     event.preventDefault();
 
     const userToAccept = event.target.className
-    const url = PREFIX + "api/answer_friend_request/" + userToAccept
+    const url = BASE_URL + "/api/answer_friend_request/" + userToAccept
 
     fetch(url, {
         method: 'POST',
@@ -82,7 +80,7 @@ function declineFriendRequest(event) {
     event.preventDefault();
 
     const userToDecline = event.target.className
-    const url = PREFIX + "api/answer_friend_request/" + userToDecline
+    const url = BASE_URL + "/api/answer_friend_request/" + userToDecline
 
     fetch(url, {
         method: 'POST',
@@ -106,7 +104,7 @@ function declineFriendRequest(event) {
 function logout(event) {
     event.preventDefault();
 
-    const url = PREFIX + "/auth/logout"
+    const url = BASE_URL + '/auth/logout';
 
     fetch(url, {
         method: 'POST'
@@ -125,7 +123,7 @@ function logout(event) {
 };
 
 function userOnline() {
-    const url = PREFIX + 'api/online';
+    const url = BASE_URL + '/api/online';
 
     fetch(url, {
         method: 'POST'
@@ -133,7 +131,7 @@ function userOnline() {
 }
 
 function userOffline() {
-    const url = PREFIX + 'api/offline';
+    const url = BASE_URL + '/api/offline';
 
     fetch(url, {
         method: 'POST'

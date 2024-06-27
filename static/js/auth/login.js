@@ -1,7 +1,7 @@
 function submitFormLogin(event) {
     event.preventDefault();
 
-    const url = "http://localhost:8000/auth/login";
+    const url = BASE_URL + "/auth/login";
     const formLogin = document.getElementById('formLogin');
     const formData = new FormData(formLogin);
 
@@ -29,6 +29,9 @@ function submitFormLogin(event) {
 
 export default function loginPageSetup() {
     const formLogin = document.getElementById('formLogin');
+	const intraLink = document.getElementById('intraLink');
+
+	intraLink.href = INTRA_URL;
 
     attachEvent(formLogin, 'submit', submitFormLogin);
 }

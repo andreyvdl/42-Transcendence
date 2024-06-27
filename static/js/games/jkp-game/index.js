@@ -122,7 +122,7 @@ export default function jkpGameInit() {
 				alert("Jogador 2 venceu");
 			}
 			window.onresize = null;
-			handleRedirect("/pages/home");
+			handleRedirect("/home/");
 			return;
 		}
 		contexto.clearRect(0, 0, quadro.width, quadro.height);
