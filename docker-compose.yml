@@ -7,7 +7,6 @@ services:
     image: django:transcendence
     volumes:
       - media-volume:/app/media
-      - static-volume:/app/static
     depends_on:
       db:
         condition: service_healthy
@@ -26,7 +25,6 @@ services:
     image: nginx:transcendence
     volumes:
       - media-volume:/var/www/html/media
-      - static-volume:/var/www/html/static
     depends_on:
       - django
     networks:
@@ -67,5 +65,3 @@ volumes:
     name: db-volume
   media-volume:
     name: media-volume
-  static-volume:
-    name: static-volume
