@@ -42,10 +42,9 @@ window.addEventListener("DOMContentLoaded", () => {
 	handleLocation();
 	window.onpopstate = handleLocation;
 
-	// navbar
 	window.addEventListener('click', (event) => {
 		const target = event.target;
-		if (target instanceof HTMLElement && target.classList.contains('nav-link') && target.hasAttribute("href"))
+		if (target instanceof HTMLElement && target.hasAttribute("href"))
 			route(event);
 	}, true);
 

@@ -27,6 +27,9 @@ function submitFormRegister(event) {
 
 export default function registerPageSetup() {
     const formRegister = document.getElementById('formRegister');
+    const intraLink = document.getElementById('intraLink');
+
+    intraLink.href = INTRA_URL;
 
     attachEvent(formRegister, 'submit', submitFormRegister);
 }
