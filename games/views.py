@@ -1,11 +1,7 @@
 import json
 from django.http import JsonResponse
-from django.shortcuts import render
 from django.template.loader import render_to_string
 from main.models import PongUser
-
-def _ajax(request):
-    return request.headers.get("X-Requested-With") == "XMLHttpRequest"
 
 def pong(request):
     data = json.loads(request.body)
