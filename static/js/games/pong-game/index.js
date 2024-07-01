@@ -2,7 +2,9 @@ import * as THREE from 'three';
 import WebGL from 'three/addons/capabilities/WebGL.js'
 
 function sendResult(p2, scores, winner) {
-	fetch("/api/save_match/" + p2 + "/" + scores.playerOne + "v" + scores.playerTwo + "/" + winner)
+	const url = `${BASE_URL}/api/save_match/${p2}/${scores.playerONE}v${scores.playerTwo}/${winner}`;
+
+	fetch(url)
 		.then(response => {
 			if (response.status !== 200) {
 				return new Error(response.status)
@@ -31,9 +33,9 @@ export default function pongGameInit() {
 	]
 
 	const assetsPath = "/static/assets/pong-game/"
-	const groundTextureImg = assetsPath + "table.png"
-	const ballTextureImg = assetsPath + "compcube.png"
-	const backgroundImg = assetsPath + "xique-xique.jpg"
+	const groundTextureImg = `${assetsPath}table.png`;
+	const ballTextureImg = `${assetsPath}compcube.png`;
+	const backgroundImg = `${assetsPath}xique-xique.jpg`;
 
 	var KEYS = {};
 

@@ -1,7 +1,7 @@
 function submitFormRegister(event) {
     event.preventDefault();
 
-    const url = BASE_URL + "/auth/register";
+    const url = `${BASE_URL}/auth/register`;
     const csrftoken = getCookie('csrftoken');
     const formRegister = document.getElementById('formRegister');
     const formData = new FormData(formRegister);

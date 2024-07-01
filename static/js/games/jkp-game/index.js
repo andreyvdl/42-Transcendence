@@ -35,10 +35,10 @@ export default function jkpGameInit() {
 	quadro.setAttribute("height", window.innerHeight);
 
 	const assetsPath = "/static/assets/jkp-game/"
-	IMAGENS.fogo.src = assetsPath + "fire.png";
-	IMAGENS.agua.src = assetsPath + "water.png";
-	IMAGENS.neve.src = assetsPath + "snow.png";
-	IMAGENS.questao.src = assetsPath + "question.png";
+	IMAGENS.fogo.src = `${assetsPath}fire.png`;
+	IMAGENS.agua.src = `${assetsPath}water.png`;
+	IMAGENS.neve.src = `${assetsPath}snow.png`;
+	IMAGENS.questao.src = `${assetsPath}question.png`;
 
 	function timer() {
 		if (g_temporizador) return;

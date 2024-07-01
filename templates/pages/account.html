@@ -58,11 +58,11 @@
 		</div>
 	</nav>
 	<div id="profileHeader" class="d-flex" style="background-color: rgb(54, 54, 54); height: 25vh; width: 55vw; margin-left: 24vw; color: white; font-size: 24px;" >
-		<div class="d-flex justify-content-start mt-1 ms-4">
-			<img src="{{ picture_url }}" alt="Profile Picture">
+		<div class="d-flex align-items-end justify-content-start mt-1 ms-4">
+			<img height="200px" src="{{ picture_url }}" alt="Profile Picture">
 		</div>
 		<div class="container" style="margin-left: 2vw">
-			<h3 class="username"  style="margin-top: 8vh; width: fit-content;color: white;">
+			<h3 class="username" style="margin-top: 8vh; width: fit-content;color: white;">
 				{{ username }}
 			</h3>
 			{% if msg %}

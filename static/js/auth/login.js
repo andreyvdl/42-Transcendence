@@ -1,7 +1,7 @@
 function submitFormLogin(event) {
     event.preventDefault();
 
-    const url = BASE_URL + "/auth/login";
+    const url = `${BASE_URL}/auth/login`;
     const formLogin = document.getElementById('formLogin');
     const formData = new FormData(formLogin);
 

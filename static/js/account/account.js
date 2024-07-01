@@ -1,7 +1,7 @@
 function changeUsername(event) {
     event.preventDefault();
 
-    const url = BASE_URL + "/account/";
+    const url = `${BASE_URL}/account/`;
     const formChangeUsername = document.getElementById('formChangeUsername');
     const formData = new FormData(formChangeUsername);
 
@@ -27,7 +27,7 @@ function changeUsername(event) {
 function changePicture(event) {
     event.preventDefault();
 
-    const url = PREFIX + 'api/update_picture/'
+    const url = `${BASE_URL}/api/update_picture/`;
     const formChangePicture = document.getElementById('formChangePicture');
     const formData = new FormData(formChangePicture);
 
@@ -55,7 +55,7 @@ function sendFriendRequest(event) {
 
     const friendToAddTextField = document.getElementById('friend-text-field');
     const friend = friendToAddTextField.value;
-    const url = BASE_URL + '/api/make_friends/' + friend + '/';
+    const url = `${BASE_URL}/api/make_friends/${friend}/`;
 
     fetch(url, {
         method: 'POST'
@@ -66,7 +66,7 @@ function acceptFriendRequest(event) {
     event.preventDefault();
 
     const userToAccept = event.target.className
-    const url = BASE_URL + "/api/answer_friend_request/" + userToAccept
+    const url = `${BASE_URL}/api/answer_friend_request/${userToAccept}`;
 
     fetch(url, {
         method: 'POST',
@@ -80,7 +80,7 @@ function declineFriendRequest(event) {
     event.preventDefault();
 
     const userToDecline = event.target.className
-    const url = BASE_URL + "/api/answer_friend_request/" + userToDecline
+    const url = `${BASE_URL}/api/answer_friend_request/${userToDecline}`;
 
     fetch(url, {
         method: 'POST',
@@ -104,7 +104,7 @@ function declineFriendRequest(event) {
 function logout(event) {
     event.preventDefault();
 
-    const url = BASE_URL + '/auth/logout';
+    const url = `${BASE_URL}/auth/logout`;
 
     fetch(url, {
         method: 'POST'
@@ -123,7 +123,7 @@ function logout(event) {
 };
 
 function userOnline() {
-    const url = BASE_URL + '/api/online';
+    const url = `${BASE_URL}/api/online`;
 
     fetch(url, {
         method: 'POST'
@@ -131,7 +131,7 @@ function userOnline() {
 }
 
 function userOffline() {
-    const url = BASE_URL + '/api/offline';
+    const url = `${BASE_URL}/api/offline`;
 
     fetch(url, {
         method: 'POST'
