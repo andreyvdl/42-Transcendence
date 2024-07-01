@@ -70,6 +70,7 @@ export default function pongGameInit() {
 
 	var timerToggle = false;
 	var timer = 0;
+	var versusIA = false;
 
 	function AI(ball3d, player){
 		let predicted = {x: 0, z: 0};
@@ -83,15 +84,12 @@ export default function pongGameInit() {
 		if ((predicted.x == 0 && predicted.z == 0) || (player[1].position.z == predicted.z)){
 			return;
 		}
-		if(player[1].position.z - 0.6 < predicted.z){
-			KEYS["ArrowDown"] = true;
+		if (player[1].position.z - 0.6 < predicted.z && player[1].position.z + 0.2 < 6) {
+			player[1].position.z += 0.2;
 		}
-		if(player[1].position.z + 0.6 > predicted.z){
-			KEYS["ArrowUp"] = true;
+		if (player[1].position.z + 0.6 > predicted.z && player[1].position.z - 0.2 > -6) {
+			player[1].position.z -= 0.2;
 		}
-		playerMove(player);
-		KEYS["ArrowDown"] = false;
-		KEYS["ArrowUp"] = false;
 		timer--;
 	}
 
@@ -169,10 +167,12 @@ export default function pongGameInit() {
 	}
 
 	function playerMove(player) {
-		if (KEYS["ArrowDown"] && player[1].position.z + 0.2 < 6)
-			player[1].position.z += 0.2;
-		if (KEYS["ArrowUp"] && player[1].position.z - 0.2 > -6)
-			player[1].position.z -= 0.2;
+		if (!versusIA) {
+			if (KEYS["ArrowDown"] && player[1].position.z + 0.2 < 6)
+				player[1].position.z += 0.2;
+			if (KEYS["ArrowUp"] && player[1].position.z - 0.2 > -6)
+				player[1].position.z -= 0.2;
+		}
 		if (KEYS["s"] && player[0].position.z + 0.2 < 6)
 			player[0].position.z += 0.2;
 		if (KEYS["w"] && player[0].position.z - 0.2 > -6)
@@ -319,6 +319,9 @@ Dica: mire nos cantos")
 				handleRedirect('/home/');
 				return;
 			}
+			versusIA = true;
+			if (versusIA)
+				AI(ball3d, player);
 			playerMove(player);
 			if (!BALLPAUSE) {
 				scoreUpdate(canvas, sprites);
