@@ -26,7 +26,13 @@ function updatePlayerCount() {
 		divPlayers.innerHTML = `
 			<label for="player2">Player 2:</label>
 			<input type="text" id="player2" name="player2" required/>
+			<label for="bot">Bot</label>
+			<input type="checkbox" id="bot" name="bot"/>
 		`;
+		const botCheckBox = document.querySelector('input[name="bot"]');
+		botCheckBox.disabled = false;
+		attachEvent(botCheckBox, 'change', toggleBot)
+		
 	}
 	else if (selectedMode.value === "torneio") {
 		divPlayers.innerHTML = `
@@ -37,6 +43,21 @@ function updatePlayerCount() {
 			<label for="player4">Player 4:</label>
 			<input type="text" id="player4" name="player4" required/>
 		`;
+	}
+}
+
+function toggleBot(event) {
+    const botCheckbox = event.target;
+	const playerInput = document.getElementById("player2");
+
+	if (playerInput) {
+		if (botCheckbox.checked) {
+			playerInput.value = "Marvin";
+			playerInput.readOnly = true;
+		} else {
+			playerInput.value = "";
+			playerInput.readOnly = false;
+		}
 	}
 }
 
