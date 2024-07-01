@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import WebGL from 'three/addons/capabilities/WebGL.js'
 
 function sendResult(p2, scores, winner) {
-	const url = `${BASE_URL}/api/save_match/${p2}/${scores.playerONE}v${scores.playerTwo}/${winner}`;
+	const url = `${BASE_URL}/api/save_match/${p2}/${scores.playerOne}v${scores.playerTwo}/${winner}`;
 
 	fetch(url)
 		.then(response => {
@@ -142,23 +142,23 @@ export default function pongGameInit() {
 		else if (Math.abs(ball3d.position.x) > 10) {
 			if (ball3d.position.x < 0) {
 				if (SCORE.playerTwo == 1) {
-					alert('Player Two Wins!');
 					GAME_RUNNING = false;
 					SCORE.playerTwo = 2;
 					sendResult(PLAYER2, SCORE, PLAYER2);
 					SCORE.playerOne = 0;
 					SCORE.playerTwo = -1;
+					alert('Player Two Wins!');
 				}
 				SCORE.playerTwo++;
 			}
 			else {
 				if (SCORE.playerOne == 1) {
-					alert('Player One Wins!');
 					GAME_RUNNING = false;
 					SCORE.playerOne = 2;
 					sendResult(PLAYER2, SCORE, PLAYER1);
 					SCORE.playerOne = -1;
 					SCORE.playerTwo = 0;
+					alert('Player One Wins!');
 				}
 				SCORE.playerOne++;
 			}
