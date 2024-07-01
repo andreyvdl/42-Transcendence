@@ -96,10 +96,12 @@ def save_match(request, right_name, score, name_winner):
 @csrf_exempt
 @login_required(login_url='login')
 def update_picture(request):
+    permited_ext = [".png", ".jpeg", ".jpg", ".gif"]
     if request.method == "POST":
         try:
             file = request.FILES["file"]
-        except MultiValueDictKeyError:
+            permited_ext.index(file.name[file.name.rfind("."):])
+        except:
             file = None
         request.user.profile_picture = file
         request.user.save()
