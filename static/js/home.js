@@ -1,18 +1,18 @@
 export default function homePageSetup() {
-	const modeRadios = document.querySelectorAll('input[name="mode"]');
+	const modeOptions = document.querySelectorAll('option[name="mode"]');
 	const gameForm = document.getElementById("form-game");
+	if (modeOptions.length === 0) return;
 
-	if (modeRadios.length === 0) return;
-
-	modeRadios.forEach(radio => {
-		radio.addEventListener('change', updatePlayerCount);
+	modeOptions.forEach(option => {
+		
+		option.addEventListener('click', updatePlayerCount);
 	});
 	updatePlayerCount();
 	attachEvent(gameForm, 'submit', redirToGame);
 }
 
 function updatePlayerCount() {
-	const selectedMode = document.querySelector('input[name="mode"]:checked');
+	const selectedMode = document.querySelector('#modeSelect option:checked');
 	const divPlayers = document.getElementById("players");
 
 	if (!selectedMode || !divPlayers) return;
@@ -24,8 +24,7 @@ function updatePlayerCount() {
 
 	if (selectedMode.value === "x1") {
 		divPlayers.innerHTML = `
-			<label for="player2">Player 2:</label>
-			<input type="text" id="player2" name="player2" required/>
+			<input type="text" placeholder="Player 2" id="player2" name="player2" required/>
 		`;
 	}
 	else if (selectedMode.value === "torneio") {
