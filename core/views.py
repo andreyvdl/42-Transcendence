@@ -81,6 +81,46 @@ def _get_friends(pk):
 
     return friends
 
+def _get_matches(pk):
+    matches = Match.objects.filter(Q(left_player=pk) | Q(right_player=pk))
+    username = PongUser.objects.get(pk=pk).get_username()
+    results = []
+
+    for m in matches:
+        win = True if m.winner.get_username() == username else False
+
+        if username == m.left_player.get_username():
+            results.append((
+                m.date.strftime("%d/%b|%H:%M"),
+                m.score,
+                win,
+                m.right_player.get_username()
+            ))
+        else:
+            results.append((
+                m.date.strftime("%d/%b|%H:%M"),
+                m.score,
+                win,
+                m.left_player.get_username()
+            ))
+
+# pass this to a isolated function?
+    total_matches = matches.count()
+    total_wins = matches.filter(winner=pk).count()
+
+    try:
+        winrate = (float(total_wins) / float(total_matches)) * 100
+    except:
+        winrate = 0.0
+
+    user_info = {
+        "total": total_matches,
+        "wins": total_wins,
+        "loses": matches.exclude(winner=pk).count(),
+        "winrate": round(winrate, 1),
+    }
+
+    return results, user_info
 
 class AccountView(View):
     @staticmethod
@@ -91,7 +131,7 @@ class AccountView(View):
         if not request.user.is_authenticated:
             return JsonResponse({'redirect': reverse('login')}, status=302)
 
-        matches = Match.objects.filter(Q(left_player=request.user.id) | Q(right_player=request.user.id))
+        matches, user_info = _get_matches(request.user.id)
         pend_friends = _get_pending_friend_requests(request.user.id)
         friends = _get_friends(request.user.id)
         ctx = {
@@ -102,6 +142,7 @@ class AccountView(View):
             'picture_url': _get_profile_pic(request.user),
             'friends': friends,
             'matches': matches,
+            'user_info': user_info,
         }
         inner_html = render_to_string('pages/account.html', ctx, request=request)
         return JsonResponse({'innerHtml': inner_html})
@@ -109,7 +150,7 @@ class AccountView(View):
     @staticmethod
     def post(request):
         new_username = request.POST['new_username'].strip()
-        matches = Match.objects.filter(Q(left_player=request.user.id) | Q(right_player=request.user.id))
+        matches, user_info = _get_matches(request.user.id)
         pend_friends = _get_pending_friend_requests(request.user.id)
         friends = _get_friends(request.user.id)
         ctx = {
@@ -120,6 +161,7 @@ class AccountView(View):
             'friends': friends,
             'pend_friends': pend_friends,
             'matches': matches,
+            'user_info': user_info,
         }
         if PongUser.objects.filter(username=new_username).exists():
             ctx['msg'] = '🔴 User already exists.'

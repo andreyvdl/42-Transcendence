@@ -72,19 +72,19 @@
 			<div class="d-flex">
 				<div class="container">
 					<h5 style="text-align: center; margin-top: 2vh;">Matches</h5>
-					<p style="text-align: center;">0</p>
+					<p style="text-align: center;">{{ user_info.total }}</p>
 				</div>
 				<div class="container">
 					<h5 style="text-align: center; margin-top: 2vh;">Win</h5>
-					<p style="text-align: center;">0</p>
+					<p style="text-align: center;">{{ user_info.wins }}</p>
 				</div>
 				<div class="container">
 					<h5 style="text-align: center; margin-top: 2vh;">Loss</h5>
-					<p style="text-align: center;">0</p>
+					<p style="text-align: center;">{{ user_info.loses }}</p>
 				</div>
 				<div class="container">
 					<h5 style="text-align: center; margin-top: 2vh;">WinRate</h5>
-					<p style="text-align: center;">0%</p>
+					<p style="text-align: center;">{{ user_info.winrate }}%</p>
 				</div>
 			</div>
 		</div>
@@ -96,43 +96,29 @@
 					Matches
 				</div>
 				<div class="card-body overflow-auto shadow" style="height: 40vh;">
-					<table class="table table-dark table-bordered">
-						<tr class="table-dark">
-							<td class="d-flex align-items-center">
-								<p>06-06-24</p>
-								<p style="margin-left: 5vw; margin-right: 5vw;">0x1</p>
-								<p>Loss</p>
-							</td>
-						</tr>
-						<tr class="table-dark">
-							<td class="d-flex align-items-center">
-								<p>06-06-24</p>
-								<p style="margin-left: 5vw; margin-right: 5vw;">0x1</p>
-								<p>Loss</p>
-							</td>
-						</tr>
-						<tr class="table-dark">
-							<td class="d-flex align-items-center">
-								<p>06-06-24</p>
-								<p style="margin-left: 5vw; margin-right: 5vw;">0x1</p>
-								<p>Loss</p>
-							</td>
-						</tr>
-						<tr class="table-dark">
-							<td class="d-flex align-items-center">
-								<p>06-06-24</p>
-								<p style="margin-left: 5vw; margin-right: 5vw;">0x1</p>
-								<p>Loss</p>
-							</td>
-						</tr>
-						<tr class="table-dark">
-							<td class="d-flex align-items-center">
-								<p>06-06-24</p>
-								<p style="margin-left: 5vw; margin-right: 5vw;">0x1</p>
-								<p>Loss</p>
-							</td>
-						</tr>
-					</table>
+					{% if user_info.total %}
+						<table class="table table-dark table-bordered">
+							{% for date, score, win, rival in matches %}
+								{% if win %}
+									<tr class="table-dark">
+										<td class="d-flex align-items-center" style="background-color: green;">
+											<p>{{ date }}</p>
+											<p style="margin-left: 5vw; margin-right: 5vw;">{{ score }}</p>
+											<p>{{ rival }}</p>
+										</td>
+									</tr>
+								{% else %}
+									<tr class="table-dark">
+										<td class="d-flex align-items-center" style="background-color: red;">
+											<p>{{ date }}</p>
+											<p style="margin-left: 5vw; margin-right: 5vw;">{{ score }}</p>
+											<p>{{ rival }}</p>
+										</td>
+									</tr>
+								{% endif%}
+							{% endfor %}
+						</table>
+					{% endif %}
 				</div>
 			</div>
 		</div>
