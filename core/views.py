@@ -87,24 +87,13 @@ def _get_matches(pk):
     results = []
 
     for m in matches:
-        win = True if m.winner.get_username() == username else False
+        results.append((
+            m.date.strftime("%d/%b|%H:%M"),
+            m.score,
+            True if m.winner.get_username() == username else False,
+            m.right_player.get_username() if username == m.left_player.get_username() else m.left_player.get_username(),
+        ))
 
-        if username == m.left_player.get_username():
-            results.append((
-                m.date.strftime("%d/%b|%H:%M"),
-                m.score,
-                win,
-                m.right_player.get_username()
-            ))
-        else:
-            results.append((
-                m.date.strftime("%d/%b|%H:%M"),
-                m.score,
-                win,
-                m.left_player.get_username()
-            ))
-
-# pass this to a isolated function?
     total_matches = matches.count()
     total_wins = matches.filter(winner=pk).count()
 
