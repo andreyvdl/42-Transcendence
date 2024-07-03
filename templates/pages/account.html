@@ -101,18 +101,18 @@
 						<table class="table table-dark table-bordered">
 							{% for date, score, win, rival in matches %}
 								{% if win %}
-									<tr class="table-dark">
-										<td class="d-flex align-items-center" style="background-color: green;">
+									<tr class="table-dark table-bordered border-success" >
+										<td class="d-flex align-items-center" style="color: lightgreen;">
 											<p>{{ date }}</p>
-											<p style="margin-left: 5vw; margin-right: 5vw;">{{ score }}</p>
+											<p style="margin-left: 3vw; margin-right: 3vw;">{{ score }}</p>
 											<p>{{ rival }}</p>
 										</td>
 									</tr>
 								{% else %}
-									<tr class="table-dark">
-										<td class="d-flex align-items-center" style="background-color: red;">
+									<tr class="table-dark table-bordered border-danger">
+										<td class="d-flex align-items-center" style="color: lightcoral;">
 											<p>{{ date }}</p>
-											<p style="margin-left: 5vw; margin-right: 5vw;">{{ score }}</p>
+											<p style="margin-left: 3vw; margin-right: 3vw;">{{ score }}</p>
 											<p>{{ rival }}</p>
 										</td>
 									</tr>
