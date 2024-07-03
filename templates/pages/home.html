@@ -22,7 +22,7 @@
 		</div>
 	</nav>
 	<div id="homeBody" class="container-fluid" style="background-color: rgb(54, 54, 54); height: 94vh; width: 55vw; margin-left: 24vw; margin-right: 1vw; font-size: 24px;">
-		<div class="d-grid gap-2 col-6 mx-auto">
+		<div class="d-grid gap-2 col-6 mx-auto"">
 			<div class="container-fluid" style="margin-top: 15vh;">
 				<h1 class="text-center" style="color: white;">Welcome to Pongas</h1>
 			</div>
@@ -43,16 +43,13 @@
 
 				<div id=players class="mt-3 container-fluid"></div>
 				
+				{% if err_msg %}
+					<p class="text-center" style="color: red; align-self: center;">{{ err_msg }}</p>
+				{% endif %}
 				<div class="d-grid gap-2 col-6 mx-auto mt-3">
 					<button class="btn btn-dark btn-lg" id="startGame" type="submit" disabled>Start Game</button>
 				</div>
 			</form>
 		</div>
-		{% if err_msg %}
-			<p>{{ err_msg }}</p>
-		{% endif %}
-		{% if error %}
-			<p>{{ error_msg }}</p>
-		{% endif %}
 	</div>
 </div>
