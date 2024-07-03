@@ -20,29 +20,6 @@ def home(request):
         elif not request.user.is_authenticated:
             return JsonResponse({'redirect': reverse('login')}, status=302)
         return JsonResponse({'innerHtml': render_to_string('pages/home.html', request=request)})
-    elif request.method == 'POST':
-        if request.POST['game'] == 'pong':
-            return JsonResponse(
-                {
-                    'redirect': reverse('pong'),
-                    'payload':
-                    {
-                        'player1': request.user.username,
-                        'player2': request.POST['player2'],
-                    },
-                },
-                status=302)
-        elif request.POST['game'] == 'jkp':
-            return JsonResponse(
-                {
-                    'redirect': reverse('jkp'),
-                    'payload':
-                    {
-                        'player1': request.user.username,
-                        'player2': request.POST['player2'],
-                    },
-                },
-                status=302)
     JsonResponse({'error': 'SOMETHING WENT WRONG!'}, status=400)
 
 

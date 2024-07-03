@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import WebGL from 'three/addons/capabilities/WebGL.js'
 
 function sendResult(p2, scores, winner) {
+	if (VERSUS_IA === "on") return;
 	fetch("/api/save_match/" + p2 + "/" + scores.playerOne + "v" + scores.playerTwo + "/" + winner)
 		.then(response => {
 			if (response.status !== 200) {
@@ -70,7 +71,6 @@ export default function pongGameInit() {
 
 	var timerToggle = false;
 	var timer = 0;
-	var versusIA = false;
 
 	function AI(ball3d, player){
 		let predicted = {x: 0, z: 0};
@@ -167,7 +167,7 @@ export default function pongGameInit() {
 	}
 
 	function playerMove(player) {
-		if (!versusIA) {
+		if (VERSUS_IA === "off") {
 			if (KEYS["ArrowDown"] && player[1].position.z + 0.2 < 6)
 				player[1].position.z += 0.2;
 			if (KEYS["ArrowUp"] && player[1].position.z - 0.2 > -6)
@@ -319,8 +319,7 @@ Dica: mire nos cantos")
 				handleRedirect('/home/');
 				return;
 			}
-			versusIA = true;
-			if (versusIA)
+			if (VERSUS_IA === "on")
 				AI(ball3d, player);
 			playerMove(player);
 			if (!BALLPAUSE) {

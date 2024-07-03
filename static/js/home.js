@@ -22,19 +22,13 @@ function updatePlayerCount() {
 	startbtn.removeAttribute("disabled");
 	divPlayers.innerHTML = "";
 
-	if (selectedMode.value === "x1") {
+	if (selectedMode.value === "pvp") {
 		divPlayers.innerHTML = `
 			<label for="player2">Player 2:</label>
 			<input type="text" id="player2" name="player2" required/>
-			<label for="bot">Bot</label>
-			<input type="checkbox" id="bot" name="bot"/>
 		`;
-		const botCheckBox = document.querySelector('input[name="bot"]');
-		botCheckBox.disabled = false;
-		attachEvent(botCheckBox, 'change', toggleBot)
-		
 	}
-	else if (selectedMode.value === "torneio") {
+	else if (selectedMode.value === "tournament") {
 		divPlayers.innerHTML = `
 			<label for="player2">Player 2:</label>
 			<input type="text" id="player2" name="player2" required/>
@@ -44,29 +38,21 @@ function updatePlayerCount() {
 			<input type="text" id="player4" name="player4" required/>
 		`;
 	}
-}
-
-function toggleBot(event) {
-    const botCheckbox = event.target;
-	const playerInput = document.getElementById("player2");
-
-	if (playerInput) {
-		if (botCheckbox.checked) {
-			playerInput.value = "Marvin";
-			playerInput.readOnly = true;
-		} else {
-			playerInput.value = "";
-			playerInput.readOnly = false;
-		}
+	else if (selectedMode.value === "pve") {
+		divPlayers.innerHTML = `
+			<label for="bot">Bot:</label>
+			<input type="text" id="bot" name="bot" value="Marvin" disabled/>
+		`;
 	}
 }
 
 function redirToGame(event) {
 	event.preventDefault();
 
-	const url = BASE_URL + "/home/";
 	const formGame = document.getElementById('form-game');
 	const formData = new FormData(formGame);
+	const game = formData.get("game");
+	const url = `${BASE_URL}/games/${game}`
 
 	fetch(url, {
 		method: 'POST',
@@ -75,26 +61,13 @@ function redirToGame(event) {
 		},
 		body: formData,
 	})
-		.then((response) => {
+		.then(response => {
 			return response.json();
 		})
-		.then((data) => {
-			if (data.redirect)
-				fetch(data.redirect, {
-					method: 'POST',
-					headers: {
-						'X-CSRFToken': getCookie('csrftoken'),
-					},
-					body: JSON.stringify(data.payload),
-				})
-					.then(response2 => {
-						if (!response2.ok) throw new Error("OPS!");
-						return response2.json();
-					})
-					.then(data2 => {
-						if (data2.innerHtml) updatePage(data2.innerHtml);
-					})
-					.catch(error => console.log(error));
+		.then(data => {
+			if (data.innerHtml)
+				updatePage(data.innerHtml);
 		})
+		.catch(error => console.log(error));
 }
 
