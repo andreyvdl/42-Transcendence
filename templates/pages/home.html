@@ -1,7 +1,7 @@
 <div class="container-fluid" id="home-page" style="background-color: rgb(80,80,80); height: 100%;">
 	<nav id="nav" class="navbar  border-body " data-bs-theme="dark" style="background-color: rgb(54, 54, 54); width: 55vw; margin-left:24vw">
 		<div class="container-fluid">
-			<a class="navbar-brand" href="{% url 'home' %}">Pongas</a>
+			<p class="navbar-brand">Pongas</p>
 			<button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">	
 				<span class="navbar-toggler-icon"></span>
 			</button>
@@ -12,8 +12,8 @@
 				</div>
 				<div class="offcanvas-body" style="background-color: rgb(54, 54, 54);">
 					<ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-						<a href="{% url 'account' %}" id="account-btn" class="btn btn-outline-success" style="margin-top:30vh;" >Account</a>
-						<button id="logout-btn" class="btn btn-outline-danger" style="margin-top:30vh;" >Logout</button>
+						<a href="{% url 'account' %}" id="account-btn" class="btn btn-outline-success" style="margin-top:80vh;" >Account</a>
+						<button id="logout-btn" class="btn btn-outline-danger" style="margin-top:1vh;" >Logout</button>
 					</ul>
 				
 
@@ -21,42 +21,28 @@
 			</div>
 		</div>
 	</nav>
-	<div id="homeBody" class="container-fluid" style="background-color: rgb(54, 54, 54); height: 94.3%; width: 55vw; margin-left: 24vw; margin-right: 1vw; font-size: 24px;">
-		
+	<div id="homeBody" class="container-fluid" style="background-color: rgb(54, 54, 54); height: 94vh; width: 55vw; margin-left: 24vw; margin-right: 1vw; font-size: 24px;">
 		<div class="d-grid gap-2 col-6 mx-auto">
-			<form id="form-game" >
+			<div class="container-fluid" style="margin-top: 15vh;">
+				<h1 class="text-center" style="color: white;">Welcome to Pongas</h1>
+			</div>
+			<form id="form-game" style="margin-top: 5vh;">
 				{% csrf_token %}
-				Select game:
-				<label for="pong">Pong</label>
-				<input type="radio" id="pong" name="game" value="pong" required/>
-				<label for="jankenpon">JanKenPon</label>
-				<input type="radio" id="jankenpon" name="game" value="jkp" required/>
-
-				<br/>
-
-				Select mode:
-				<label for="x1">1v1</label>
-				<input type="radio" id="x1" name="mode" value="x1" required/>
-				<label for="tournament">Tournament</label>
-				<input type="radio" id="tournament" name="mode" value="torneio" required/>
-
-				<select title="Game Options" class="form-select form-select-lg mb-3" aria-label="Game Options">
+				<select title="Game Options" id="gameSelect" name="game" class="form-select form-select-lg mb-3">
 					<option id="title" value="0" disabled selected>Select Game</option>
-					<option id="pong" name="game" value="pong">Pong</option>
-					<option id="jankenpon" name="game" value="jkp">JanKenPon</option>
+					<option id="pong" value="pong" >Pong </option>
+					<option id="jankenpon" value="jkp">JanKenPon</option>
 				</select>
 
-				<select title="Match Options" id="modeSelect" class="form-select form-select-lg" >
+				<select title="Match Options" id="modeSelect" name="mode" class="form-select form-select-lg">
 					<option id="title" value="0" disabled selected>Select Mode</option>
-					<option id="x1" name="mode" value="x1">1v1</option>
-					<option id="tournament" name="mode" value="torneio">Tournament</option>
+					<option id="x1" value="x1">1v1</option>
+					<option id="tournament" value="torneio">Tournament</option>
 					<option id="ia" value="ia">PVE</option>	
 				</select>
-				<div class="mt-3 container-fluid">
-					<input class="mt-2 form-control form-control-lg" style="background-color: grey; color: white;" type="text" placeholder="Player 2" id="player2" name="player2" required/>
-					<input class="mt-2 form-control form-control-lg" type="text" placeholder="Player 2" id="player2" name="player2" required/>
-					<input class="mt-2 form-control form-control-lg" type="text" placeholder="Player 4" id="player2" name="player2" required/>
-				</div>
+
+				<div id=players class="mt-3 container-fluid"></div>
+				
 				<div class="d-grid gap-2 col-6 mx-auto mt-3">
 					<button class="btn btn-dark btn-lg" id="startGame" type="submit" disabled>Start Game</button>
 				</div>
