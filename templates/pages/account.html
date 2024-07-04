@@ -4,8 +4,7 @@
 		<div class="container-fluid">
 			<a class="navbar-brand" href="{% url 'home' %}">Pongas</a>
 			<button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">	
-				<span class="navbar-toggler
-				-icon"></span>
+				<span class="navbar-toggler-icon"></span>
 			</button>
 			<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
 				<div class="offcanvas-header" style="background-color: rgb(54, 54, 54);">
@@ -100,18 +99,18 @@
 						<table class="table table-dark table-bordered">
 							{% for date, score, win, rival in matches %}
 								{% if win %}
-									<tr class="table-dark">
-										<td class="d-flex align-items-center" style="background-color: green;">
+									<tr class="table-dark table-bordered border-success" >
+										<td class="d-flex align-items-center" style="color: lightgreen;">
 											<p>{{ date }}</p>
-											<p style="margin-left: 5vw; margin-right: 5vw;">{{ score }}</p>
+											<p style="margin-left: 2vw; margin-right: 2vw;">{{ score }}</p>
 											<p>{{ rival }}</p>
 										</td>
 									</tr>
 								{% else %}
-									<tr class="table-dark">
-										<td class="d-flex align-items-center" style="background-color: red;">
+									<tr class="table-dark table-bordered border-danger">
+										<td class="d-flex align-items-center" style="color: lightcoral;">
 											<p>{{ date }}</p>
-											<p style="margin-left: 5vw; margin-right: 5vw;">{{ score }}</p>
+											<p style="margin-left: 2vw; margin-right: 2vw;">{{ score }}</p>
 											<p>{{ rival }}</p>
 										</td>
 									</tr>
