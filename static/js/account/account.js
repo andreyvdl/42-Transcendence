@@ -65,7 +65,7 @@ function sendFriendRequest(event) {
 function acceptFriendRequest(event) {
     event.preventDefault();
 
-    const userToAccept = event.target.className
+    const userToAccept = event.target.value
     const url = `${BASE_URL}/api/answer_friend_request/${userToAccept}`;
 
     fetch(url, {
@@ -79,7 +79,7 @@ function acceptFriendRequest(event) {
 function declineFriendRequest(event) {
     event.preventDefault();
 
-    const userToDecline = event.target.className
+    const userToDecline = event.target.value
     const url = `${BASE_URL}/api/answer_friend_request/${userToDecline}`;
 
     fetch(url, {
