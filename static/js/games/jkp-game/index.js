@@ -35,10 +35,26 @@ export default function jkpGameInit() {
 	quadro.setAttribute("height", window.innerHeight);
 
 	const assetsPath = "/static/assets/jkp-game/"
-	IMAGENS.fogo.src = assetsPath + "fire.png";
-	IMAGENS.agua.src = assetsPath + "water.png";
-	IMAGENS.neve.src = assetsPath + "snow.png";
-	IMAGENS.questao.src = assetsPath + "question.png";
+	IMAGENS.fogo.src = `${assetsPath}fire.png`;
+	IMAGENS.agua.src = `${assetsPath}water.png`;
+	IMAGENS.neve.src = `${assetsPath}snow.png`;
+	IMAGENS.questao.src = `${assetsPath}question.png`;
+
+	function enviarResultado(p2, scores, vencedor) {
+		const url = `${BASE_URL}/api/save_match/${p2}/${scores.p1}v${scores.p2}/${vencedor}`;
+
+		fetch(url)
+			.then(response => {
+				if (response.status !== 200) {
+					return new Error(response.status)
+				}
+				return response.json()
+			})
+			.then(data => {
+				console.log(data);
+			})
+			.catch(error => console.log(error));
+	}
 
 	function timer() {
 		if (g_temporizador) return;
@@ -116,9 +132,11 @@ export default function jkpGameInit() {
 	function renderizador() {
 		if (!GAME_RUNNING) {
 			if (JOGADOR[0].pontos > JOGADOR[1].pontos) {
+				enviarResultado(PLAYER2, {p1: JOGADOR[0].pontos, p2: JOGADOR[1].pontos}, PLAYER1);
 				alert("Jogador 1 venceu");
 			}
 			else {
+				enviarResultado(PLAYER2, {p1: JOGADOR[0].pontos, p2: JOGADOR[1].pontos}, PLAYER2);
 				alert("Jogador 2 venceu");
 			}
 			window.onresize = null;

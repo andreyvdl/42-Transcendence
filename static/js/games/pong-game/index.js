@@ -3,7 +3,9 @@ import WebGL from 'three/addons/capabilities/WebGL.js'
 
 function sendResult(p2, scores, winner) {
 	if (VERSUS_IA === "on") return;
-	fetch("/api/save_match/" + p2 + "/" + scores.playerOne + "v" + scores.playerTwo + "/" + winner)
+	const url = `${BASE_URL}/api/save_match/${p2}/${scores.playerOne}v${scores.playerTwo}/${winner}`;
+
+	fetch(url)
 		.then(response => {
 			if (response.status !== 200) {
 				return new Error(response.status)
@@ -32,9 +34,9 @@ export default function pongGameInit() {
 	]
 
 	const assetsPath = "/static/assets/pong-game/"
-	const groundTextureImg = assetsPath + "table.png"
-	const ballTextureImg = assetsPath + "compcube.png"
-	const backgroundImg = assetsPath + "xique-xique.jpg"
+	const groundTextureImg = `${assetsPath}table.png`;
+	const ballTextureImg = `${assetsPath}compcube.png`;
+	const backgroundImg = `${assetsPath}xique-xique.jpg`;
 
 	var KEYS = {};
 
@@ -187,23 +189,23 @@ export default function pongGameInit() {
 		else if (Math.abs(ball3d.position.x) > 10) {
 			if (ball3d.position.x < 0) {
 				if (SCORE.playerTwo == 1) {
-					alert('Player Two Wins!');
 					GAME_RUNNING = false;
 					SCORE.playerTwo = 2;
 					sendResult(PLAYER2, SCORE, PLAYER2);
 					SCORE.playerOne = 0;
 					SCORE.playerTwo = -1;
+					alert('Player Two Wins!');
 				}
 				SCORE.playerTwo++;
 			}
 			else {
 				if (SCORE.playerOne == 1) {
-					alert('Player One Wins!');
 					GAME_RUNNING = false;
 					SCORE.playerOne = 2;
 					sendResult(PLAYER2, SCORE, PLAYER1);
 					SCORE.playerOne = -1;
 					SCORE.playerTwo = 0;
+					alert('Player One Wins!');
 				}
 				SCORE.playerOne++;
 			}

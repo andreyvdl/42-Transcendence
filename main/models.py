@@ -19,6 +19,9 @@ class PongUser(AbstractUser):
     def get_online(self):
         return self.online
 
+    def get_username(self):
+        return self.username
+
 
 class Match(models.Model):
     left_player = models.ForeignKey(PongUser,

@@ -1,33 +1,55 @@
-<div class="container-fluid" id="home-page">
-	<h1>HOME PAGE</h1>
-	{% if err_msg %}
-		<p>{{ err_msg }}</p>
-	{% endif %}
-	<form id="form-game">
-		{% csrf_token %}
-		Select game:
-		<label for="pong">Pong</label>
-		<input type="radio" id="pong" name="game" value="pong" required/>
-		<label for="jankenpon">JanKenPon</label>
-		<input type="radio" id="jankenpon" name="game" value="jkp" required/>
+<div class="container-fluid" id="home-page" style="background-color: rgb(80,80,80); height: 100%;">
+	<nav id="nav" class="navbar  border-body " data-bs-theme="dark" style="background-color: rgb(54, 54, 54); width: 55vw; margin-left:24vw">
+		<div class="container-fluid">
+			<p class="navbar-brand">Pongas</p>
+			<button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">	
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+				<div class="offcanvas-header" style="background-color: rgb(54, 54, 54);">
+					<h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menu</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+				</div>
+				<div class="offcanvas-body" style="background-color: rgb(54, 54, 54);">
+					<ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+						<a href="{% url 'account' %}" id="account-btn" class="btn btn-outline-success" style="margin-top:80vh;" >Account</a>
+						<button id="logout-btn" class="btn btn-outline-danger" style="margin-top:1vh;" >Logout</button>
+					</ul>
+				
 
-		<br/>
+				</div>
+			</div>
+		</div>
+	</nav>
+	<div id="homeBody" class="container-fluid" style="background-color: rgb(54, 54, 54); height: 94vh; width: 55vw; margin-left: 24vw; margin-right: 1vw; font-size: 24px;">
+		<div class="d-grid gap-2 col-6 mx-auto"">
+			<div class="container-fluid" style="margin-top: 15vh;">
+				<h1 class="text-center" style="color: white;">Welcome to Pongas</h1>
+			</div>
+			<form id="form-game" style="margin-top: 5vh;">
+				{% csrf_token %}
+				<select title="Game Options" id="gameSelect" name="game" class="form-select form-select-lg mb-3">
+					<option id="title" value="0" disabled selected>Select Game</option>
+					<option id="pong" value="pong" >Pong </option>
+					<option id="jankenpon" value="jkp">JanKenPon</option>
+				</select>
 
-		Select mode:
-		<label for="pvp">PvP</label>
-		<input type="radio" id="pvp" name="mode" value="pvp" required/>
-		<label for="tournament">Tournament</label>
-		<input type="radio" id="tournament" name="mode" value="tournament" required/>
-		<label for="pve">PvE</label>
-		<input type="radio" id="pve" name="mode" value="pve" required/>
+				<select title="Match Options" id="modeSelect" name="mode" class="form-select form-select-lg">
+					<option id="title" value="0" disabled selected>Select Mode</option>
+					<option id="pvp" value="pvp">1v1</option>
+					<option id="tournament" value="tournament">Tournament</option>
+					<option id="pve" value="pve">PVE</option>	
+				</select>
 
-		<br/>
-
-		<div id="players"></div>
-
-		<button id="startGame" type="submit" disabled>Start</button>
-	</form>
-	{% if error %}
-		<p>{{ error_msg }}</p>
-	{% endif %}
+				<div id=players class="mt-3 container-fluid"></div>
+				
+				{% if err_msg %}
+					<p class="text-center" style="color: red; align-self: center;">{{ err_msg }}</p>
+				{% endif %}
+				<div class="d-grid gap-2 col-6 mx-auto mt-3">
+					<button class="btn btn-dark btn-lg" id="startGame" type="submit" disabled>Start Game</button>
+				</div>
+			</form>
+		</div>
+	</div>
 </div>
