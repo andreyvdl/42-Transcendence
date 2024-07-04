@@ -130,20 +130,21 @@
 					<table class="table table-dark table-bordered">
 						{% for name, online in friends %}
 						<tr class="table-dark">
-							<td>
-								{% if online %}
+							{% if online %}
+								<td class="table-bordered border-success">
 									<p class="d-flex justify-content-start" style="color: lightgreen;">
 										{{ name }}
 									</p>
-								{% else %} 
+							{% else %} 
+								<td class="table-bordered border-secondary">
 									<p class="d-flex justify-content-start" style="color: grey;">
 										{{ name }}
 									</p>
-								{% endif %}
-								<p style="font-size: 14px;"> 
-									w/l
-								</p>
-							</td>
+							{% endif %}
+									<p style="font-size: 14px;"> 
+										w/l
+									</p>
+								</td>
 						</tr>
 						{% endfor %}
 					</table>
