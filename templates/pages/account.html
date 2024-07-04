@@ -1,4 +1,3 @@
-
 <div id="account-page" class="overflow-hidden" style="background-color: rgb(34, 34, 34); height: 100%;">
 	<nav id="nav" class="navbar  border-body " data-bs-theme="dark" style="background-color: rgb(54, 54, 54); width: 55vw; margin-left:24vw">
 		<div class="container-fluid">
@@ -52,7 +51,6 @@
 						</div>
 						<button id="logout-btn" class="btn btn-outline-danger" style="margin-top:30vh;" >Logout</button>
 					</ul>
-
 				</div>
 			</div>
 		</div>
@@ -65,10 +63,6 @@
 			<h3 class="username" style="margin-top: 8vh; width: fit-content;color: white;">
 				{{ username }}
 			</h3>
-			{% if msg %}
-				<br>
-				<p>{{ msg }}</p>
-			{% endif %}
 			<div class="d-flex">
 				<div class="container">
 					<h5 style="text-align: center; margin-top: 2vh;">Matches</h5>
@@ -87,6 +81,9 @@
 					<p style="text-align: center;">{{ user_info.winrate }}%</p>
 				</div>
 			</div>
+			{% if msg %}
+				<p>{{ msg }}</p>
+			{% endif %}
 		</div>
 	</div>
 	<div id="profileBody" class="d-flex" style="background-color: rgb(54, 54, 54); height: 70%; width: 55vw; margin-left: 24vw; margin-right: 1vw; font-size: 24px;">
@@ -118,18 +115,18 @@
 								{% endif%}
 							{% endfor %}
 						</table>
-					{% endif %}
+						{% endif %}
+					</div>
 				</div>
 			</div>
-		</div>
-		<div class="col mt-5" style="margin-right: 2vw; margin-left: 2vw;">
+			<div class="col mt-5" style="margin-right: 2vw; margin-left: 2vw;">
 			<div class="card text-bg-dark">
 				<div class="card-header">
 					Friends ({{ friends | length }})
 				</div>
 				<div class="card-body overflow-auto shadow" style="height: 40vh;">
 					<table class="table table-dark table-bordered">
-						{% for name, online in friends %}
+						{% for name, online, wins, losses, winrate in friends %}
 						<tr class="table-dark">
 							{% if online %}
 								<td class="table-bordered border-success">
@@ -143,7 +140,7 @@
 									</p>
 							{% endif %}
 									<p style="font-size: 14px;"> 
-										w/l
+										Wins: {{ wins }} Losses: {{ losses }} Winrate: {{ winrate }}%
 									</p>
 								</td>
 						</tr>

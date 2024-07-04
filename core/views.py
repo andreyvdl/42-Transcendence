@@ -76,37 +76,45 @@ def _get_friends(pk):
                                             Q(status='y'))
     friends = []
     for f in friendships:
-        friends.append((f.sent_by.username, f.sent_by.online) if not f.sent_by.username == self_username else
-                       (f.sent_to.username, f.sent_to.online))
+        if not f.sent_by.username == self_username:
+            friends.append((
+                f.sent_by.username,
+                f.sent_by.online,
+                PongUser.objects.get(username=f.sent_by.username).get_wins().count(),
+                PongUser.objects.get(username=f.sent_by.username).get_losses().count(),
+                PongUser.objects.get(username=f.sent_by.username).get_winrate(),
+            ))
+        else:
+            friends.append((
+                f.sent_to.username,
+                f.sent_to.online,
+                PongUser.objects.get(username=f.sent_to.username).get_wins().count(),
+                PongUser.objects.get(username=f.sent_to.username).get_losses().count(),
+                PongUser.objects.get(username=f.sent_to.username).get_winrate(),
+            ))
 
     return friends
 
 def _get_matches(pk):
-    matches = Match.objects.filter(Q(left_player=pk) | Q(right_player=pk))
-    username = PongUser.objects.get(pk=pk).get_username()
+    user = PongUser.objects.get(pk=pk)
+    matches = user.get_matches()
     results = []
 
     for m in matches:
         results.append((
             m.date.strftime("%d/%b|%H:%M"),
             m.score,
-            True if m.winner.get_username() == username else False,
-            m.right_player.get_username() if username == m.left_player.get_username() else m.left_player.get_username(),
+            True if m.winner.get_username() == user.get_username() else False,
+            m.right_player.get_username() if
+                user.get_username() == m.left_player.get_username() else
+                m.left_player.get_username(),
         ))
 
-    total_matches = matches.count()
-    total_wins = matches.filter(winner=pk).count()
-
-    try:
-        winrate = (float(total_wins) / float(total_matches)) * 100
-    except:
-        winrate = 0.0
-
     user_info = {
-        "total": total_matches,
-        "wins": total_wins,
-        "loses": matches.exclude(winner=pk).count(),
-        "winrate": round(winrate, 1),
+        "total": user.get_matches().count(),
+        "wins": user.get_wins().count(),
+        "loses": user.get_losses().count(),
+        "winrate": user.get_winrate(),
     }
 
     return results, user_info
