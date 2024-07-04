@@ -60,6 +60,16 @@ function sendFriendRequest(event) {
     fetch(url, {
         method: 'POST'
     })
+        .then((response) => {
+            return response.json();
+        })
+        .then((data) => {
+            if (data.innerHtml)
+                updatePage(data.innerHtml);
+        })
+        .catch((error) => {
+            console.error(error);
+        });
 };
 
 function acceptFriendRequest(event) {
@@ -74,6 +84,25 @@ function acceptFriendRequest(event) {
             'ans': 'y'
         })
     })
+        .then((response) => {
+            return response.json();
+        })
+        .then((data) => {
+            if (data.innerHtml)
+                updatePage(data.innerHtml);
+            else {
+                const obj = document.getElementById(event.target.name);
+                const child = obj.children[0];
+
+                obj.removeChild(obj.children[obj.children.length - 1]);
+                obj.removeChild(obj.children[obj.children.length - 1]);
+                child.setAttribute("style", child.getAttribute("style") + " color: green;")
+                child.textContent += " | ACCEPTED";
+            }
+        })
+        .catch((error) => {
+            console.error(error);
+        });
 };
 
 function declineFriendRequest(event) {
@@ -89,16 +118,24 @@ function declineFriendRequest(event) {
         })
     })
         .then((response) => {
-            if (response.ok)
-                return response.json();
-            else
-                return new Error(response.status);
+            return response.json();
         })
         .then((data) => {
-            if (data.redirect) {
-                handleRedirect(data.redirect);
+            if (data.innerHtml)
+                updatePage(data.innerHtml);
+            else {
+                const obj = document.getElementById(event.target.name);
+                const child = obj.children[0];
+
+                obj.removeChild(obj.children[obj.children.length - 1]);
+                obj.removeChild(obj.children[obj.children.length - 1]);
+                child.setAttribute("style", child.getAttribute("style") + " color: red;")
+                child.textContent += " | REFUSED";
             }
         })
+        .catch((error) => {
+            console.error(error);
+        });
 };
 
 function logout(event) {
@@ -139,8 +176,8 @@ function userOffline() {
 }
 
 export default function accountPageSetup() {
-    const acceptBtn = document.getElementById('accept-btn');
-    const declineBtn = document.getElementById('decline-btn');
+    const acceptBtn = document.getElementsByClassName('botao-de-aceitar');
+    const declineBtn = document.getElementsByClassName('botao-de-recusar');
     const addFriend = document.getElementById('add-friend-btn');
     const logoutBtn = document.getElementById('logout-btn');
     const changeUsernameForm = document.getElementById('formChangeUsername');
@@ -148,8 +185,12 @@ export default function accountPageSetup() {
 
     userOnline();
 
-    attachEvent(acceptBtn, 'click', acceptFriendRequest);
-    attachEvent(declineBtn, 'click', declineFriendRequest);
+    for (let btn of acceptBtn) {
+        attachEvent(btn, 'click', acceptFriendRequest);
+    }
+    for (let btn of declineBtn) {
+        attachEvent(btn, 'click', declineFriendRequest);
+    }
     attachEvent(addFriend, 'click', sendFriendRequest);
     attachEvent(logoutBtn, 'click', logout);
     attachEvent(changeUsernameForm, 'submit', changeUsername);

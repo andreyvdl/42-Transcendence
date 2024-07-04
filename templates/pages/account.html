@@ -29,6 +29,7 @@
 						<li class="nav-item mt-3 mb-1">
 							<h5>Add Friends</h5>
 								<form  class="d-flex mt-2">
+									{% csrf_token %}
 									<input id="friend-text-field" class="form-control" type="text" placeholder="Nickname">
 									<button id="add-friend-btn" class="btn btn-outline-success" >Add Friend</button>
 								</form>
@@ -37,12 +38,12 @@
 						<div class="list-group overflow-auto" style="max-height: 200px;">
 							{% for pend_friend in pend_friends %}
 							<li>
-								<h5 style="margin-left: 1vw;">
-									<p id="pend-friend-{{ forloop.counter0 }}" style="display: inline">{{ pend_friend }}</p>
-									<button id="accept-btn" value="{{ pend_friend }}/" class="btn btn-outline-success">
+								<h5 id="amigo{{ forloop.counter0 }}" style="margin-left: 1vw;">
+									<p id="pend-friend-{{ forloop.counter0 }}" style="display: inline;">{{ pend_friend }}</p>
+									<button name="amigo{{ forloop.counter0 }}" id="accept-btn" value="{{ pend_friend }}/" class="botao-de-aceitar btn btn-outline-success">
 										Accept
 									</button>
-									<button id="decline-btn" value="{{ pend_friend }}/" class="btn btn-outline-danger">
+									<button name="amigo{{ forloop.counter0 }}" id="decline-btn" value="{{ pend_friend }}/" class="botao-de-recusar btn btn-outline-danger">
 										Decline
 									</button>
 								</h5> 

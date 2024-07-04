@@ -111,6 +111,7 @@ def _get_matches(pk):
 
     return results, user_info
 
+
 class AccountView(View):
     @staticmethod
     def get(request):
@@ -125,8 +126,6 @@ class AccountView(View):
         friends = _get_friends(request.user.id)
         ctx = {
             'username': request.user.username,
-            'wins': request.user.get_wins(),
-            'losses': request.user.get_losses(),
             'pend_friends': pend_friends,
             'picture_url': _get_profile_pic(request.user),
             'friends': friends,
@@ -144,11 +143,9 @@ class AccountView(View):
         friends = _get_friends(request.user.id)
         ctx = {
             'username': request.user.username,
-            'wins': request.user.get_wins(),
-            'losses': request.user.get_losses(),
+            'pend_friends': pend_friends,
             'picture_url': _get_profile_pic(request.user),
             'friends': friends,
-            'pend_friends': pend_friends,
             'matches': matches,
             'user_info': user_info,
         }
@@ -159,7 +156,6 @@ class AccountView(View):
             curr_user.username = new_username
             curr_user.save()
             ctx['username'] = curr_user.username
-            ctx['msg'] = '🟢 Username changed successfully.'
 
         inner_html = render_to_string('pages/account.html', ctx)
         return JsonResponse({'innerHtml': inner_html})

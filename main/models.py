@@ -10,15 +10,6 @@ class PongUser(AbstractUser):
     profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
     email = models.EmailField(unique=True)
 
-    def get_wins(self):
-        return self.wins
-
-    def get_losses(self):
-        return self.losses
-
-    def get_online(self):
-        return self.online
-
     def get_username(self):
         return self.username
 
