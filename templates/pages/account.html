@@ -21,15 +21,15 @@
 						<li class="nav-item mt-2">
 							<h5>Change Avatar</h5>
 							<form class="d-flex mt-2" role="add" id="formChangePicture">
-								<input id="ava" class="form-control" type="file" name="file" accept="image/*" style="height: fit-content;">
+								<input id="ava" class="form-control" type="file" name="file" accept="image/*" style="height: fit-content;" required>
 								<button id="ava" class="btn btn-outline-success" type="submit">Send</button>
 							</form>
 						</li>
 						<li class="nav-item mt-3 mb-1">
 							<h5>Add Friends</h5>
-								<form  class="d-flex mt-2">
+								<form class="d-flex mt-2">
 									{% csrf_token %}
-									<input id="friend-text-field" class="form-control" type="text" placeholder="Nickname">
+									<input id="friend-text-field" class="form-control" type="text" placeholder="Nickname" required>
 									<button id="add-friend-btn" class="btn btn-outline-success" >Add Friend</button>
 								</form>
 						</li>
@@ -81,9 +81,15 @@
 					<p style="text-align: center;">{{ user_info.winrate }}%</p>
 				</div>
 			</div>
-			{% if msg %}
-				<p>{{ msg }}</p>
-			{% endif %}
+			<div class="toast-container position-fixed bottom-0 start-0 p3">
+				<div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+					<div class="toast-header">
+						<strong class="me-auto"></strong>
+						<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+					</div>
+					<div class="toast-body" style="color: black;"></div>
+				</div>
+			</div>
 		</div>
 	</div>
 	<div id="profileBody" class="d-flex" style="background-color: rgb(54, 54, 54); height: 70%; width: 55vw; margin-left: 24vw; margin-right: 1vw; font-size: 24px;">

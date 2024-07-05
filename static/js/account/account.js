@@ -18,6 +18,16 @@ function changeUsername(event) {
         .then((data) => {
             if (data.innerHtml)
                 updatePage(data.innerHtml);
+            else {
+                const toast = document.getElementById("liveToast");
+                const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toast);
+                const toastTitle = document.querySelector("strong.me-auto");
+                const toastBody = document.querySelector("div.toast-body");
+
+                toastTitle.innerHTML = data.title;
+                toastBody.innerHTML = data.text;
+                toastBootstrap.show();
+            }
         })
         .catch((error) => {
             console.error(error);
@@ -44,6 +54,16 @@ function changePicture(event) {
         .then((data) => {
             if (data.innerHtml)
                 updatePage(data.innerHtml);
+            else {
+                const toast = document.getElementById("liveToast");
+                const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toast);
+                const toastTitle = document.querySelector("strong.me-auto");
+                const toastBody = document.querySelector("div.toast-body");
+
+                toastTitle.innerHTML = data.title;
+                toastBody.innerHTML = data.text;
+                toastBootstrap.show();
+            }
         })
         .catch((error) => {
             console.error(error);
@@ -57,6 +77,18 @@ function sendFriendRequest(event) {
     const friend = friendToAddTextField.value;
     const url = `${BASE_URL}/api/make_friends/${friend}/`;
 
+    if (friend === "") {
+        const toast = document.getElementById("liveToast");
+        const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toast);
+        const toastTitle = document.querySelector("strong.me-auto");
+        const toastBody = document.querySelector("div.toast-body");
+
+        toastTitle.innerHTML = "🔴 ERROR";
+        toastBody.innerHTML = "No username given.";
+        toastBootstrap.show();
+        return;
+    }
+
     fetch(url, {
         method: 'POST'
     })
@@ -64,8 +96,14 @@ function sendFriendRequest(event) {
             return response.json();
         })
         .then((data) => {
-            if (data.innerHtml)
-                updatePage(data.innerHtml);
+            const toast = document.getElementById("liveToast");
+            const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toast);
+            const toastTitle = document.querySelector("strong.me-auto");
+            const toastBody = document.querySelector("div.toast-body");
+
+            toastTitle.innerHTML = data.title;
+            toastBody.innerHTML = data.text;
+            toastBootstrap.show();
         })
         .catch((error) => {
             console.error(error);
@@ -92,16 +130,22 @@ function acceptFriendRequest(event) {
                 updatePage(data.innerHtml);
             else {
                 const obj = document.getElementById(event.target.name);
-                const child = obj.children[0];
+                const toast = document.getElementById("liveToast");
+                const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toast);
+                const toastTitle = document.querySelector("strong.me-auto");
+                const toastBody = document.querySelector("div.toast-body");
 
-                obj.removeChild(obj.children[obj.children.length - 1]);
-                obj.removeChild(obj.children[obj.children.length - 1]);
-                child.setAttribute("style", child.getAttribute("style") + " color: green;")
-                child.textContent += " | ACCEPTED";
+                toastTitle.innerHTML = data.title;
+                toastBody.innerHTML = data.text;
+                if (data.title.includes("SUCCESS")) {
+                    obj.removeChild(obj.children[obj.children.length - 1]);
+                    obj.removeChild(obj.children[obj.children.length - 1]);
+                }
+                toastBootstrap.show();
             }
         })
         .catch((error) => {
-            console.error(error);
+            console.log(error);
         });
 };
 
@@ -125,12 +169,18 @@ function declineFriendRequest(event) {
                 updatePage(data.innerHtml);
             else {
                 const obj = document.getElementById(event.target.name);
-                const child = obj.children[0];
+                const toast = document.getElementById("liveToast");
+                const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toast);
+                const toastTitle = document.querySelector("strong.me-auto");
+                const toastBody = document.querySelector("div.toast-body");
 
-                obj.removeChild(obj.children[obj.children.length - 1]);
-                obj.removeChild(obj.children[obj.children.length - 1]);
-                child.setAttribute("style", child.getAttribute("style") + " color: red;")
-                child.textContent += " | REFUSED";
+                toastTitle.innerHTML = data.title;
+                toastBody.innerHTML = data.text;
+                if (data.title.includes("SUCCESS")) {
+                    obj.removeChild(obj.children[obj.children.length - 1]);
+                    obj.removeChild(obj.children[obj.children.length - 1]);
+                }
+                toastBootstrap.show();
             }
         })
         .catch((error) => {

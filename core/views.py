@@ -158,7 +158,10 @@ class AccountView(View):
             'user_info': user_info,
         }
         if PongUser.objects.filter(username=new_username).exists():
-            ctx['msg'] = '🔴 User already exists.'
+            return JsonResponse({
+                "title": "🔴 ERROR",
+                "text": "Username already in use.",
+            })
         else:
             curr_user = PongUser.objects.get(username=request.user)
             curr_user.username = new_username
