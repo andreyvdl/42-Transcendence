@@ -28,7 +28,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'src_auth',
     'main',
-    'api'
+    'api',
+    'tournament',
 ]
 
 MIDDLEWARE = [
