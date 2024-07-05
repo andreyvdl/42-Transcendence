@@ -21,6 +21,16 @@ function submitFormRegister(event) {
         .then((data) => {
             if (data.innerHtml)
                 updatePage(data.innerHtml);
+            else {
+                const toast = document.getElementById("liveToast");
+                const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toast);
+                const toastTitle = document.querySelector("strong.me-auto");
+                const toastBody = document.querySelector("div.toast-body");
+
+                toastTitle.innerHTML = data.title;
+                toastBody.innerHTML = data.text;
+                toastBootstrap.show();
+            }
         })
         .catch((error) => console.error(error));
 }
@@ -29,7 +39,7 @@ export default function registerPageSetup() {
     const formRegister = document.getElementById('formRegister');
     const intraLink = document.getElementById('intraLink');
 
-    intraLink.href = INTRA_URL;
+    if (intraLink) intraLink.href = INTRA_URL;
 
     attachEvent(formRegister, 'submit', submitFormRegister);
 }
