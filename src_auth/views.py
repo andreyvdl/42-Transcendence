@@ -77,7 +77,7 @@ class RegisterView(View):
         except:
             return JsonResponse({
                 "title": "🔴 ERROR",
-                "text": "Server error creating new user",
+                "text": "Server error creating new user.",
             })
 
         ctx = {
@@ -110,9 +110,10 @@ class LoginView(View):
         if user is not None:
             login(request, user)
             return JsonResponse({'redirect': reverse('account')}, status=302)
-        ctx = {'err': True, 'err_msg': "Invalid username or password"}
-        inner_html = render_to_string('pages/login.html', ctx, request=request)
-        return JsonResponse({'innerHtml': inner_html})
+        return JsonResponse({
+            "title": "🔴 ERROR",
+            "text": "Wrong username or password.",
+        })
 
 
 @csrf_exempt
