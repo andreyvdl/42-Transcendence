@@ -207,7 +207,7 @@ function logout(event) {
                 handleRedirect(data.redirect);
         })
         .catch(error => console.error(error));
-};
+}
 
 function userOnline() {
     const url = `${BASE_URL}/api/online`;
