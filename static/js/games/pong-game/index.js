@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import WebGL from 'three/addons/capabilities/WebGL.js'
 
 function sendResult(p2, scores, winner) {
+	if (VERSUS_IA === "on") return;
 	const url = `${BASE_URL}/api/save_match/${p2}/${scores.playerOne}v${scores.playerTwo}/${winner}`;
 
 	fetch(url)
@@ -70,6 +71,50 @@ export default function pongGameInit() {
 		KEYS[event.key] = false;
 	});
 
+	var timerToggle = false;
+	var timer = 0;
+
+	function AI(ball3d, player){
+		let predicted = {x: 0, z: 0};
+		if(timer > 0) {
+			predicted = prediction(ball3d);
+		}
+		else if (timerToggle == false) {
+			setTimeout(() => {timer = 1000; timerToggle = false;}, 1000);
+			timerToggle = true;
+		}
+		if ((predicted.x == 0 && predicted.z == 0) || (player[1].position.z == predicted.z)){
+			return;
+		}
+		if (player[1].position.z - 0.6 < predicted.z && player[1].position.z + 0.2 < 6) {
+			player[1].position.z += 0.2;
+		}
+		if (player[1].position.z + 0.6 > predicted.z && player[1].position.z - 0.2 > -6) {
+			player[1].position.z -= 0.2;
+		}
+		timer--;
+	}
+
+	function prediction(ball3d){
+		if (ball3d.position.x < 0 || BALL_VELOCITY.x < 0){
+			return {x: 0, z: 0};
+		}
+		let iter = 0
+		let z = ball3d.position.z;
+		let x = ball3d.position.x;
+		let velocity = BALL_VELOCITY.x;
+		let direction = BALL_VELOCITY.z;
+		while(iter < 3){
+			x += velocity;
+			z += direction;
+			if(Math.abs(z) > 7.5){
+				direction = -direction;
+			}
+			iter++;
+		}
+		return {x, z};
+	}
+
 	function calculateWindow() {
 		const resolution = RESOLUTIONS.find((resolution) => resolution.w <= window.innerWidth && resolution.h <= window.innerHeight);
 
@@ -124,10 +169,12 @@ export default function pongGameInit() {
 	}
 
 	function playerMove(player) {
-		if (KEYS["ArrowDown"] && player[1].position.z + 0.2 < 6)
-			player[1].position.z += 0.2;
-		if (KEYS["ArrowUp"] && player[1].position.z - 0.2 > -6)
-			player[1].position.z -= 0.2;
+		if (VERSUS_IA === "off") {
+			if (KEYS["ArrowDown"] && player[1].position.z + 0.2 < 6)
+				player[1].position.z += 0.2;
+			if (KEYS["ArrowUp"] && player[1].position.z - 0.2 > -6)
+				player[1].position.z -= 0.2;
+		}
 		if (KEYS["s"] && player[0].position.z + 0.2 < 6)
 			player[0].position.z += 0.2;
 		if (KEYS["w"] && player[0].position.z - 0.2 > -6)
@@ -274,6 +321,8 @@ Dica: mire nos cantos")
 				handleRedirect('/home/');
 				return;
 			}
+			if (VERSUS_IA === "on")
+				AI(ball3d, player);
 			playerMove(player);
 			if (!BALLPAUSE) {
 				scoreUpdate(canvas, sprites);

@@ -26,19 +26,19 @@ function updatePlayerCount() {
 	startbtn.removeAttribute("disabled");
 	divPlayers.innerHTML = "";
 	
-	if (selectedMode.value === "x1") {
+	if (selectedMode.value === "pvp") {
 		divPlayers.innerHTML = ` 
-		<input class="mt-2 form-control form-control-lg" type="text" placeholder="Player 2" id="player2" name="player2" required/>
+			<input class="mt-2 form-control form-control-lg" type="text" placeholder="Player 2" id="player2" name="player2" required/>
 		`;
 	}
-	else if (selectedMode.value === "torneio") {
+	else if (selectedMode.value === "tournament") {
 		divPlayers.innerHTML = `
 			<input class="mt-2 form-control form-control-lg" type="text" placeholder="Player 2" id="player2" name="player2" required/>
 			<input class="mt-2 form-control form-control-lg" type="text" placeholder="Player 3" id="player3" name="player3" required/>
 			<input class="mt-2 form-control form-control-lg" type="text" placeholder="Player 4" id="player4" name="player4" required/>
 		`;
 	}
-	else if (selectedMode.value === "ia") {
+	else if (selectedMode.value === "pve") {
 		divPlayers.innerHTML = "";
 	}
 }
@@ -46,10 +46,12 @@ function updatePlayerCount() {
 function redirToGame(event) {
 	event.preventDefault();
 
-	const url = `${BASE_URL}/home/`;
 	const formGame = document.getElementById('form-game');
 	const formData = new FormData(formGame);
+	const game = formData.get("game");
 	console.table(formGame);
+	const url = `${BASE_URL}/games/${game}`
+
 	fetch(url, {
 		method: 'POST',
 		headers: {
@@ -57,26 +59,13 @@ function redirToGame(event) {
 		},
 		body: formData,
 	})
-		.then((response) => {
+		.then(response => {
 			return response.json();
 		})
-		.then((data) => {
-			if (data.redirect)
-				fetch(data.redirect, {
-					method: 'POST',
-					headers: {
-						'X-CSRFToken': getCookie('csrftoken'),
-					},
-					body: JSON.stringify(data.payload),
-				})
-					.then(response2 => {
-						if (!response2.ok) throw new Error("OPS!");
-						return response2.json();
-					})
-					.then(data2 => {
-						if (data2.innerHtml) updatePage(data2.innerHtml);
-					})
-					.catch(error => console.log(error));
+		.then(data => {
+			if (data.innerHtml)
+				updatePage(data.innerHtml);
 		})
+		.catch(error => console.log(error));
 }
 
