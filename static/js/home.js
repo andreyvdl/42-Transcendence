@@ -49,7 +49,6 @@ function redirToGame(event) {
 	const formGame = document.getElementById('form-game');
 	const formData = new FormData(formGame);
 	const game = formData.get("game");
-	console.table(formGame);
 	const url = `${BASE_URL}/games/${game}`
 
 	fetch(url, {
@@ -65,6 +64,16 @@ function redirToGame(event) {
 		.then(data => {
 			if (data.innerHtml)
 				updatePage(data.innerHtml);
+			else {
+				const toast = document.getElementById("liveToast");
+				const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toast);
+				const toastTitle = document.querySelector("strong.me-auto");
+				const toastBody = document.querySelector("div.toast-body");
+
+				toastTitle.innerHTML = data.title;
+				toastBody.innerHTML = data.text;
+				toastBootstrap.show();
+			}
 		})
 		.catch(error => console.log(error));
 }
