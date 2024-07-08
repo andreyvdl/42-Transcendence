@@ -8,6 +8,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include("api.urls")),
     path("games/", include("games.urls")),
+    path("tournament/", include("tournament.urls")),
     path("home/", views.home, name='home'),
     path('auth/', include("src_auth.urls")),
     path("account/", views.AccountView.as_view(), name="account"),
