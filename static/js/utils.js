@@ -78,4 +78,5 @@ else
 var GAME_RUNNING = false;
 var PLAYER1 = "";
 var PLAYER2 = "";
+var VERSUS_IA = "";
 var payload = null;
