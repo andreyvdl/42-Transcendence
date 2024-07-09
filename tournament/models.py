@@ -14,3 +14,6 @@ class Tournament(models.Model):
 
     def __str__(self):
         return str(f"Upper bracket: {self.upper_bracket_players}\nLower bracket players: {self.lower_bracket_players}")
+
+    def get_winner(self):
+        return (self.tournament_winner if self.tournament_winner is not None else "")
