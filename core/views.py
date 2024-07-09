@@ -76,15 +76,14 @@ def _get_matches(pk):
     user = PongUser.objects.get(pk=pk)
     matches = user.get_matches()
     results = []
+    username = user.get_username()
 
     for m in matches:
         results.append((
             m.date.strftime("%d/%b|%H:%M"),
             m.score,
-            True if m.winner.get_username() == user.get_username() else False,
-            m.right_player.get_username() if
-                user.get_username() == m.left_player.get_username() else
-                m.left_player.get_username(),
+            True if m.winner.get_username() == username else False,
+            m.right_player.get_username() if username == m.left_player.get_username() else m.left_player.get_username(),
         ))
 
     user_info = {
