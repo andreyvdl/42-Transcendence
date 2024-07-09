@@ -80,16 +80,11 @@ def make_friends(request, send_to_user: str):
         request_exists = Friendship.objects.filter((Q(sent_by=request.user.id) & Q(sent_to=send_to_user.id)) |
                                                    (Q(sent_to=request.user.id) & Q(sent_by=send_to_user.id))).exists()
 
-        if request_exists:# and request_exists.status == "p":
+        if request_exists:
             return JsonResponse({
                 "title": "🔴 ERROR",
                 "text": "Friend request already exists.",
             })
-        # elif request_exists and request_exists.status == "y":
-        #     return JsonResponse({
-        #         "title": "🔴 ERROR",
-        #         "text": "This person already is your friend.",
-        #     })
 
         friendship = Friendship.objects.create(
             sent_by=sent_by,
@@ -103,7 +98,7 @@ def make_friends(request, send_to_user: str):
 
     return JsonResponse({
         "title": "🔴 ERROR",
-        "text": "Wrong method received.",
+        "text": "Something went wrong in the server.",
     })
 
 

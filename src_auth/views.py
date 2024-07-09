@@ -65,7 +65,6 @@ class RegisterView(View):
                 email=email,
                 username=username,
                 password=password,
-                # profile_picture=file
             )
             pong_user.save()
         except:
