@@ -4,33 +4,33 @@ from django.urls import reverse
 from django.shortcuts import redirect
 from django.http import JsonResponse
 from main.models import PongUser
-from tournament.models import Tournament, TournamentMatch
+from tournament.models import Tournament
+
 
 # Create your views here.
 @csrf_exempt
 def create_tournament(request):
-    # Autheticate
+    # Authenticate
     if request.method == "POST":
-        users = request.POST["users"].split(',')
-        if (len(users) < 2):
-            return JsonResponse({"error": "ERROR"}, status=400)
+        p1 = request.POST["player1"]
+        p2 = request.POST["player2"]
+        p3 = request.POST["player3"]
+        p4 = request.POST["player4"]
 
-        for user in users:
+        for p in {p1, p2, p3, p4}:
             try:
-                user_entry = PongUser.objects.get(username=user)
+                PongUser.objects.get(username=p)
             except PongUser.DoesNotExist:
                 return JsonResponse({"error": "That user doesn't exist."}, status=400)
 
-        tournament = Tournament.objects.create(
-            players=users,
+        t = Tournament.objects.create(
+            upper_bracket_players=[p1, p2],
+            lower_bracket_players=[p3, p4],
             date=timezone.now(),
         )
 
-        for i in range(0, len(users), 2):
-            tm = TournamentMatch.objects.create(match_round=0, player_one=users[i], player_two=users[i + 1])
-            tournament.round_matches.add(tm)
+        return redirect(reverse("tournament", args=[t.id]))
 
-        return redirect(reverse("tournament", args=[tournament.id]))
 
 @csrf_exempt
 def tournament(request, id):
