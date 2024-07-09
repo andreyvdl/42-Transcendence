@@ -23,16 +23,8 @@ function submitFormLogin(event) {
                 handleRedirect(data.redirect);
             else if (data.innerHtml)
                 updatePage(data.innerHtml);
-			else {
-				const toast = document.getElementById("liveToast");
-				const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toast);
-				const toastTitle = document.querySelector("strong.me-auto");
-				const toastBody = document.querySelector("div.toast-body");
-
-				toastTitle.innerHTML = data.title;
-				toastBody.innerHTML = data.text;
-				toastBootstrap.show();
-			}
+			else
+				toastCall(data);
         })
         .catch(error => console.log(error));
 }
