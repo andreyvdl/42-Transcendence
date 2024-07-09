@@ -18,6 +18,8 @@ function changeUsername(event) {
         .then((data) => {
             if (data.innerHtml)
                 updatePage(data.innerHtml);
+            else 
+				toastCall(data);
         })
         .catch((error) => {
             console.error(error);
@@ -44,6 +46,8 @@ function changePicture(event) {
         .then((data) => {
             if (data.innerHtml)
                 updatePage(data.innerHtml);
+            else
+				toastCall(data);
         })
         .catch((error) => {
             console.error(error);
@@ -57,9 +61,23 @@ function sendFriendRequest(event) {
     const friend = friendToAddTextField.value;
     const url = `${BASE_URL}/api/make_friends/${friend}/`;
 
+    if (friend === "") {
+		toastCall({title: "🔴 ERROR", text: "No username given."});
+        return;
+    }
+
     fetch(url, {
         method: 'POST'
     })
+        .then((response) => {
+            return response.json();
+        })
+        .then((data) => {
+			toastCall(data);
+        })
+        .catch((error) => {
+            console.error(error);
+        });
 };
 
 function acceptFriendRequest(event) {
@@ -74,6 +92,25 @@ function acceptFriendRequest(event) {
             'ans': 'y'
         })
     })
+        .then((response) => {
+            return response.json();
+        })
+        .then((data) => {
+            if (data.innerHtml)
+                updatePage(data.innerHtml);
+            else {
+                const obj = document.getElementById(event.target.name);
+
+                if (data.title.includes("SUCCESS")) {
+                    obj.removeChild(obj.children[obj.children.length - 1]);
+                    obj.removeChild(obj.children[obj.children.length - 1]);
+                }
+				toastCall(data);
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+        });
 };
 
 function declineFriendRequest(event) {
@@ -89,16 +126,24 @@ function declineFriendRequest(event) {
         })
     })
         .then((response) => {
-            if (response.ok)
-                return response.json();
-            else
-                return new Error(response.status);
+            return response.json();
         })
         .then((data) => {
-            if (data.redirect) {
-                handleRedirect(data.redirect);
+            if (data.innerHtml)
+                updatePage(data.innerHtml);
+            else {
+                const obj = document.getElementById(event.target.name);
+
+                if (data.title.includes("SUCCESS")) {
+                    obj.removeChild(obj.children[obj.children.length - 1]);
+                    obj.removeChild(obj.children[obj.children.length - 1]);
+                }
+				toastCall(data);
             }
         })
+        .catch((error) => {
+            console.error(error);
+        });
 };
 
 function logout(event) {
@@ -120,7 +165,7 @@ function logout(event) {
                 handleRedirect(data.redirect);
         })
         .catch(error => console.error(error));
-};
+}
 
 function userOnline() {
     const url = `${BASE_URL}/api/online`;
@@ -139,8 +184,8 @@ function userOffline() {
 }
 
 export default function accountPageSetup() {
-    const acceptBtn = document.getElementById('accept-btn');
-    const declineBtn = document.getElementById('decline-btn');
+    const acceptBtn = document.getElementsByClassName('botao-de-aceitar');
+    const declineBtn = document.getElementsByClassName('botao-de-recusar');
     const addFriend = document.getElementById('add-friend-btn');
     const logoutBtn = document.getElementById('logout-btn');
     const changeUsernameForm = document.getElementById('formChangeUsername');
@@ -148,8 +193,12 @@ export default function accountPageSetup() {
 
     userOnline();
 
-    attachEvent(acceptBtn, 'click', acceptFriendRequest);
-    attachEvent(declineBtn, 'click', declineFriendRequest);
+    for (let btn of acceptBtn) {
+        attachEvent(btn, 'click', acceptFriendRequest);
+    }
+    for (let btn of declineBtn) {
+        attachEvent(btn, 'click', declineFriendRequest);
+    }
     attachEvent(addFriend, 'click', sendFriendRequest);
     attachEvent(logoutBtn, 'click', logout);
     attachEvent(changeUsernameForm, 'submit', changeUsername);
