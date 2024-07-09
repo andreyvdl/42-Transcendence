@@ -42,12 +42,6 @@ class RegisterView(View):
                 "text": "Passwords don't match.",
             })
 
-        # register doesn't have file upload!
-        # try:
-        #     file = request.FILES["file"]
-        # except MultiValueDictKeyError:
-        #     file = None
-
         try:
             PongUser.objects.get(email=email)
             return JsonResponse({
