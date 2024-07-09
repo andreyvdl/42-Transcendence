@@ -37,28 +37,18 @@ class RegisterView(View):
         comp = request.POST["password2"]
 
         if password != comp:
-            return JsonResponse({
-                "title": "🔴 ERROR",
-                "text": "Passwords don't match.",
-            })
+            ctx = {
+                'registered_successfully': False,
+                'error': True,
+                'err_msg': "Passwords don't match",
+            }
+            inner_html = render_to_string('pages/register.html', ctx, request=request)
+            return JsonResponse({'innerHtml': inner_html})
 
         try:
-            PongUser.objects.get(email=email)
-            return JsonResponse({
-                "title": "🔴 ERROR",
-                "text": "Email already in use.",
-            })
-        except:
-            pass
-
-        try:
-            PongUser.objects.get(username=username)
-            return JsonResponse({
-                "title": "🔴 ERROR",
-                "text": "Username already in use.",
-            })
-        except:
-            pass
+            file = request.FILES["file"]
+        except MultiValueDictKeyError:
+            file = None
 
         try:
             pong_user = PongUser.objects.create_user(
@@ -68,10 +58,13 @@ class RegisterView(View):
             )
             pong_user.save()
         except:
-            return JsonResponse({
-                "title": "🔴 ERROR",
-                "text": "Server error creating new user.",
-            })
+            ctx = {
+                'registered_successfully': False,
+                'error': True,
+                'err_msg': "Email already in use",
+            }
+            inner_html = render_to_string('pages/register.html', ctx, request=request)
+            return JsonResponse({'innerHtml': inner_html})
 
         ctx = {
             'registered_successfully': True,
@@ -103,10 +96,9 @@ class LoginView(View):
         if user is not None:
             login(request, user)
             return JsonResponse({'redirect': reverse('account')}, status=302)
-        return JsonResponse({
-            "title": "🔴 ERROR",
-            "text": "Wrong username or password.",
-        })
+        ctx = {'err': True, 'err_msg': "Invalid username or password"}
+        inner_html = render_to_string('pages/login.html', ctx, request=request)
+        return JsonResponse({'innerHtml': inner_html})
 
 
 @csrf_exempt

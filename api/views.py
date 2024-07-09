@@ -2,8 +2,6 @@ import json
 
 from django.http import JsonResponse
 from django.utils.datastructures import MultiValueDictKeyError
-from core.views import _get_friends, _get_matches, _get_pending_friend_requests, _get_profile_pic
-from django.template.loader import render_to_string
 
 from main.models import PongUser, Match, Friendship
 from django.db.models import Q
@@ -21,41 +19,24 @@ def answer_friend_request(request, username):
             data = json.loads(request.body)
             ans = data["ans"]
         except (json.JSONDecodeError, KeyError):
-            return JsonResponse({
-                "title": "🔴 ERROR",
-                "text": "Something went wrong in the server.",
-            })
+            return JsonResponse({"error": "Expected an 'ans' field in JSON."}, status=400)
         try:
             pong_user = PongUser.objects.get(username=username)
         except PongUser.DoesNotExist:
-            return JsonResponse({
-                "title": "🟡 WARNING",
-                "text": "User doesn't exist or changed username.",
-            })
+            return JsonResponse({"error": "That user doesn't exist."}, status=400)
         if ans not in ['y', 'n']:
-            return JsonResponse({
-                "title": "🔴 ERROR",
-                "text": "Invalid awnser received.",
-            })
+            return JsonResponse({'error': 'Invalid answer'}, status=400)
 
         friendship = Friendship.objects.filter((Q(sent_by=request.user.id) & Q(sent_to=pong_user)) |
                                                (Q(sent_to=request.user.id) & Q(sent_by=pong_user))).first()
         if ans == 'n':
             friendship.delete()
-            text = "User friendship request declined."
         else:
             friendship.status = ans
             friendship.save()
-            text = "User friendship request accepted."
-        return JsonResponse({
-            "title": "🟢 SUCCESS",
-            "text": text,
-        })
+        return JsonResponse({'friendship': pong_user.id})
 
-    return JsonResponse({
-        "title": "🔴 ERROR",
-        "text": "Invalid awnser received",
-    })
+    return JsonResponse({'error': 'Expected POST'}, status=400)
 
 
 @csrf_exempt
@@ -63,16 +44,9 @@ def answer_friend_request(request, username):
 def make_friends(request, send_to_user: str):
     if request.method == "POST":
         if request.user.username == send_to_user:
-            return JsonResponse({
-                "title": "🔴 ERROR",
-                "text": "Can't send a friend request to yourself.",
-            })
-
+            return JsonResponse({"error": "Can't send a friend request to yourself."}, status=400)
         if not PongUser.objects.filter(username=send_to_user).exists():
-            return JsonResponse({
-                "title": "🔴 ERROR",
-                "text": "This user does not exist.",
-            })
+            return JsonResponse({"error": "This user does not exist."}, status=400)
 
         sent_by = PongUser.objects.get(pk=request.user.id)
         send_to_user = PongUser.objects.get(username=send_to_user)
@@ -91,10 +65,7 @@ def make_friends(request, send_to_user: str):
             sent_to=send_to_user
         )
 
-        return JsonResponse({
-            "title": "🟢 SUCCESS",
-            "text": f"Friend request sent to {send_to_user.get_username()}."
-        })
+        return JsonResponse({"friendship": friendship.id})
 
     return JsonResponse({
         "title": "🔴 ERROR",
@@ -137,10 +108,7 @@ def update_picture(request):
             file = request.FILES["file"]
             permited_ext.index(file.name[file.name.rfind("."):])
         except:
-            return JsonResponse({
-                "title": "🔴 ERROR",
-                "text": "File isn't a of valid type (png, jpeg/jpg or gif)",
-            })
+            file = None
         request.user.profile_picture = file
         request.user.save()
 

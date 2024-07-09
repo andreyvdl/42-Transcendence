@@ -23,20 +23,14 @@ background-position: center;
 			<input required type="email" id="email" name="email" class="form-control" placeholder="Email">
 			<input required type="password" id="password1" name="password1" class="form-control" placeholder="New Password">
 			<input required type="password" id="password2" name="password2" class="form-control" placeholder="Confirm Password">
+			{% if error %}
+			<p class="shadow-lg bg-black rounded mt-3" style="color: red; font-size: large;""> {{ err_msg }} </p>
+			{% endif %}
 			<button type="submit" class="btn btn-dark" style="width: 240px; margin-top: 8px;">Sign Up</button>
 		</form>
 	</div>
-	<div class="toast-container position-fixed bottom-0 start-0 p3">
-		<div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-			<div class="toast-header">
-				<strong class="me-auto"></strong>
-				<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-			</div>
-			<div class="toast-body" style="color: black;"></div>
-		</div>
-	</div>
 	<div class="d-flex" style="margin-top: 8px;"></div>
-	<div class="d-flex justify-content-center">
+	<div class="d-flex justify-content-center">	
 		<p class="shadow-lg bg-black rounded"style="color: white;">Already have an account?</p>
 		<a href="{% url 'login' %}" style="margin-left: 4px;color: white;">Log In</a>
 	</div>

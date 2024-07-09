@@ -21,8 +21,6 @@ function submitFormRegister(event) {
         .then((data) => {
             if (data.innerHtml)
                 updatePage(data.innerHtml);
-			else
-				toastCall(data);
         })
         .catch((error) => console.error(error));
 }
@@ -31,7 +29,7 @@ export default function registerPageSetup() {
     const formRegister = document.getElementById('formRegister');
     const intraLink = document.getElementById('intraLink');
 
-    if (intraLink) intraLink.href = INTRA_URL;
+    intraLink.href = INTRA_URL;
 
     attachEvent(formRegister, 'submit', submitFormRegister);
 }

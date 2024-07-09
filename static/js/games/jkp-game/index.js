@@ -41,7 +41,6 @@ export default function jkpGameInit() {
 	IMAGENS.questao.src = `${assetsPath}question.png`;
 
 	function enviarResultado(p2, scores, vencedor) {
-		if (VERSUS_IA === "on") return;
 		const url = `${BASE_URL}/api/save_match/${p2}/${scores.p1}v${scores.p2}/${vencedor}`;
 
 		fetch(url)
@@ -184,7 +183,6 @@ export default function jkpGameInit() {
 			if (event.key == "a") JOGADOR[0].escolha = ESCOLHAS.pedra;
 			if (event.key == "s") JOGADOR[0].escolha = ESCOLHAS.papel;
 			if (event.key == "d") JOGADOR[0].escolha = ESCOLHAS.tesoura;
-			if (VERSUS_IA === "on") return;
 			if (event.key == "j") JOGADOR[1].escolha = ESCOLHAS.pedra;
 			if (event.key == "k") JOGADOR[1].escolha = ESCOLHAS.papel;
 			if (event.key == "l") JOGADOR[1].escolha = ESCOLHAS.tesoura;
@@ -198,10 +196,10 @@ export default function jkpGameInit() {
 	};
 
 	alert("TUTORIAL\n\
-Jogador 1: 'a' = 🔥, 's' = 💧 e 'd' = ❄️\n\
-Jogador 2: 'j' = 🔥, 'k' = 💧 e 'l' = ❄️\n\
-Vocês tem 5 segundos para escolher 🔥, 💧 ou ❄️\n\
-🔥 > ❄️ > 💧 > 🔥\n\
+Jogador 1: 'a' = fogo, 's' = água e 'd' = gelo\n\
+Jogador 2: 'j' = fogo, 'k' = água e 'l' = gelo\n\
+Vocês tem 5 segundos para escolher fogo, água ou gelo\n\
+fogo > gelo > água > fogo\n\
 Se um dos jogadores não escolher a tempo, será escolhido aleatoriamente");
 	renderizador();
 }

@@ -1,40 +1,26 @@
 from datetime import datetime
 from django.db import models
-from django.db.models import Q
 from django.contrib.auth.models import AbstractUser
 
 
 class PongUser(AbstractUser):
+    wins = models.IntegerField(default=0)
+    losses = models.IntegerField(default=0)
     online = models.BooleanField(default=False)
     profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
     email = models.EmailField(unique=True)
 
-    def get_username(self):
-        return self.username
-
-    def get_id(self):
-        return self.id
-
-    def get_matches(self):
-        p_id = self.get_id()
-        return Match.objects.filter(
-            Q(left_player=p_id) | Q(right_player=p_id)
-        )
-
     def get_wins(self):
-        return self.get_matches().filter(winner=self.get_id())
+        return self.wins
 
     def get_losses(self):
-        return self.get_matches().exclude(winner=self.get_id())
+        return self.losses
 
-    def get_winrate(self):
-        wins = self.get_wins()
-        matches = self.get_matches()
+    def get_online(self):
+        return self.online
 
-        try:
-            return (float(wins.count()) / float(matches.count())) * 100
-        except:
-            return "-"
+    def get_username(self):
+        return self.username
 
 
 class Match(models.Model):
