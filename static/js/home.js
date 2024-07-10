@@ -1,3 +1,5 @@
+import {defaultMode, tournamentMode} from "./games/game.js"
+
 export default function homePageSetup() {
 	const modeOptions = document.getElementById("modeSelect");
 	const gameOptions = document.getElementById("gameSelect");
@@ -9,7 +11,7 @@ export default function homePageSetup() {
 	attachEvent(gameOptions, 'change', updatePlayerCount);
 
 	updatePlayerCount();
-	attachEvent(gameForm, 'submit', redirToGame);
+	attachEvent(gameForm, 'submit', playGame);
 }
 
 function updatePlayerCount() {
@@ -43,29 +45,16 @@ function updatePlayerCount() {
 	}
 }
 
-function redirToGame(event) {
+function playGame(event) {
 	event.preventDefault();
 
 	const formGame = document.getElementById('form-game');
 	const formData = new FormData(formGame);
-	const game = formData.get("game");
-	console.table(formGame);
-	const url = `${BASE_URL}/games/${game}`
+	const mode = formData.get("mode");
 
-	fetch(url, {
-		method: 'POST',
-		headers: {
-			'X-CSRFToken': getCookie('csrftoken'),
-		},
-		body: formData,
-	})
-		.then(response => {
-			return response.json();
-		})
-		.then(data => {
-			if (data.innerHtml)
-				updatePage(data.innerHtml);
-		})
-		.catch(error => console.log(error));
+	if (mode === "pvp" || mode === "pve") {
+		defaultMode(formData)
+	} else if (mode === "tournament") {
+		tournamentMode(formData)
+	}
 }
-

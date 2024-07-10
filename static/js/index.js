@@ -19,15 +19,15 @@ function handlePageScripts() {
 	} else if (pongGamePage) {
 		const script = document.createElement('script');
 
-		pages.pongGamePageSetup();
 		script.text = document.getElementById('script-game').textContent;
 		pongGamePage.appendChild(script);
+		pages.pongGamePageSetup();
 	} else if (jpkGamePage) {
 		const script = document.createElement('script');
 
-		pages.jkpGamePageSetup();
 		script.text = document.getElementById('script-game').textContent;
 		jpkGamePage.appendChild(script);
+		pages.jkpGamePageSetup();
 	}
 }
 
