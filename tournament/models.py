@@ -5,6 +5,7 @@ from django.contrib.postgres.fields import ArrayField
 
 
 class Tournament(models.Model):
+    game = models.CharField(max_length=50)
     upper_bracket_players = ArrayField(models.CharField(max_length=50))
     lower_bracket_players = ArrayField(models.CharField(max_length=50))
     upper_bracket_winner = models.CharField(max_length=50, default="")
