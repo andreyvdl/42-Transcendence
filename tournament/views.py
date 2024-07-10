@@ -1,7 +1,7 @@
+import json
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
-from django.urls import reverse
-from django.shortcuts import redirect
+from django.template.loader import render_to_string
 from django.http import JsonResponse
 from main.models import PongUser
 from tournament.models import Tournament
@@ -12,7 +12,8 @@ from tournament.models import Tournament
 def create_tournament(request):
     # Authenticate
     if request.method == "POST":
-        p1 = request.POST["player1"]
+        game = request.POST["game"]
+        p1 = request.user.username
         p2 = request.POST["player2"]
         p3 = request.POST["player3"]
         p4 = request.POST["player4"]
@@ -24,6 +25,7 @@ def create_tournament(request):
                 return JsonResponse({"error": "That user doesn't exist."}, status=400)
 
         t = Tournament.objects.create(
+            game=game,
             upper_bracket_players=[p1, p2],
             lower_bracket_players=[p3, p4],
             date=timezone.now(),
@@ -43,28 +45,37 @@ def tournament(request, id):
         return JsonResponse({"winner": f"{t.get_winner()}."})
 
     if request.method == "GET":
+        ctx = {}
         if (t.upper_bracket_winner == ""):
-            return (JsonResponse({
-                "players": t.upper_bracket_players,
+            ctx = {
+                "game_mode": "tournament",
+                "player1": t.upper_bracket_players[0],
+                "player2": t.upper_bracket_players[1],
                 "bracket": "UPPER",
-            }))
+            }
         elif (t.lower_bracket_winner == ""):
-            return (JsonResponse({
-                "players": t.lower_bracket_players,
+            ctx = {
+                "game_mode": "tournament",
+                "player1": t.lower_bracket_players[0],
+                "player2": t.lower_bracket_players[1],
                 "bracket": "LOWER",
-            }))
+            }
         elif (t.get_winner() == ""):
-            return (JsonResponse({
-                "players": [t.upper_bracket_winner, t.lower_bracket_winner],
+            ctx = {
+                "game_mode": "tournament",
+                "player1": t.upper_bracket_winner,
+                "player2": t.lower_bracket_winner,
                 "bracket": "FINAL",
-            }))
-        return JsonResponse({"ERROR"})
+            }
+
+        return JsonResponse({"innerHtml": render_to_string(f"pages/pong.html", ctx)})
 
     if request.method == "POST":
-        p1 = request.POST["player1"]
-        p2 = request.POST["player2"]
-        winner = request.POST["winner"]
-        bracket = request.POST["bracket"]
+        data = json.loads(request.body)
+        p1 = data["player1"]
+        p2 = data["player2"]
+        winner = data["winner"]
+        bracket = data["bracket"]
 
         which = []
 
@@ -90,4 +101,4 @@ def tournament(request, id):
             t.tournament_winner = PongUser.objects.get(username=winner);
         t.save()
 
-        return JsonResponse({"status": "SUCESS"})
+        return JsonResponse({"status": "SUCCESS"})
