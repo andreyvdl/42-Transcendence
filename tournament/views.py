@@ -68,7 +68,7 @@ def tournament(request, id):
                 "bracket": "FINAL",
             }
 
-        return JsonResponse({"innerHtml": render_to_string(f"pages/pong.html", ctx)})
+        return JsonResponse({"innerHtml": render_to_string(f"pages/{t.game}.html", ctx)})
 
     if request.method == "POST":
         data = json.loads(request.body)
