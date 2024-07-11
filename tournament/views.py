@@ -18,6 +18,9 @@ def create_tournament(request):
         p3 = request.POST["player3"]
         p4 = request.POST["player4"]
 
+        if not game in ["pong", "jkp"]:
+            return JsonResponse({"error": "Invalid game"}, status=400)
+
         for p in {p1, p2, p3, p4}:
             try:
                 PongUser.objects.get(username=p)
