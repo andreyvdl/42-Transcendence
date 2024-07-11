@@ -1,5 +1,8 @@
 <div id="jkp-game-page" class="CENTRALIZA">
-	<canvas id="jogo" width="800" height="800"></canvas>
+	{% include "components/scoreboard.html" %}
+	<div class="d-flex justify-content-center align-items-center" style="height: 400px; width: 400px;">
+		<canvas id="jogo" width="400" height="400"></canvas>
+	</div>
 	<script id="script-game">
 		VERSUS_IA = "{{ IA }}"
 		PLAYER1 = "{{ player1 }}";

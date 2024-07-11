@@ -167,12 +167,17 @@ export default function jkpGameInit() {
 		contexto.fillStyle = "#7200ff";
 		contexto.fillText(JOGADOR[1].pontos.toString(), quadro.width / 4 * 3, 73);
 		contexto.strokeText(JOGADOR[1].pontos.toString(), quadro.width / 4 * 3, 73);
+
+		scoreboard = document.getElementById('scoreboard');
+		scoreboard.innerHTML = `${JOGADOR[0].pontos}x${JOGADOR[1].pontos}`;
 	}
 
 	function desenharTexto() {
 		contexto.fillStyle = "#ff0000";
 		contexto.fillText(g_tempo.toString(), quadro.width / 2, 73);
 		contexto.strokeText(g_tempo.toString(), quadro.width / 2, 73);
+		scoreboard = document.getElementById('scoreboard');
+		scoreboard.innerHTML = `${JOGADOR[0].pontos}x${JOGADOR[1].pontos}:${g_tempo}`;
 	}
 
 	function gerarAleatorio() {

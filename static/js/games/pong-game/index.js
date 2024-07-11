@@ -245,15 +245,9 @@ export default function pongGameInit() {
 		return sphere.intersectsBox(box) || sphere.intersectsBox(box2);
 	}
 
-	function scoreUpdate(canvas, sprites) {
-		const context = [canvas[0].getContext('2d'), canvas[1].getContext('2d')];
-
-		context[0].clearRect(0, 0, canvas[0].width, canvas[0].height);
-		context[1].clearRect(0, 0, canvas[1].width, canvas[1].height);
-		context[0].fillText(SCORE.playerOne, 0, 256);
-		context[1].fillText(SCORE.playerTwo, 0, 256);
-		sprites[0].material.map.needsUpdate = true;
-		sprites[1].material.map.needsUpdate = true;
+	function scoreUpdate() {
+		scoreboard = document.getElementById('scoreboard');
+		scoreboard.innerHTML = `${SCORE.playerOne}x${SCORE.playerTwo}`;
 	}
 
 
@@ -279,13 +273,6 @@ Dica: mire nos cantos")
 
 		canvas[0].width = canvas[1].width = 512;
 		canvas[0].height = canvas[1].height = 512;
-
-		const context = [canvas[0].getContext('2d'), canvas[1].getContext('2d')];
-
-		context[0].font = context[1].font = '72px Arial';
-		context[0].fillStyle = context[1].fillStyle = 'red';
-		context[0].fillText(SCORE.playerOne, 0, 256);
-		context[1].fillText(SCORE.playerTwo, 0, 256);
 
 		const texture = [new THREE.CanvasTexture(canvas[0]), new THREE.CanvasTexture(canvas[1])];
 		const spriteMaterial = [new THREE.SpriteMaterial({ map: texture[0] }), new THREE.SpriteMaterial({ map: texture[1] })];
@@ -325,7 +312,7 @@ Dica: mire nos cantos")
 				AI(ball3d, player);
 			playerMove(player);
 			if (!BALLPAUSE) {
-				scoreUpdate(canvas, sprites);
+				scoreUpdate();
 				ballMove(ball3d, player, scene);
 				ball3d.rotateX(BALL_VELOCITY.z);
 				ball3d.rotateZ(-BALL_VELOCITY.x);
@@ -333,7 +320,7 @@ Dica: mire nos cantos")
 			requestAnimationFrame(animate);
 			renderer.render(scene, camera);
 		}
-
+		
 		animate();
 	} else {
 		const warning = WebGL.getWebGLErrorMessage();
