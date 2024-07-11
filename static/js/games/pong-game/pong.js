@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import WebGL from 'three/addons/capabilities/WebGL.js'
-import { sendMatchResult } from "../game.js"
+import { saveMatchResult } from "../save-match.js"
 
 function pongGameInit() {
 	GAME_RUNNING = true;
@@ -313,7 +313,7 @@ Dica: mire nos cantos")
 				console.log(`MATCH WINNER: ${WINNER}`)
 
 				const match = matchResult()
-				sendMatchResult(match)
+				saveMatchResult(match)
 				if (GAME_MODE != "tournament")
 					handleRedirect('/home/');
 				return;

@@ -1,4 +1,4 @@
-import {defaultMode, tournamentMode} from "./games/game.js"
+import {defaultMode, tournamentMode} from "./games/game-modes.js"
 
 export default function homePageSetup() {
 	const modeOptions = document.getElementById("modeSelect");
