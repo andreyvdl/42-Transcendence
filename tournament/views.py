@@ -19,13 +19,15 @@ def create_tournament(request):
         p4 = request.POST["player4"]
 
         if not game in ["pong", "jkp"]:
-            return JsonResponse({"error": "Invalid game"}, status=400)
+            inner_html = render_to_string("pages/home.html", {"err_msg": "Invalid game."}, request=request)
+            return JsonResponse({"innerHtml": inner_html})
 
         for p in {p1, p2, p3, p4}:
             try:
                 PongUser.objects.get(username=p)
             except PongUser.DoesNotExist:
-                return JsonResponse({"error": "That user doesn't exist."}, status=400)
+                inner_html = render_to_string("pages/home.html", {"err_msg": f"User \"{p}\" doesn't exist."}, request=request)
+                return JsonResponse({"innerHtml": inner_html})
 
         t = Tournament.objects.create(
             game=game,
@@ -38,14 +40,19 @@ def create_tournament(request):
 
 
 @csrf_exempt
-def tournament(request, id):
+def current_match(request, id):
     try:
         t = Tournament.objects.get(id=id)
     except Tournament.DoesNotExist:
         return JsonResponse({"error": "This tournament doesn't exist."}, status=400)
 
     if (t.get_winner() != ""):
-        return JsonResponse({"winner": f"{t.get_winner()}."})
+        inner_html = render_to_string("pages/tournament-result.html", {
+            "game": t.game,
+            "winner": t.get_winner(),
+            "players": t.upper_bracket_players + t.lower_bracket_players,
+        }, request=request)
+        return JsonResponse({"innerHtml": inner_html})
 
     if request.method == "GET":
         ctx = {}
@@ -73,6 +80,15 @@ def tournament(request, id):
 
         return JsonResponse({"innerHtml": render_to_string(f"pages/{t.game}.html", ctx)})
 
+def save_match(request, id):
+    try:
+        t = Tournament.objects.get(id=id)
+    except Tournament.DoesNotExist:
+        return JsonResponse({"error": "This tournament doesn't exist."}, status=400)
+
+    if (t.get_winner() != ""):
+        return JsonResponse({"winner": f"{t.get_winner()}."})
+
     if request.method == "POST":
         data = json.loads(request.body)
         p1 = data["player1"]
@@ -90,11 +106,11 @@ def tournament(request, id):
             which = [t.upper_bracket_winner, t.lower_bracket_winner]
 
         if (winner != p1 and winner != p2):
-            return JsonResponse({"error": "?"}, status=400)
+            return JsonResponse({"error": "Winner must be either player1 or player2."}, status=400)
 
         for p in {p1, p2, winner}:
             if p not in which:
-                return JsonResponse({"error": "?"}, status=400)
+                return JsonResponse({"error": f"Player {p} is not in the specified bracket."}, status=400)
 
         if bracket == "UPPER":
             t.upper_bracket_winner = winner;

@@ -1,7 +1,7 @@
 import { tournamentMatch } from "./game-modes.js"
 
 async function tournamentSaveMatch(tournamentId, match) {
-	const url = `${BASE_URL}/tournament/${tournamentId}`;
+	const url = `${BASE_URL}/tournament/${tournamentId}/save_match`;
 
 	try {
 		const response = await fetch(url, {

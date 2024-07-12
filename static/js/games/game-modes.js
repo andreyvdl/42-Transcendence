@@ -1,5 +1,5 @@
 function createTournament(tournamentOptions) {
-	const url = `${BASE_URL}/tournament/`;
+	const url = `${BASE_URL}/tournament/create`;
 
 	return (
 		fetch(url, {
@@ -13,15 +13,17 @@ function createTournament(tournamentOptions) {
 			.then(data => {
 				if (data.id)
 					return (data.id)
-				else
+				else {
+					updatePage(data.innerHtml)
 					return (null)
+				}
 			})
 			.catch(error => console.log(error))
 	);
 }
 
 export function tournamentMatch(tournamentId) {
-	const url = `${BASE_URL}/tournament/${tournamentId}`;
+	const url = `${BASE_URL}/tournament/${tournamentId}/current_match`;
 
 	fetch(url, {
 		method: 'GET',
@@ -31,9 +33,7 @@ export function tournamentMatch(tournamentId) {
 	})
 		.then(response => response.json())
 		.then(data => {
-			if (data.winner) {
-				updatePage(`<h1>Winner: ${data.winner}</h1>`)
-			} else if (data.innerHtml) {
+			if (data.innerHtml) {
 				updatePage(data.innerHtml);
 			} else {
 				updatePage(ERROR);
@@ -46,7 +46,6 @@ export function tournamentMode(tournamentOptions) {
 	createTournament(tournamentOptions).
 		then(tournamentId => {
 			if (tournamentId === null) {
-				updatePage("ERROR");
 				return;
 			}
 
