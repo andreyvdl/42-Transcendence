@@ -2,57 +2,65 @@ import { tournamentMatch } from "./game-modes.js"
 
 async function tournamentSaveMatch(tournamentId, match) {
 	const url = `${BASE_URL}/tournament/${tournamentId}/save_match`;
+	const options = {
+		method: 'POST',
+		headers: {
+			'X-CSRFToken': getCookie('csrftoken'),
+		},
+		body: JSON.stringify(match)
+	}
 
 	try {
-		const response = await fetch(url, {
-			method: 'POST',
-			headers: {
-				'X-CSRFToken': getCookie('csrftoken'),
-			},
-			body: JSON.stringify(match)
-		});
-		const data = await response.json()
-		if (data.status === "SUCCESS") {
-			console.log("PARTIDA SALVA");
-			return "SUCCESS";
+		const data = await fetchData(url, options);
+
+		if (data.status === "saved") {
+			return true;
 		} else {
-			console.log("ERRO AO SALVAR PARTIDA");
-			return "ERROR";
+			return false;
 		}
 	} catch (error) {
-		console.log(error);
-		return "ERROR";
+		return false;
 	}
 }
 
-function saveMatch(match) {
+async function saveMatch(match) {
 	const url = `${BASE_URL}/api/save_match/${match.player2}/${match.scores.playerOne}v${match.scores.playerTwo}/${match.winner}`;
 
-	fetch(url)
-		.then(response => {
-			if (response.status !== 200) {
-				return new Error(response.status);
-			}
-			return response.json();
-		})
-		.then(data => {
-			console.log(data);
-		})
-		.catch(error => console.log(error));
+	try {
+		const data = await fetchData(url);
+
+		// DEBUG
+		console.table(data);
+
+		return true
+	} catch (error) {
+		if (error.data.innerHtml)
+			updatePage(data.innerHtml);
+		return false
+	}
 }
 
 export async function saveMatchResult(match) {
 	if (match.gameMode === "pve") return; // Not save matchs versus IA
 
-	if (match.gameMode === "pvp") {
-		saveMatch(match);
-	} else {
-		const resultSave = await tournamentSaveMatch(TOURNAMENT_ID, match);
-		if (resultSave === "SUCCESS") {
-			// NEXT MATCH
-			tournamentMatch(TOURNAMENT_ID);
-		} else {
-			updatePage("ERROR_SENDMATCH");
+	try {
+		var savedMatch = false;
+		if (match.gameMode === "pvp")
+			savedMatch = await saveMatch(match);
+		else
+			savedMatch = await tournamentSaveMatch(TOURNAMENT_ID, match);
+
+		if (!savedMatch) {
+			const error = new Error(`Error when saving the game with GAME_MODE = ${match.gameMode}`);
+			throw error;
 		}
+
+		if (match.gameMode == "pvp")
+			handleRedirect('/home/');
+		else
+			await tournamentMatch(TOURNAMENT_ID); // NEXT MATCH OF TOURNAMENT
+	} catch {
+		console.error(error)
+		handleRedirect('/home/');
 	}
 }

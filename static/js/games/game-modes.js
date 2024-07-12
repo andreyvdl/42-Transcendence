@@ -1,76 +1,77 @@
-function createTournament(tournamentOptions) {
+async function createTournament(tournamentOptions) {
 	const url = `${BASE_URL}/tournament/create`;
+	const options = {
+		method: 'POST',
+		headers: {
+			'X-CSRFToken': getCookie('csrftoken'),
+		},
+		body: tournamentOptions,
+	};
+	
+	try {
+		const data = await fetchData(url, options)
 
-	return (
-		fetch(url, {
-			method: 'POST',
-			headers: {
-				'X-CSRFToken': getCookie('csrftoken'),
-			},
-			body: tournamentOptions,
-		})
-			.then(response => response.json())
-			.then(data => {
-				if (data.id)
-					return (data.id)
-				else {
-					updatePage(data.innerHtml)
-					return (null)
-				}
-			})
-			.catch(error => console.log(error))
-	);
+		if (data.id)
+			return (data.id);
+		if (data.innerHtml)
+			updatePage(data.innerHtml)
+
+		return (null);
+	} catch (error) {
+		if (error.data && error.data.innerHtml)
+			updatePage(error.data.innerHtml)
+		return (null)
+	}
 }
 
-export function tournamentMatch(tournamentId) {
+export async function tournamentMatch(tournamentId) {
 	const url = `${BASE_URL}/tournament/${tournamentId}/current_match`;
-
-	fetch(url, {
+	const options = {
 		method: 'GET',
 		headers: {
 			'X-CSRFToken': getCookie('csrftoken'),
 		}
-	})
-		.then(response => response.json())
-		.then(data => {
-			if (data.innerHtml) {
-				updatePage(data.innerHtml);
-			} else {
-				updatePage(ERROR);
-			}
-		})
-		.catch(error => console.log(error));
+	};
+
+	try {
+		const data = await fetchData(url, options);
+
+		if (data.innerHtml)
+			updatePage(data.innerHtml);
+	} catch (error) {
+		if (error.data && error.data.innerHtml)
+			updatePage(error.data.innerHtml)
+	}
 }
 
-export function tournamentMode(tournamentOptions) {
-	createTournament(tournamentOptions).
-		then(tournamentId => {
-			if (tournamentId === null) {
-				return;
-			}
+export async function tournamentMode(tournamentOptions) {
+	TOURNAMENT_ID = await createTournament(tournamentOptions);
 
-			TOURNAMENT_ID = tournamentId;
+	if (TOURNAMENT_ID === null)
+		return;
 
-			// FIRST MATCH
-            tournamentMatch(tournamentId)
-		});
+	// FIRST MATCH
+	tournamentMatch(TOURNAMENT_ID);
 }
 
-export function defaultMode(gameOptions) {
+export async function defaultMode(gameOptions) {
 	const game = gameOptions.get("game");
 	const url = `${BASE_URL}/games/${game}`
-
-	fetch(url, {
+	const options = {
 		method: 'POST',
 		headers: {
 			'X-CSRFToken': getCookie('csrftoken'),
 		},
 		body: gameOptions,
-	})
-		.then(response => response.json())
-		.then(data => {
-			if (data.innerHtml)
-				updatePage(data.innerHtml);
-		})
-		.catch(error => console.log(error));
+	};
+
+	try {
+		const data = await fetchData(url, options);
+
+		if (data.innerHtml)
+			updatePage(data.innerHtml);
+	} catch (error) {
+		if (error.data && error.data.innerHtml)
+			updatePage(error.data.innerHtml);
+	}
 }

@@ -14,6 +14,27 @@ function getCookie(name) {
     return cookieValue;
 }
 
+async function fetchData(url, options = {}) {
+	try {
+		const response = await fetch(url, options);
+		const data = await response.json()
+
+		if (!response.ok) {
+			const error = new Error(data.error || response.statusText);
+			error.response = response;
+			error.data = data;
+			throw error;
+		}
+
+		return data;
+	} catch (error) {
+		// DEBUG
+		console.error(error);
+
+		throw error;
+	}
+}
+
 function handleLocation() {
 	const newUrl = window.location.pathname;
 	fetch(newUrl, {
