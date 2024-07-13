@@ -3,7 +3,9 @@ import {defaultMode, tournamentMode} from "./games/game-modes.js"
 export default function homePageSetup() {
 	const modeOptions = document.getElementById("modeSelect");
 	const gameOptions = document.getElementById("gameSelect");
+    const logoutBtn = document.getElementById('logout-btn');
 
+    attachEvent(logoutBtn, 'click', logout);
 	const gameForm = document.getElementById("form-game");
 	if (!modeOptions || !gameOptions) return;
 
@@ -12,6 +14,27 @@ export default function homePageSetup() {
 
 	updatePlayerCount();
 	attachEvent(gameForm, 'submit', playGame);
+}
+
+function logout(event) {
+    event.preventDefault();
+
+    const url = `${BASE_URL}/auth/logout`;
+
+    fetch(url, {
+        method: 'POST'
+    })
+        .then((response) => {
+            if (response.ok || response.status == 302)
+                return response.json();
+            else
+                return new Error(response.status);
+        })
+        .then((data) => {
+            if (data.redirect)
+                handleRedirect(data.redirect);
+        })
+        .catch(error => console.error(error));
 }
 
 function updatePlayerCount() {

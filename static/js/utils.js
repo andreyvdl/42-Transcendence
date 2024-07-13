@@ -88,6 +88,17 @@ function updatePage(innerHtml) {
     document.getElementById('mainContent').innerHTML = innerHtml;
 }
 
+function toastCall(data) {
+	const toast = document.getElementById("liveToast");
+	const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toast);
+	const toastTitle = document.querySelector("strong.me-auto");
+	const toastBody = document.querySelector("div.toast-body");
+
+	toastTitle.innerHTML = data.title;
+	toastBody.innerHTML = data.text;
+	toastBootstrap.show();
+}
+
 const BASE_URL = window.location.protocol + "//" + window.location.host;
 
 var INTRA_URL = "";

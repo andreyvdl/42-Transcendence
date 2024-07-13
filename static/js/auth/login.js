@@ -23,6 +23,8 @@ function submitFormLogin(event) {
                 handleRedirect(data.redirect);
             else if (data.innerHtml)
                 updatePage(data.innerHtml);
+			else
+				toastCall(data);
         })
         .catch(error => console.log(error));
 }

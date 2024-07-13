@@ -15,8 +15,6 @@
 						<a href="{% url 'account' %}" id="account-btn" class="btn btn-outline-success" style="margin-top:80vh;" >Account</a>
 						<button id="logout-btn" class="btn btn-outline-danger" style="margin-top:1vh;" >Logout</button>
 					</ul>
-				
-
 				</div>
 			</div>
 		</div>
@@ -50,6 +48,15 @@
 					<button class="btn btn-dark btn-lg" id="startGame" type="submit" disabled>Start Game</button>
 				</div>
 			</form>
+			<div class="toast-container position-fixed bottom-0 start-0 p3">
+				<div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+					<div class="toast-header">
+						<strong class="me-auto"></strong>
+						<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+					</div>
+					<div class="toast-body" style="color: black;"></div>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>

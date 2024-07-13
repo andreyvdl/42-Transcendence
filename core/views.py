@@ -53,15 +53,30 @@ def _get_friends(pk):
                                             Q(status='y'))
     friends = []
     for f in friendships:
-        friends.append((f.sent_by.username, f.sent_by.online) if not f.sent_by.username == self_username else
-                       (f.sent_to.username, f.sent_to.online))
+        if not f.sent_by.username == self_username:
+            friends.append((
+                f.sent_by.username,
+                f.sent_by.online,
+                PongUser.objects.get(username=f.sent_by.username).get_wins().count(),
+                PongUser.objects.get(username=f.sent_by.username).get_losses().count(),
+                PongUser.objects.get(username=f.sent_by.username).get_winrate(),
+            ))
+        else:
+            friends.append((
+                f.sent_to.username,
+                f.sent_to.online,
+                PongUser.objects.get(username=f.sent_to.username).get_wins().count(),
+                PongUser.objects.get(username=f.sent_to.username).get_losses().count(),
+                PongUser.objects.get(username=f.sent_to.username).get_winrate(),
+            ))
 
     return friends
 
 def _get_matches(pk):
-    matches = Match.objects.filter(Q(left_player=pk) | Q(right_player=pk))
-    username = PongUser.objects.get(pk=pk).get_username()
+    user = PongUser.objects.get(pk=pk)
+    matches = user.get_matches()
     results = []
+    username = user.get_username()
 
     for m in matches:
         results.append((
@@ -71,22 +86,15 @@ def _get_matches(pk):
             m.right_player.get_username() if username == m.left_player.get_username() else m.left_player.get_username(),
         ))
 
-    total_matches = matches.count()
-    total_wins = matches.filter(winner=pk).count()
-
-    try:
-        winrate = (float(total_wins) / float(total_matches)) * 100
-    except:
-        winrate = 0.0
-
     user_info = {
-        "total": total_matches,
-        "wins": total_wins,
-        "loses": matches.exclude(winner=pk).count(),
-        "winrate": round(winrate, 1),
+        "total": user.get_matches().count(),
+        "wins": user.get_wins().count(),
+        "loses": user.get_losses().count(),
+        "winrate": user.get_winrate(),
     }
 
     return results, user_info
+
 
 class AccountView(View):
     @staticmethod
@@ -102,8 +110,6 @@ class AccountView(View):
         friends = _get_friends(request.user.id)
         ctx = {
             'username': request.user.username,
-            'wins': request.user.get_wins(),
-            'losses': request.user.get_losses(),
             'pend_friends': pend_friends,
             'picture_url': _get_profile_pic(request.user),
             'friends': friends,
@@ -121,22 +127,22 @@ class AccountView(View):
         friends = _get_friends(request.user.id)
         ctx = {
             'username': request.user.username,
-            'wins': request.user.get_wins(),
-            'losses': request.user.get_losses(),
+            'pend_friends': pend_friends,
             'picture_url': _get_profile_pic(request.user),
             'friends': friends,
-            'pend_friends': pend_friends,
             'matches': matches,
             'user_info': user_info,
         }
         if PongUser.objects.filter(username=new_username).exists():
-            ctx['msg'] = '🔴 User already exists.'
+            return JsonResponse({
+                "title": "🔴 ERROR",
+                "text": "Username already in use.",
+            })
         else:
             curr_user = PongUser.objects.get(username=request.user)
             curr_user.username = new_username
             curr_user.save()
             ctx['username'] = curr_user.username
-            ctx['msg'] = '🟢 Username changed successfully.'
 
         inner_html = render_to_string('pages/account.html', ctx)
         return JsonResponse({'innerHtml': inner_html})
