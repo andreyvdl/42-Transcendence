@@ -108,7 +108,7 @@ else
 	INTRA_URL = "https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-b03d3e34ca48d59cf52b525eef892e52f49bc88e15972bf41e3dc501fdbf7968&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fauth%2Fintra&response_type=code";
 
 var GAME_RUNNING = false;
-var TOURNAMENT_ID = 0;
+var TOURNAMENT_ID = null;
 var PLAYER1 = "";
 var PLAYER2 = "";
 var WINNER = "";
