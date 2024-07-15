@@ -5,9 +5,9 @@ from main.models import PongUser
 
 def _player_versus_player(player_one, player_two):
     ctx = {
-        'IA': "off",
         'player1': player_one,
         'player2': player_two,
+        'game_mode': 'pvp',
     }
     if not PongUser.objects.filter(username=ctx['player1']).exists():
         ctx['err_msg'] = 'Player 1 does not exist.'
@@ -19,9 +19,9 @@ def _player_versus_player(player_one, player_two):
 
 def _player_versus_environment(player_one):
     ctx = {
-        'IA': "on",
         'player1': player_one,
         'player2': 'Marvin',
+        'game_mode': 'pve',
     }
     if not PongUser.objects.filter(username=ctx['player1']).exists():
         ctx['err_msg'] = 'Player 1 does not exist.'

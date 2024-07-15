@@ -204,5 +204,5 @@ export default function accountPageSetup() {
     attachEvent(changeUsernameForm, 'submit', changeUsername);
     attachEvent(changePictureForm, 'submit', changePicture);
 
-    attachEvent(window, 'beforeunload', userOffline);
+	attachEvent(window, 'beforeunload', userOffline);
 }

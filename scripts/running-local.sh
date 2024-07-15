@@ -62,6 +62,6 @@ if ! [ "$( docker container inspect -f '{{.State.Running}}' postgres )" = "true"
 fi
 
 
-$PYTHON_BIN manage.py makemigrations main && \
+$PYTHON_BIN manage.py makemigrations main tournament && \
 $PYTHON_BIN manage.py migrate && \
 $PYTHON_BIN manage.py runserver $DJANGO_PORT

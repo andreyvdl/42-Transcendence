@@ -1,7 +1,6 @@
-
-<!-- {% load static %} -->
+{% load static %}
 <div class="pongGame" id="pong-game-page" style="height: 100%;
-    background-image: url('https://jornaldachapada.com.br/wp-content/uploads/2022/08/xique-xique-PM.jpg');
+    background-image: url({% static 'assets/pong-game/xique-xique.jpg' %});
 	background-repeat: no-repeat;
 	background-attachment: fixed;
 	background-size: cover;
@@ -10,8 +9,10 @@
 	<div class="d-flex justify-content-center align-items-center" style="height: fit-content; margin-bottom: 3vh;" id="pong_canvas">
     </div>
 	<script id="script-game">
-		VERSUS_IA = "{{ IA }}"
+		GAME_MODE = "{{ game_mode }}";
 		PLAYER1 = "{{ player1 }}";
 		PLAYER2 = "{{ player2 }}";
+		BRACKET = "{{ bracket }}";
+		WINNER = ""
 	</script>
 </div>

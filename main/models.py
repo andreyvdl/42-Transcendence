@@ -32,7 +32,7 @@ class PongUser(AbstractUser):
         matches = self.get_matches()
 
         try:
-            return (float(wins.count()) / float(matches.count())) * 100
+            return round((float(wins.count()) / float(matches.count())) * 100, 2)
         except:
             return "-"
 

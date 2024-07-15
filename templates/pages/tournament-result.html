@@ -1,0 +1,12 @@
+<div id="tournament-result-page">
+    <h1>GAME:</h1>
+    <a>{{ game }}</a>
+    <h1>WINNER:</h1>
+    <a>{{ winner }}</a>
+    <h1>PLAYERS:</h1>
+    {% for p in players %}
+        <a>{{ p }}</a>
+    {% endfor %}
+    <br>
+    <a href={% url 'home' %}>home</a>
+</div>

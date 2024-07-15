@@ -14,6 +14,24 @@ function getCookie(name) {
     return cookieValue;
 }
 
+async function fetchData(url, options = {}) {
+	try {
+		const response = await fetch(url, options);
+		const data = await response.json()
+
+		if (!response.ok) {
+			const error = new Error(data.error || response.statusText);
+			error.response = response;
+			error.data = data;
+			throw error;
+		}
+
+		return data;
+	} catch (error) {
+		throw error;
+	}
+}
+
 function handleLocation() {
 	const newUrl = window.location.pathname;
 	fetch(newUrl, {
@@ -40,14 +58,12 @@ function handleLocation() {
 		.catch(error => console.log(error));
 };
 
-function route(event) {
-    event.preventDefault();
-
-	const targetUrl = event.target.href;
+function route(target) {
+	const targetUrl = target.href;
 	const currentUrl = window.location.href;
 
 	if (targetUrl != currentUrl)
-		window.history.pushState({}, "", event.target.href);
+		window.history.pushState({}, "", targetUrl);
     handleLocation();
 };
 
@@ -87,7 +103,10 @@ else
 	INTRA_URL = "https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-b03d3e34ca48d59cf52b525eef892e52f49bc88e15972bf41e3dc501fdbf7968&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fauth%2Fintra&response_type=code";
 
 var GAME_RUNNING = false;
+var TOURNAMENT_ID = null;
 var PLAYER1 = "";
 var PLAYER2 = "";
-var VERSUS_IA = "";
+var WINNER = "";
+var GAME_MODE = "";
+var BRACKET = "";
 var payload = null;
