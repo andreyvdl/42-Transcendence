@@ -36,7 +36,6 @@ export default function pongGameInit() {
 	const assetsPath = "/static/assets/pong-game/"
 	const groundTextureImg = `${assetsPath}table.png`;
 	const ballTextureImg = `${assetsPath}compcube.png`;
-	const backgroundImg = `${assetsPath}xique-xique.jpg`;
 
 	var KEYS = {};
 
@@ -279,7 +278,7 @@ Dica: mire nos cantos")
 		const sprites = [new THREE.Sprite(spriteMaterial[0]), new THREE.Sprite(spriteMaterial[1])];
 		sprites[0].position.set(-4.2, 0, -6.2);
 		sprites[1].position.set(13.5, 0, -6.2);
-		scene.background = new THREE.TextureLoader().load(backgroundImg);
+		scene.background = new THREE.Color('#4f9a79');
 		scene.add(ball3d, ground);
 		scene.add(new THREE.AmbientLight(0xffffff, 2));
 		scene.add(...player);
