@@ -157,7 +157,7 @@ function jkpGameInit() {
 	}
 
 	function desenharPlacar() {
-		scoreboard = document.getElementById('scoreboard');
+		const scoreboard = document.getElementById('scoreboard');
 		scoreboard.innerHTML = `${JOGADOR[0].pontos}x${JOGADOR[1].pontos}:${g_tempo}`;
 	}
 

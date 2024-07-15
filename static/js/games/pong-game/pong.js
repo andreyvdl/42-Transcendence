@@ -223,7 +223,7 @@ function pongGameInit() {
 	}
 
 	function scoreUpdate() {
-		scoreboard = document.getElementById('scoreboard');
+		const scoreboard = document.getElementById('scoreboard');
 		scoreboard.innerHTML = `${SCORE.playerOne}x${SCORE.playerTwo}`;
 	}
 
