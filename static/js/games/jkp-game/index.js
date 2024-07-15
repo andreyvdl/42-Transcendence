@@ -149,30 +149,15 @@ export default function jkpGameInit() {
 		contexto.textBaseline = "middle";
 		contexto.font = "72px arial";
 		timer();
-		desenharLados();
-		desenharTexto();
+		desenharPlacar();
 		checarJogadores();
 		desenharEscolhas();
 		requestAnimationFrame(renderizador);
 	}
 
-	function desenharLados() {
-		contexto.fillStyle = "#009dff";
-		contexto.fillRect(0, 0, quadro.width / 2, quadro.height);
-		contexto.fillStyle = "#ff9400";
-		contexto.fillText(JOGADOR[0].pontos.toString(), quadro.width / 4, 73);
-		contexto.strokeText(JOGADOR[0].pontos.toString(), quadro.width / 4, 73);
-		contexto.fillStyle = "#fffc00";
-		contexto.fillRect(quadro.width / 2, 0, quadro.width, quadro.height);
-		contexto.fillStyle = "#7200ff";
-		contexto.fillText(JOGADOR[1].pontos.toString(), quadro.width / 4 * 3, 73);
-		contexto.strokeText(JOGADOR[1].pontos.toString(), quadro.width / 4 * 3, 73);
-	}
-
-	function desenharTexto() {
-		contexto.fillStyle = "#ff0000";
-		contexto.fillText(g_tempo.toString(), quadro.width / 2, 73);
-		contexto.strokeText(g_tempo.toString(), quadro.width / 2, 73);
+	function desenharPlacar() {
+		scoreboard = document.getElementById('scoreboard');
+		scoreboard.innerHTML = `${JOGADOR[0].pontos}x${JOGADOR[1].pontos}:${g_tempo}`;
 	}
 
 	function gerarAleatorio() {
