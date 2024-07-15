@@ -61,14 +61,12 @@ function handleLocation() {
 		.catch(error => console.log(error));
 };
 
-function route(event) {
-    event.preventDefault();
-
-	const targetUrl = event.target.href;
+function route(target) {
+	const targetUrl = target.href;
 	const currentUrl = window.location.href;
 
 	if (targetUrl != currentUrl)
-		window.history.pushState({}, "", event.target.href);
+		window.history.pushState({}, "", targetUrl);
     handleLocation();
 };
 

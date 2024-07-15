@@ -1,5 +1,13 @@
-<div id="pong-game-page">
-	<div class="d-flex justify-content-center align-items-center" style="height: 100vh;" id="pong_canvas">
+
+<!-- {% load static %} -->
+<div class="pongGame" id="pong-game-page" style="height: 100%;
+    background-image: url('https://jornaldachapada.com.br/wp-content/uploads/2022/08/xique-xique-PM.jpg');
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	background-size: cover;
+	">
+	{% include "components/scoreboard.html" %}
+	<div class="d-flex justify-content-center align-items-center" style="height: fit-content; margin-bottom: 3vh;" id="pong_canvas">
     </div>
 	<script id="script-game">
 		GAME_MODE = "{{ game_mode }}";

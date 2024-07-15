@@ -1,5 +1,5 @@
 <div class="container-fluid" id="home-page" style="background-color: rgb(80,80,80); height: 100%;">
-	<nav id="nav" class="navbar  border-body " data-bs-theme="dark" style="background-color: rgb(54, 54, 54); width: 55vw; margin-left:24vw">
+	<nav id="nav" class="navbar  border-body " data-bs-theme="dark" style="background-color: rgb(54, 54, 54); width: 55vw; margin-left:22vw">
 		<div class="container-fluid">
 			<p class="navbar-brand">Pongas</p>
 			<button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">	
@@ -19,12 +19,10 @@
 			</div>
 		</div>
 	</nav>
-	<div id="homeBody" class="container-fluid" style="background-color: rgb(54, 54, 54); height: 94vh; width: 55vw; margin-left: 24vw; margin-right: 1vw; font-size: 24px;">
+	<div id="homeBody" class="d-flex justify-content-center align-items-center flex-column" style="background-color: rgb(54, 54, 54); width: 55vw; height: 92.7vh; margin-left: 22vw; margin-right: 1vw; font-size: 24px;">
 		<div class="d-grid gap-2 col-6 mx-auto"">
-			<div class="container-fluid" style="margin-top: 15vh;">
-				<h1 class="text-center" style="color: white;">Welcome to Pongas</h1>
-			</div>
-			<form id="form-game" style="margin-top: 5vh;">
+			<form id="form-game" style="margin-top: 10vh;">
+				<h1 class="text-center" style="color: white; margin-bottom: 5vh;">Welcome to Pongas</h1>
 				{% csrf_token %}
 				<select title="Game Options" id="gameSelect" name="game" class="form-select form-select-lg mb-3">
 					<option id="title" value="0" disabled selected>Select Game</option>
@@ -44,7 +42,7 @@
 				{% if err_msg %}
 					<p class="text-center" style="color: red; align-self: center;">{{ err_msg }}</p>
 				{% endif %}
-				<div class="d-grid gap-2 col-6 mx-auto mt-3">
+				<div class="d-grid gap-2 col-6 mx-auto mt-5">
 					<button class="btn btn-dark btn-lg" id="startGame" type="submit" disabled>Start Game</button>
 				</div>
 			</form>
@@ -55,6 +53,28 @@
 						<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
 					</div>
 					<div class="toast-body" style="color: black;"></div>
+				</div>
+			</div>
+		</div>
+		<div class="d-flex flex-row justify-content-center align-items-center"  style="margin-top: 6vh; background-color: rgb(54, 54, 54); height: 46vh; width: 55vw; font-size: 24px;">
+			<div class="card text-bg-dark" style="width: 25vw; height: 24rem; margin-right: 1vw;">
+				<div class="card-header text-center">Pong Tutorial</div>
+				<div class="card-body overflow-auto" style="font-size: 19px;">
+					<p>Jogador 1: 'w' e 's'</p>
+					<p>Jogador 2: 'cima' e 'baixo'</p>
+					<p>Espaço pausa o jogo</p>
+					<p>Todas as partidas são melhores de 3</p>
+					<p>Dica: mire nos cantos</p>
+				</div>
+			</div>
+			<div class="card text-bg-dark" style="width: 25vw; height: 24rem; margin-left: 1vw;">
+				<div class="card-header text-center">JKP Tutorial</div>
+				<div class="card-body overflow-auto" style="font-size: 19px;">
+					<p>Jogador 1: 'a' = 🔥, 's' = 💧 e 'd' = ❄️</p>
+					<p>Jogador 2: 'j' = 🔥, 'k' = 💧 e 'l' = ❄️</p>
+					<p>Vocês tem 5 segundos para escolher</p>
+					<p>🔥 > ❄️ > 💧 > 🔥</p>
+					<p>Se um dos jogadores não escolher a tempo, será escolhido aleatoriamente</p>
 				</div>
 			</div>
 		</div>

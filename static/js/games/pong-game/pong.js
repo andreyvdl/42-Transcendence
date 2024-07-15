@@ -20,7 +20,6 @@ function pongGameInit() {
 	const assetsPath = "/static/assets/pong-game/"
 	const groundTextureImg = `${assetsPath}table.png`;
 	const ballTextureImg = `${assetsPath}compcube.png`;
-	const backgroundImg = `${assetsPath}xique-xique.jpg`;
 
 	var KEYS = {};
 
@@ -223,15 +222,9 @@ function pongGameInit() {
 		return sphere.intersectsBox(box) || sphere.intersectsBox(box2);
 	}
 
-	function scoreUpdate(canvas, sprites) {
-		const context = [canvas[0].getContext('2d'), canvas[1].getContext('2d')];
-
-		context[0].clearRect(0, 0, canvas[0].width, canvas[0].height);
-		context[1].clearRect(0, 0, canvas[1].width, canvas[1].height);
-		context[0].fillText(SCORE.playerOne, 0, 256);
-		context[1].fillText(SCORE.playerTwo, 0, 256);
-		sprites[0].material.map.needsUpdate = true;
-		sprites[1].material.map.needsUpdate = true;
+	function scoreUpdate() {
+		scoreboard = document.getElementById('scoreboard');
+		scoreboard.innerHTML = `${SCORE.playerOne}x${SCORE.playerTwo}`;
 	}
 
 
@@ -258,19 +251,12 @@ Dica: mire nos cantos")
 		canvas[0].width = canvas[1].width = 512;
 		canvas[0].height = canvas[1].height = 512;
 
-		const context = [canvas[0].getContext('2d'), canvas[1].getContext('2d')];
-
-		context[0].font = context[1].font = '72px Arial';
-		context[0].fillStyle = context[1].fillStyle = 'red';
-		context[0].fillText(SCORE.playerOne, 0, 256);
-		context[1].fillText(SCORE.playerTwo, 0, 256);
-
 		const texture = [new THREE.CanvasTexture(canvas[0]), new THREE.CanvasTexture(canvas[1])];
 		const spriteMaterial = [new THREE.SpriteMaterial({ map: texture[0] }), new THREE.SpriteMaterial({ map: texture[1] })];
 		const sprites = [new THREE.Sprite(spriteMaterial[0]), new THREE.Sprite(spriteMaterial[1])];
 		sprites[0].position.set(-4.2, 0, -6.2);
 		sprites[1].position.set(13.5, 0, -6.2);
-		scene.background = new THREE.TextureLoader().load(backgroundImg);
+		scene.background = new THREE.Color('#4f9a79');
 		scene.add(ball3d, ground);
 		scene.add(new THREE.AmbientLight(0xffffff, 2));
 		scene.add(...player);
@@ -298,7 +284,7 @@ Dica: mire nos cantos")
 				game: "pong",
 				gameMode: GAME_MODE,
 				bracket: BRACKET,
-				scores: SCORE,
+				scores: {p1: SCORE.playerOne, p2: SCORE.playerTwo},
 				winner: WINNER,
 				player1: PLAYER1,
 				player2: PLAYER2

@@ -154,30 +154,15 @@ function jkpGameInit() {
 		contexto.textBaseline = "middle";
 		contexto.font = "72px arial";
 		timer();
-		desenharLados();
-		desenharTexto();
+		desenharPlacar()
 		checarJogadores();
 		desenharEscolhas();
 		requestAnimationFrame(renderizador);
 	}
 
-	function desenharLados() {
-		contexto.fillStyle = "#009dff";
-		contexto.fillRect(0, 0, quadro.width / 2, quadro.height);
-		contexto.fillStyle = "#ff9400";
-		contexto.fillText(JOGADOR[0].pontos.toString(), quadro.width / 4, 73);
-		contexto.strokeText(JOGADOR[0].pontos.toString(), quadro.width / 4, 73);
-		contexto.fillStyle = "#fffc00";
-		contexto.fillRect(quadro.width / 2, 0, quadro.width, quadro.height);
-		contexto.fillStyle = "#7200ff";
-		contexto.fillText(JOGADOR[1].pontos.toString(), quadro.width / 4 * 3, 73);
-		contexto.strokeText(JOGADOR[1].pontos.toString(), quadro.width / 4 * 3, 73);
-	}
-
-	function desenharTexto() {
-		contexto.fillStyle = "#ff0000";
-		contexto.fillText(g_tempo.toString(), quadro.width / 2, 73);
-		contexto.strokeText(g_tempo.toString(), quadro.width / 2, 73);
+	function desenharPlacar() {
+		scoreboard = document.getElementById('scoreboard');
+		scoreboard.innerHTML = `${JOGADOR[0].pontos}x${JOGADOR[1].pontos}:${g_tempo}`;
 	}
 
 	function gerarAleatorio() {
@@ -189,6 +174,7 @@ function jkpGameInit() {
 			if (event.key == "a") JOGADOR[0].escolha = ESCOLHAS.pedra;
 			if (event.key == "s") JOGADOR[0].escolha = ESCOLHAS.papel;
 			if (event.key == "d") JOGADOR[0].escolha = ESCOLHAS.tesoura;
+			if (GAME_MODE === "pve") return ;
 			if (event.key == "j") JOGADOR[1].escolha = ESCOLHAS.pedra;
 			if (event.key == "k") JOGADOR[1].escolha = ESCOLHAS.papel;
 			if (event.key == "l") JOGADOR[1].escolha = ESCOLHAS.tesoura;
@@ -205,10 +191,10 @@ function jkpGameInit() {
     console.log(`GAME MODE: ${GAME_MODE}, MATCH: ${PLAYER1} x ${PLAYER2}`)
 
 	alert("TUTORIAL\n\
-Jogador 1: 'a' = fogo, 's' = água e 'd' = gelo\n\
-Jogador 2: 'j' = fogo, 'k' = água e 'l' = gelo\n\
-Vocês tem 5 segundos para escolher fogo, água ou gelo\n\
-fogo > gelo > água > fogo\n\
+Jogador 1: 'a' = 🔥, 's' = 💧 e 'd' = ❄️\n\
+Jogador 2: 'j' = 🔥, 'k' = 💧 e 'l' = ❄️\n\
+Vocês tem 5 segundos para escolher 🔥, 💧 ou ❄️\n\
+🔥 > ❄️ > 💧 > 🔥\n\
 Se um dos jogadores não escolher a tempo, será escolhido aleatoriamente");
 	renderizador();
 }

@@ -44,8 +44,13 @@ window.addEventListener("DOMContentLoaded", () => {
 
 	window.addEventListener('click', (event) => {
 		const target = event.target;
-		if (target instanceof HTMLElement && target.hasAttribute("href"))
-			route(event);
+		if (target instanceof HTMLElement && target.hasAttribute("href")) {
+			event.preventDefault()
+			route(target);
+		} else if (target.id === "go-home") {
+			event.preventDefault()
+			route(target.parentNode);
+		}
 	}, true);
 
 	observer.observe(document.getElementById('mainContent'), { childList: true });

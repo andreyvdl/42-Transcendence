@@ -1,7 +1,8 @@
+{% load static %}
 <div id="account-page" class="overflow-hidden" style="background-color: rgb(34, 34, 34); height: 100%;">
 	<nav id="nav" class="navbar  border-body " data-bs-theme="dark" style="background-color: rgb(54, 54, 54); width: 55vw; margin-left:24vw">
 		<div class="container-fluid">
-			<a class="navbar-brand" href="{% url 'home' %}">Pongas</a>
+			<a href="{% url 'home' %}" class="navbar-brand" style="margin-left: 1vh;"><img id="go-home" src="{% static '/assets/home.svg' %}"></a>
 			<button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">	
 				<span class="navbar-toggler-icon"></span>
 			</button>
