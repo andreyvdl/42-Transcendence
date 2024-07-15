@@ -50,7 +50,6 @@ export async function tournamentMode(tournamentOptions) {
 	if (TOURNAMENT_ID === null)
 		return;
 
-	// FIRST MATCH
 	tournamentMatch(TOURNAMENT_ID);
 }
 

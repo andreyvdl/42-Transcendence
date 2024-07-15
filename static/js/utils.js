@@ -28,9 +28,6 @@ async function fetchData(url, options = {}) {
 
 		return data;
 	} catch (error) {
-		// DEBUG
-		console.error(error);
-
 		throw error;
 	}
 }

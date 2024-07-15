@@ -28,21 +28,17 @@ async function saveMatch(match) {
 	const url = `${BASE_URL}/api/save_match/${match.player2}/${match.scores.p1}v${match.scores.p2}/${match.winner}`;
 
 	try {
-		const data = await fetchData(url);
-
-		// DEBUG
-		console.table(data);
-
+		await fetchData(url);
 		return true
 	} catch (error) {
-		if (error.data.innerHtml)
-			updatePage(data.innerHtml);
+		if (error.data && error.data.innerHtml)
+			updatePage(error.data.innerHtml);
 		return false
 	}
 }
 
 export async function saveMatchResult(match) {
-	if (match.gameMode === "pve") return; // Not save matchs versus IA
+	if (match.gameMode === "pve") return;
 
 	try {
 		var savedMatch = false;
@@ -59,7 +55,7 @@ export async function saveMatchResult(match) {
 		if (match.gameMode == "pvp")
 			handleRedirect('/home/');
 		else
-			await tournamentMatch(TOURNAMENT_ID); // NEXT MATCH OF TOURNAMENT
+			await tournamentMatch(TOURNAMENT_ID);
 	} catch {
 		console.error(error)
 		handleRedirect('/home/');

@@ -294,10 +294,6 @@ Dica: mire nos cantos")
 		function animate() {
 			if (!GAME_RUNNING) {
 				window.onresize = null;
-
-				// DEBUG
-				console.log(`MATCH WINNER: ${WINNER}`)
-
 				const match = matchResult()
 				saveMatchResult(match)
 				if (GAME_MODE != "tournament")
@@ -316,9 +312,6 @@ Dica: mire nos cantos")
 			requestAnimationFrame(animate);
 			renderer.render(scene, camera);
 		}
-
-		// DEBUG
-		console.log(`GAME MODE: ${GAME_MODE}, MATCH: ${PLAYER1} x ${PLAYER2}`)
 
 		animate();
 	} else {

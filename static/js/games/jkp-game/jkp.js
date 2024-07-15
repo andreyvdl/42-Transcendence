@@ -139,10 +139,6 @@ function jkpGameInit() {
                 WINNER = PLAYER2;
                 alert("Jogador 2 venceu");
             }
-
-            // DEBUG
-            console.log(`MATCH WINNER: ${WINNER}`)
-
             const match = matchResult()
             saveMatchResult(match)
             if (GAME_MODE != "tournament")
@@ -186,9 +182,6 @@ function jkpGameInit() {
 		quadro.setAttribute("height", window.innerHeight);
 		g_ratio = window.innerWidth / window.innerHeight;
 	};
-
-    // DEBUG
-    console.log(`GAME MODE: ${GAME_MODE}, MATCH: ${PLAYER1} x ${PLAYER2}`)
 
 	alert("TUTORIAL\n\
 Jogador 1: 'a' = 🔥, 's' = 💧 e 'd' = ❄️\n\
