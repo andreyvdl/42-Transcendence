@@ -5,6 +5,11 @@ from django.template.loader import render_to_string
 from django.http import JsonResponse
 from main.models import PongUser
 from tournament.models import Tournament
+from django.shortcuts import redirect
+
+
+def _ajax(request):
+    return request.headers.get("X-Requested-With") == "XMLHttpRequest"
 
 
 @login_required(login_url='login')
@@ -57,6 +62,8 @@ def create_tournament(request):
 
 @login_required(login_url='login')
 def current_match(request, id):
+    if not _ajax(request):
+        return redirect("/home/")
     if request.method != "GET":
         return JsonResponse({
             "title": "🔴 ERROR",

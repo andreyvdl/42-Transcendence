@@ -29,6 +29,7 @@ export async function tournamentMatch(tournamentId) {
 	const options = {
 		method: 'GET',
 		headers: {
+			'X-Requested-With': 'XMLHttpRequest',
 			'X-CSRFToken': getCookie('csrftoken'),
 		}
 	};
@@ -59,6 +60,7 @@ export async function defaultMode(gameOptions) {
 	const options = {
 		method: 'POST',
 		headers: {
+			'X-Requested-With': 'XMLHttpRequest',
 			'X-CSRFToken': getCookie('csrftoken'),
 		},
 		body: gameOptions,
