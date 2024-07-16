@@ -18,8 +18,8 @@ async function createTournament(tournamentOptions) {
 
 		return (null);
 	} catch (error) {
-		if (error.data && error.data.innerHtml)
-			updatePage(error.data.innerHtml)
+		if (error.data && error.data.title)
+			toastCall(error.data);
 		return (null)
 	}
 }
@@ -39,8 +39,8 @@ export async function tournamentMatch(tournamentId) {
 		if (data.innerHtml)
 			updatePage(data.innerHtml);
 	} catch (error) {
-		if (error.data && error.data.innerHtml)
-			updatePage(error.data.innerHtml)
+		if (error.data && error.data.title)
+			toastCall(error.data);
 	}
 }
 
@@ -70,7 +70,7 @@ export async function defaultMode(gameOptions) {
 		if (data.innerHtml)
 			updatePage(data.innerHtml);
 	} catch (error) {
-		if (error.data && error.data.innerHtml)
-			updatePage(error.data.innerHtml);
+		if (error.data && error.data.title)
+			toastCall(error.data);
 	}
 }
