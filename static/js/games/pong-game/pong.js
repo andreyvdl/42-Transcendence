@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import WebGL from 'three/addons/capabilities/WebGL.js'
 import { saveMatchResult } from "../save-match.js"
+import { loadingGameCanvas, loadingGameInfo } from '../loading.js';
 
 function pongGameInit() {
 	GAME_RUNNING = true;
@@ -186,6 +187,7 @@ function pongGameInit() {
 					alert('Player One Wins!');
 				}
 			}
+			scoreUpdate();
 			ball3d.position.z = THREE.MathUtils.randFloat(-7, 7);
 			ball3d.position.x = 0;
 			BALL_VELOCITY.z = (ball3d.position.z > 0 ? BALL_VELOCITY.defaultZ : -BALL_VELOCITY.defaultZ);
@@ -229,12 +231,12 @@ function pongGameInit() {
 
 
 	if (WebGL.isWebGLAvailable()) {
-		alert("TUTORIAL\n\
-Jogador 1: 'w' e 's'\n\
-Jogador 2: 'cima' e 'baixo'\n\
-Espaço pausa o jogo\n\
-Todas as partidas são melhores de 3\n\
-Dica: mire nos cantos")
+//		alert("TUTORIAL\n\
+//Jogador 1: 'w' e 's'\n\
+//Jogador 2: 'cima' e 'baixo'\n\
+//Espaço pausa o jogo\n\
+//Todas as partidas são melhores de 3\n\
+//Dica: mire nos cantos")
 		calculateWindow();
 		const renderer = new THREE.WebGLRenderer();
 		const scene = new THREE.Scene();
@@ -320,6 +322,8 @@ Dica: mire nos cantos")
 	}
 }
 
-export default function pongGamePageSetup() {
-    pongGameInit();
+export default async function pongGamePageSetup() {
+	await loadingGameInfo();
+	await loadingGameCanvas();
+	pongGameInit();
 }

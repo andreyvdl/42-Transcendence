@@ -1,0 +1,11 @@
+<div>
+	{% if game_mode == "tournament" %}
+		<h1>TOURNAMENT</h1>
+		{% if bracket == "FINAL" %}
+			<a>FINAL</a>
+		{% else %}
+			<a>SEMIFINAL</a>
+		{% endif %}
+	{% endif %}
+	<h1>{{ player1 }} x {{ player2 }}</h1>
+</div>

@@ -1,4 +1,5 @@
 import { saveMatchResult } from "../save-match.js";
+import { loadingGameCanvas, loadingGameInfo } from '../loading.js';
 
 function jkpGameInit() {
 	GAME_RUNNING = true;
@@ -183,15 +184,17 @@ function jkpGameInit() {
 		g_ratio = window.innerWidth / window.innerHeight;
 	};
 
-	alert("TUTORIAL\n\
-Jogador 1: 'a' = 🔥, 's' = 💧 e 'd' = ❄️\n\
-Jogador 2: 'j' = 🔥, 'k' = 💧 e 'l' = ❄️\n\
-Vocês tem 5 segundos para escolher 🔥, 💧 ou ❄️\n\
-🔥 > ❄️ > 💧 > 🔥\n\
-Se um dos jogadores não escolher a tempo, será escolhido aleatoriamente");
+//	alert("TUTORIAL\n\
+//Jogador 1: 'a' = 🔥, 's' = 💧 e 'd' = ❄️\n\
+//Jogador 2: 'j' = 🔥, 'k' = 💧 e 'l' = ❄️\n\
+//Vocês tem 5 segundos para escolher 🔥, 💧 ou ❄️\n\
+//🔥 > ❄️ > 💧 > 🔥\n\
+//Se um dos jogadores não escolher a tempo, será escolhido aleatoriamente");
 	renderizador();
 }
 
-export default function jkpGamePageSetup() {
+export default async function jkpGamePageSetup() {
+	await loadingGameInfo();
+	await loadingGameCanvas();
     jkpGameInit();
 }
