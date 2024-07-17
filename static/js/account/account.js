@@ -19,7 +19,7 @@ function changeUsername(event) {
             if (data.innerHtml)
                 updatePage(data.innerHtml);
             else 
-				toastCall(data);
+                toastCall(data);
         })
         .catch((error) => {
             console.error(error);
@@ -47,7 +47,7 @@ function changePicture(event) {
             if (data.innerHtml)
                 updatePage(data.innerHtml);
             else
-				toastCall(data);
+                toastCall(data);
         })
         .catch((error) => {
             console.error(error);
@@ -62,7 +62,7 @@ function sendFriendRequest(event) {
     const url = `${BASE_URL}/api/make_friends/${friend}/`;
 
     if (friend === "") {
-		toastCall({title: "🔴 ERROR", text: "No username given."});
+        toastCall({title: "🔴 ERROR", text: "No username given."});
         return;
     }
 
@@ -73,7 +73,7 @@ function sendFriendRequest(event) {
             return response.json();
         })
         .then((data) => {
-			toastCall(data);
+            toastCall(data);
         })
         .catch((error) => {
             console.error(error);
@@ -105,7 +105,7 @@ function acceptFriendRequest(event) {
                     obj.removeChild(obj.children[obj.children.length - 1]);
                     obj.removeChild(obj.children[obj.children.length - 1]);
                 }
-				toastCall(data);
+                toastCall(data);
             }
         })
         .catch((error) => {
@@ -138,7 +138,7 @@ function declineFriendRequest(event) {
                     obj.removeChild(obj.children[obj.children.length - 1]);
                     obj.removeChild(obj.children[obj.children.length - 1]);
                 }
-				toastCall(data);
+                toastCall(data);
             }
         })
         .catch((error) => {
@@ -170,17 +170,13 @@ function logout(event) {
 function userOnline() {
     const url = `${BASE_URL}/api/online`;
 
-    fetch(url, {
-        method: 'POST'
-    })
+    navigator.sendBeacon(url);
 }
 
 function userOffline() {
     const url = `${BASE_URL}/api/offline`;
 
-    fetch(url, {
-        method: 'POST'
-    })
+    navigator.sendBeacon(url);
 }
 
 export default function accountPageSetup() {
