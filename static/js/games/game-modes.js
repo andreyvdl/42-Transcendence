@@ -18,8 +18,8 @@ async function createTournament(tournamentOptions) {
 
 		return (null);
 	} catch (error) {
-		if (error.data && error.data.innerHtml)
-			updatePage(error.data.innerHtml)
+		if (error.data && error.data.title)
+			toastCall(error.data);
 		return (null)
 	}
 }
@@ -29,6 +29,7 @@ export async function tournamentMatch(tournamentId) {
 	const options = {
 		method: 'GET',
 		headers: {
+			'X-Requested-With': 'XMLHttpRequest',
 			'X-CSRFToken': getCookie('csrftoken'),
 		}
 	};
@@ -39,8 +40,8 @@ export async function tournamentMatch(tournamentId) {
 		if (data.innerHtml)
 			updatePage(data.innerHtml);
 	} catch (error) {
-		if (error.data && error.data.innerHtml)
-			updatePage(error.data.innerHtml)
+		if (error.data && error.data.title)
+			toastCall(error.data);
 	}
 }
 
@@ -59,6 +60,7 @@ export async function defaultMode(gameOptions) {
 	const options = {
 		method: 'POST',
 		headers: {
+			'X-Requested-With': 'XMLHttpRequest',
 			'X-CSRFToken': getCookie('csrftoken'),
 		},
 		body: gameOptions,
@@ -70,7 +72,7 @@ export async function defaultMode(gameOptions) {
 		if (data.innerHtml)
 			updatePage(data.innerHtml);
 	} catch (error) {
-		if (error.data && error.data.innerHtml)
-			updatePage(error.data.innerHtml);
+		if (error.data && error.data.title)
+			toastCall(error.data);
 	}
 }
