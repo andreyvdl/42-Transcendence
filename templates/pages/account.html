@@ -16,21 +16,21 @@
 						<h5>Change Nickname</h5>
 						<form class="d-flex mt-1" id="formChangeUsername">
 							{% csrf_token %}
-							<input id="new_username" class="form-control" type="add" name="new_username" placeholder="New Nickname" required>
+							<input id="new_username" class="form-control" type="add" name="new_username" placeholder="New Nickname" required autocomplete="username">
 							<button id="changeNick" class="btn btn-outline-success" type="submit">Change Nick</button>
 						</form>
 						<li class="nav-item mt-2">
 							<h5>Change Avatar</h5>
 							<form class="d-flex mt-2" role="add" id="formChangePicture">
-								<input id="ava" class="form-control" type="file" name="file" accept="image/*" style="height: fit-content;" required>
-								<button id="ava" class="btn btn-outline-success" type="submit">Send</button>
+								<input class="form-control" type="file" name="file" accept="image/*" style="height: fit-content;" required autocomplete="photo">
+								<button class="btn btn-outline-success" type="submit">Send</button>
 							</form>
 						</li>
 						<li class="nav-item mt-3 mb-1">
 							<h5>Add Friends</h5>
 								<form class="d-flex mt-2">
 									{% csrf_token %}
-									<input id="friend-text-field" class="form-control" type="text" placeholder="Nickname" required>
+									<input id="friend-text-field" class="form-control" type="text" placeholder="Nickname" required autocomplete="username">
 									<button id="add-friend-btn" class="btn btn-outline-success" >Add Friend</button>
 								</form>
 						</li>
