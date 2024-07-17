@@ -20,7 +20,7 @@ async function fetchData(url, options = {}) {
 		const data = await response.json()
 
 		if (data.title) {
-			const error = new Error(data.error);
+			const error = new Error();
 			error.response = response;
 			error.data = data;
 			throw error;
