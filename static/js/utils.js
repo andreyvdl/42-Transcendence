@@ -94,6 +94,10 @@ function toastCall(data) {
 	toastBootstrap.show();
 }
 
+function sleep(ms) {
+	return new Promise(r => setTimeout(r, ms))
+}
+
 const BASE_URL = window.location.protocol + "//" + window.location.host;
 
 var INTRA_URL = "https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-b03d3e34ca48d59cf52b525eef892e52f49bc88e15972bf41e3dc501fdbf7968&redirect_uri=";

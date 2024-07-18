@@ -1,4 +1,4 @@
-import { saveMatchResult } from "../save-match.js";
+import { endOfMatch } from "../save-match.js";
 import { loadingGameCanvas, loadingGameInfo } from '../loading.js';
 
 function jkpGameInit() {
@@ -134,16 +134,11 @@ function jkpGameInit() {
 
             if (JOGADOR[0].pontos > JOGADOR[1].pontos) {
                 WINNER = PLAYER1;
-                alert("Jogador 1 venceu");
-            }
-            else {
+            } else {
                 WINNER = PLAYER2;
-                alert("Jogador 2 venceu");
             }
             const match = matchResult()
-            saveMatchResult(match)
-            if (GAME_MODE != "tournament")
-                handleRedirect('/home/');
+            endOfMatch(match)
 			return;
 		}
 		contexto.clearRect(0, 0, quadro.width, quadro.height);
@@ -184,12 +179,6 @@ function jkpGameInit() {
 		g_ratio = window.innerWidth / window.innerHeight;
 	};
 
-//	alert("TUTORIAL\n\
-//Jogador 1: 'a' = 🔥, 's' = 💧 e 'd' = ❄️\n\
-//Jogador 2: 'j' = 🔥, 'k' = 💧 e 'l' = ❄️\n\
-//Vocês tem 5 segundos para escolher 🔥, 💧 ou ❄️\n\
-//🔥 > ❄️ > 💧 > 🔥\n\
-//Se um dos jogadores não escolher a tempo, será escolhido aleatoriamente");
 	renderizador();
 }
 

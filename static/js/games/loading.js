@@ -4,7 +4,7 @@ export async function loadingGameInfo() {
 	if (!gameInfo) return ;
 
 	gameInfo.style.display = "block";
-	await new Promise(r => setTimeout(r, 3000));
+	await sleep(3000);
 	gameInfo.style.display = "none";
 }
 
