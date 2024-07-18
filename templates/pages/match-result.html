@@ -1,0 +1,12 @@
+<div id="match-result-page">
+	<h1>GAME:</h1>
+	<p>{{ game }}</p>
+	<h1>WINNER:</h1>
+	<p>{{ winner }}</p>
+	<h1>PLAYERS AND SCORE:</h1>
+	<p>player1: {{ player1 }} : {{ score_p1 }}</p>
+	<p>player2: {{ player2 }} : {{ score_p2 }}</p>
+	{% if game_mode != "tournament %}
+	<a href={% url 'home' %}>home</a>
+	{% endif %}
+</div>
