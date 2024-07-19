@@ -47,6 +47,7 @@ class Match(models.Model):
     winner = models.ForeignKey(PongUser, on_delete=models.CASCADE)
     score = models.CharField(max_length=3)
     date = models.DateTimeField(auto_now=False, auto_now_add=False, default=datetime.now)
+    game_type = models.CharField(max_length=4)
 
     def __str__(self):
         return (f"{self.left_player.username} VS {self.right_player.username} => {self.score}"

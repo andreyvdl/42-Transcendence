@@ -140,7 +140,7 @@ function jkpGameInit() {
                 alert("Jogador 2 venceu");
             }
             const match = matchResult()
-            saveMatchResult(match)
+            saveMatchResult(match, "jkp");
             if (GAME_MODE != "tournament")
                 handleRedirect('/home/');
 			return;

@@ -82,6 +82,7 @@ def _get_matches(pk):
         results.append((
             m.date.strftime("%d/%b|%H:%M"),
             m.score,
+            m.game_type,
             True if m.winner.get_username() == username else False,
             m.right_player.get_username() if username == m.left_player.get_username() else m.left_player.get_username(),
         ))
