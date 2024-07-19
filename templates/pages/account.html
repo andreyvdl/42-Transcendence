@@ -105,23 +105,44 @@
 				</div>
 				<div class="card-body overflow-auto shadow" style="height: 40vh;">
 					{% if user_info.total %}
+						<p>Tournament:</p>
 						<table class="table table-dark table-bordered">
-							{% for date, score, game, win, rival in matches %}
-								{% if win %}
-									<tr class="table-dark table-bordered border-success" >
-										<td class="d-flex align-self-center" style="color: lightgreen;">
-								{% else %}
-									<tr class="table-dark table-bordered border-danger">
-										<td class="d-flex align-self-center" style="color: lightcoral;">
+							{% for date, score, game, game_mode, win, rival in matches %}
+								{% if game_mode == 'tournament' %}
+									{% if win %}
+										<tr class="table-dark table-bordered border-success" >
+											<td class="d-flex align-self-center" style="color: lightgreen;">
+									{% else %}
+										<tr class="table-dark table-bordered border-danger">
+											<td class="d-flex align-self-center" style="color: lightcoral;">
+									{% endif %}
+												<div class="d-flex flex-grow-1">{{ date }} {{ game }}</div>
+												<div class="d-flex">{{ score }} {{ rival }}</div>
+											</td>
+										</tr>
 								{% endif %}
-											<div class="d-flex flex-grow-1">{{ date }} {{ game }}</div>
-											<div class="d-flex">{{ score }} {{ rival }}</div>
-										</td>
-									</tr>
 							{% endfor %}
 						</table>
-						{% endif %}
-					</div>
+						<p>PvP:</p>
+						<table class="table table-dark table-bordered">
+							{% for date, score, game, game_mode, win, rival in matches %}
+								{% if game_mode != 'tournament' %}
+									{% if win %}
+										<tr class="table-dark table-bordered border-success" >
+											<td class="d-flex align-self-center" style="color: lightgreen;">
+									{% else %}
+										<tr class="table-dark table-bordered border-danger">
+											<td class="d-flex align-self-center" style="color: lightcoral;">
+									{% endif %}
+												<div class="d-flex flex-grow-1">{{ date }} {{ game }}</div>
+												<div class="d-flex">{{ score }} {{ rival }}</div>
+											</td>
+										</tr>
+								{% endif %}
+							{% endfor %}
+						</table>
+					{% endif %}
+				</div> <!-- Q? -->
 				</div>
 			</div>
 			<div class="col mt-5" style="margin-right: 2vw; margin-left: 2vw;">

@@ -24,7 +24,7 @@ async function tournamentSaveMatch(tournamentId, match) {
 }
 
 async function saveMatch(match) {
-	const url = `${BASE_URL}/api/save_match/${match.game}/${match.player1}/${match.player2}/${match.scores.p1}X${match.scores.p2}/${match.winner}`;
+	const url = `${BASE_URL}/api/save_match/${match.gameMode}/${match.game}/${match.player1}/${match.player2}/${match.scores.p1}X${match.scores.p2}/${match.winner}`;
 
 	try {
 		await fetchData(url);
