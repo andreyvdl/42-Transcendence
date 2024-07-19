@@ -314,7 +314,7 @@ Dica: mire nos cantos")
 			if (!GAME_RUNNING) {
 				window.onresize = null;
 				const match = matchResult()
-				saveMatchResult(match, "pong");
+				saveMatchResult(match);
 				if (GAME_MODE != "tournament")
 					handleRedirect('/home/');
 				return;

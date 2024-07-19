@@ -103,8 +103,7 @@ def make_friends(request, send_to_user: str):
 
 
 @login_required(login_url='login')
-def save_match(request, right_name, score, name_winner, game_type):
-    left_name = request.user.username
+def save_match(request, game_type, left_name, right_name, score, name_winner):
     if left_name == right_name:
         return JsonResponse({"error": "How come a player be against himself?"}, status=400)
     elif name_winner not in {right_name, left_name}:
