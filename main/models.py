@@ -21,6 +21,11 @@ class PongUser(AbstractUser):
             Q(left_player=p_id) | Q(right_player=p_id)
         )
 
+    def get_tournaments(self):
+        from tournament.models import Tournament
+        p_id = self.get_id()
+        return Tournament.objects.filter( Q(tournament_winner=p_id) )
+
     def get_wins(self):
         return self.get_matches().filter(winner=self.get_id())
 

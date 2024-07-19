@@ -80,7 +80,7 @@ def _get_matches(pk):
 
     for m in matches:
         results.append((
-            m.date.strftime("%d/%b|%H:%M"),
+            m.date.strftime("%d/%b"),
             m.score,
             m.game_type,
             True if m.winner.get_username() == username else False,
@@ -92,6 +92,7 @@ def _get_matches(pk):
         "wins": user.get_wins().count(),
         "loses": user.get_losses().count(),
         "winrate": user.get_winrate(),
+        "tournament_wins": user.get_tournaments().count(),
     }
 
     return results, user_info
