@@ -74,7 +74,7 @@ def _get_friends(pk):
 
 def _get_matches(pk):
     user = PongUser.objects.get(pk=pk)
-    matches = user.get_matches()
+    matches = user.get_matches().order_by("id").reverse()
     results = []
     username = user.get_username()
 
