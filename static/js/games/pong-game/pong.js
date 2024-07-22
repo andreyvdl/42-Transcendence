@@ -218,7 +218,6 @@ function pongGameInit() {
 			let vector;
 
 			BALL_VELOCITY.x = -BALL_VELOCITY.x * (Math.abs(BALL_VELOCITY.x) < 0.35 ? THREE.MathUtils.randFloat(1.1, 1.2) : 1);
-			console.log(BALL_VELOCITY.x);
 			BALL_VELOCITY.timer = 5 / Math.abs(BALL_VELOCITY.x);
 			if (ball3d.position.x > 0)
 				vector = player[1].position;
