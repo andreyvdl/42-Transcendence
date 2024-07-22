@@ -1,4 +1,4 @@
-from datetime import datetime
+from django.utils import timezone
 from django.db import models
 from django.db.models import Q
 from django.contrib.auth.models import AbstractUser
@@ -49,7 +49,7 @@ class Match(models.Model):
                                      related_name="right_match")
     winner = models.ForeignKey(PongUser, on_delete=models.CASCADE)
     score = models.CharField(max_length=3)
-    date = models.DateTimeField(auto_now=False, auto_now_add=False, default=datetime.now)
+    date = models.DateTimeField(auto_now=False, auto_now_add=False, default=timezone.now)
     game_type = models.CharField(max_length=4)
     game_mode = models.CharField(max_length=10)
 
