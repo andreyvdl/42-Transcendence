@@ -105,10 +105,10 @@
 				</div>
 				<div class="card-body overflow-auto shadow" style="height: 40vh;">
 					{% if user_info.total %}
-						<p>Tournament:</p>
+						<p>PvP:</p>
 						<table class="table table-dark table-bordered">
 							{% for date, score, game, game_mode, win, rival in matches %}
-								{% if game_mode == 'tournament' %}
+								{% if game_mode != 'tournament' %}
 									{% if win %}
 										<tr class="table-dark table-bordered border-success" >
 											<td class="d-flex align-self-center" style="color: lightgreen;">
@@ -123,10 +123,10 @@
 								{% endif %}
 							{% endfor %}
 						</table>
-						<p>PvP:</p>
+						<p>Tournament:</p>
 						<table class="table table-dark table-bordered">
 							{% for date, score, game, game_mode, win, rival in matches %}
-								{% if game_mode != 'tournament' %}
+								{% if game_mode == 'tournament' %}
 									{% if win %}
 										<tr class="table-dark table-bordered border-success" >
 											<td class="d-flex align-self-center" style="color: lightgreen;">
