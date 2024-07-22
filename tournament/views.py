@@ -163,11 +163,3 @@ def save_match(request, id):
     t.save()
 
     return JsonResponse({"status": "saved"})
-
-def end_tournament(request):
-    context = {
-        "game": "pong",
-        "winner": "player1",
-        "players": ["player1", "player2", "player3", "player4"]
-    }
-    return render(request, "pages/tournament-result.html", context)
