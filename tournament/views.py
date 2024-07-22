@@ -5,12 +5,20 @@ from django.template.loader import render_to_string
 from django.http import JsonResponse
 from main.models import PongUser
 from tournament.models import Tournament
+from django.shortcuts import redirect
 from django.shortcuts import render
+
+
+def _ajax(request):
+    return request.headers.get("X-Requested-With") == "XMLHttpRequest"
 
 @login_required(login_url='login')
 def create_tournament(request):
     if request.method != "POST":
-        JsonResponse({"error": "Invalid request method. POST required."}, status=400)
+        return JsonResponse({
+            "title": "🔴 ERROR",
+            "text": "Invalid request method. POST required.",
+        })
 
     try:
         game = request.POST["game"]
@@ -19,22 +27,28 @@ def create_tournament(request):
         p3 = request.POST["player3"]
         p4 = request.POST["player4"]
     except KeyError as e:
-        return JsonResponse({"error": f"Missing field {str(e)}."}, status=400)
+        return JsonResponse({"error": f"Missing field {str(e)}."})
 
     if len([p1, p2, p3, p4]) != len(set([p1, p2, p3, p4])):
-        inner_html = render_to_string("pages/home.html", {"err_msg": "Duplicate users."}, request=request)
-        return JsonResponse({"innerHtml": inner_html}, status=400)
+        return JsonResponse({
+            "title": "🔴 ERROR",
+            "text": "Duplicate users.",
+        })
 
     if not game in ["pong", "jkp"]:
-        inner_html = render_to_string("pages/home.html", {"err_msg": "Invalid game."}, request=request)
-        return JsonResponse({"innerHtml": inner_html}, status=400)
+        return JsonResponse({
+            "title": "🔴 ERROR",
+            "text": "Invalid game.",
+        })
 
     for p in {p1, p2, p3, p4}:
         try:
             PongUser.objects.get(username=p)
         except PongUser.DoesNotExist:
-            inner_html = render_to_string("pages/home.html", {"err_msg": f"User \"{p}\" doesn't exist."}, request=request)
-            return JsonResponse({"innerHtml": inner_html},status=400)
+            return JsonResponse({
+                "title": "🔴 ERROR",
+                "text": f"User \"{p}\" doesn't exist.",
+            })
 
     t = Tournament.objects.create(
         game=game,
@@ -48,13 +62,21 @@ def create_tournament(request):
 
 @login_required(login_url='login')
 def current_match(request, id):
+    if not _ajax(request):
+        return redirect("/home/")
     if request.method != "GET":
-        JsonResponse({"error": "Invalid request method. GET required."}, status=400)
+        return JsonResponse({
+            "title": "🔴 ERROR",
+            "text": "Invalid request method. POST required.",
+        })
 
     try:
         t = Tournament.objects.get(id=id)
     except Tournament.DoesNotExist:
-        return JsonResponse({"error": "This tournament doesn't exist."}, status=400)
+        return JsonResponse({
+            "title": "🔴 ERROR",
+            "text": "This tournament doesn't exist.",
+        })
 
     if (t.get_winner() != ""):
         inner_html = render_to_string("pages/tournament-result.html", {
@@ -94,12 +116,12 @@ def current_match(request, id):
 @login_required(login_url='login')
 def save_match(request, id):
     if request.method != "POST":
-        JsonResponse({"error": "Invalid request method. POST required."}, status=400)
+        JsonResponse({"error": "Invalid request method. POST required."})
 
     try:
         t = Tournament.objects.get(id=id)
     except Tournament.DoesNotExist:
-        return JsonResponse({"error": "This tournament doesn't exist."}, status=400)
+        return JsonResponse({"error": "This tournament doesn't exist."})
 
     if (t.get_winner() != ""):
         return JsonResponse({"winner": f"{t.get_winner()}."})
@@ -111,7 +133,7 @@ def save_match(request, id):
         winner = data["winner"]
         bracket = data["bracket"]
     except KeyError as e:
-        return JsonResponse({"error": f"Missing field {str(e)}."}, status=400)
+        return JsonResponse({"error": f"Missing field {str(e)}."})
 
     which = []
     if bracket == "UPPER":
@@ -124,13 +146,13 @@ def save_match(request, id):
     if (winner != p1 and winner != p2):
         return JsonResponse({
             "error": "Winner must be either player1 or player2.",
-        }, status=400)
+        })
 
     for p in {p1, p2, winner}:
         if p not in which:
             return JsonResponse({
                 "error": f"Player {p} is not in the specified bracket.",
-            }, status=400)
+            })
 
     if bracket == "UPPER":
         t.upper_bracket_winner = winner;

@@ -28,13 +28,13 @@ class PongUser(AbstractUser):
         return self.get_matches().exclude(winner=self.get_id())
 
     def get_winrate(self):
-        wins = self.get_wins()
-        matches = self.get_matches()
+        wins = self.get_wins().count()
+        matches = self.get_matches().count()
 
-        try:
-            return round((float(wins.count()) / float(matches.count())) * 100, 2)
-        except:
+        if matches == 0:
             return "-"
+        porcentage = round( (float(wins) / matches) * 100, 1 )
+        return str(porcentage) + "%"
 
 
 class Match(models.Model):

@@ -20,10 +20,10 @@ background-image: url({% static 'assets/background.jpeg' %});
 		<h1 class="shadow-lg bg-black rounded" style="color: white; text-align: center; width: 240px;">Sign Up</h1>
 		<form id="formRegister" style="margin-top: 40px; width: 240px;">
 			{% csrf_token %}
-			<input required type="username" id="username" name="username" class="form-control" placeholder="New Username">
-			<input required type="email" id="email" name="email" class="form-control" placeholder="Email">
-			<input required type="password" id="password1" name="password1" class="form-control" placeholder="New Password">
-			<input required type="password" id="password2" name="password2" class="form-control" placeholder="Confirm Password">
+			<input required type="username" id="username" name="username" class="form-control" placeholder="New Username" autocomplete="username">
+			<input required type="email" id="email" name="email" class="form-control" placeholder="Email" autocomplete="email">
+			<input required type="password" id="password1" name="password1" class="form-control" placeholder="New Password" autocomplete="new-password">
+			<input required type="password" id="password2" name="password2" class="form-control" placeholder="Confirm Password" autocomplete="new-password">
 			<button type="submit" class="btn btn-dark" style="width: 240px; margin-top: 8px;">Sign Up</button>
 		</form>
 	</div>

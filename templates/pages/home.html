@@ -20,7 +20,7 @@
 		</div>
 	</nav>
 	<div id="homeBody" class="d-flex justify-content-center align-items-center flex-column" style="background-color: rgb(54, 54, 54); width: 55vw;margin-left: 22vw; margin-right: 1vw; font-size: 24px;">
-		<div class="d-grid gap-2 col-6 mx-auto"">
+		<div class="d-grid gap-2 col-6 mx-auto">
 			<form id="form-game" style="margin-top: 4vh;">
 				<h2 class="text-center mb-4" style="color: white;">Welcome to Pongas</h2>
 				{% csrf_token %}
@@ -37,8 +37,8 @@
 					<option id="pve" value="pve">PVE</option>	
 				</select>
 
-				<div id=players class="mt-3 container-fluid"></div>
-				
+				<div id="players" class="mt-3 container-fluid"></div>
+
 				{% if err_msg %}
 					<p class="text-center" style="color: red; align-self: center;">{{ err_msg }}</p>
 				{% endif %}

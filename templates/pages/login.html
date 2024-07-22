@@ -13,8 +13,8 @@ background-image: url({% static 'assets/background.jpeg' %});
 	<div class="container-fluid text-center " style="width: 260px; color:red">
 		<form id="formLogin" style="margin-top: 40px; width: 240px;">
 			{% csrf_token %}
-			<input required id="username" name="username" class="form-control" placeholder="Username">
-			<input required id="password" name="password" type="password" class="form-control" placeholder="Password">
+			<input required id="username" name="username" class="form-control" placeholder="Username" autocomplete="username">
+			<input required id="password" name="password" type="password" class="form-control" placeholder="Password" autocomplete="current-password">
 			<button type="submit" class="btn btn-dark" style="width: 240px; margin-top: 8px;">Log in</button>
 		</form>
 	</div>

@@ -24,7 +24,6 @@ async function tournamentSaveMatch(tournamentId, match) {
 }
 
 async function saveMatch(match) {
-	console.table(match);
 	const url = `${BASE_URL}/api/save_match/${match.player2}/${match.scores.p1}v${match.scores.p2}/${match.winner}`;
 
 	try {

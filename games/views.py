@@ -2,6 +2,12 @@ import json
 from django.http import JsonResponse
 from django.template.loader import render_to_string
 from main.models import PongUser
+from django.shortcuts import redirect
+
+
+def _ajax(request):
+    return request.headers.get("X-Requested-With") == "XMLHttpRequest"
+
 
 def _player_versus_player(player_one, player_two):
     ctx = {
@@ -28,6 +34,8 @@ def _player_versus_environment(player_one):
     return ctx
 
 def pong(request):
+    if not _ajax(request):
+        return redirect("/home/")
     ctx = {}
     data = request.POST.dict()
     if not "mode" in data:
@@ -47,6 +55,8 @@ def pong(request):
     return JsonResponse({'innerHtml': render_to_string('pages/pong.html', ctx, request=request)})
 
 def jkp(request):
+    if not _ajax(request):
+        return redirect("/home/")
     ctx = {}
     data = request.POST.dict()
     if not "mode" in data:

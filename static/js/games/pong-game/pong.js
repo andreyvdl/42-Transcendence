@@ -151,6 +151,23 @@ function pongGameInit() {
 		return player;
 	}
 
+	function setupLight() {
+		const la = new THREE.DirectionalLight(0xffffff, 1.7);
+
+		la.castShadow = true;
+		la.shadow.camera.left = -15;
+		la.shadow.camera.bottom = -15;
+		la.shadow.camera.right = 15;
+		la.shadow.camera.top = 15;
+		la.position.set(10, 7, 0);
+
+		const lb = la.clone();
+
+		lb.position.x = -10;
+
+		return [la, lb];
+	}
+
 	function playerMove(player) {
 		if (GAME_MODE !== "pve") {
 			if (KEYS["ArrowDown"] && player[1].position.z + 0.2 < 6)
@@ -164,7 +181,7 @@ function pongGameInit() {
 			player[0].position.z -= 0.2;
 	}
 
-	function ballMove(ball3d, player, scene) {
+	function ballMove(ball3d, player) {
 		ball3d.position.x += BALL_VELOCITY.x;
 		ball3d.position.z += BALL_VELOCITY.z;
 		if (Math.abs(ball3d.position.z) > 7.5)
@@ -200,7 +217,8 @@ function pongGameInit() {
 		else if (playerColision(ball3d, player)) {
 			let vector;
 
-			BALL_VELOCITY.x = -BALL_VELOCITY.x * (BALL_VELOCITY.x < 1 ? THREE.MathUtils.randFloat(1.1, 1.2) : 1);
+			BALL_VELOCITY.x = -BALL_VELOCITY.x * (Math.abs(BALL_VELOCITY.x) < 0.35 ? THREE.MathUtils.randFloat(1.1, 1.2) : 1);
+			console.log(BALL_VELOCITY.x);
 			BALL_VELOCITY.timer = 5 / Math.abs(BALL_VELOCITY.x);
 			if (ball3d.position.x > 0)
 				vector = player[1].position;
@@ -254,11 +272,12 @@ Dica: mire nos cantos")
 		const texture = [new THREE.CanvasTexture(canvas[0]), new THREE.CanvasTexture(canvas[1])];
 		const spriteMaterial = [new THREE.SpriteMaterial({ map: texture[0] }), new THREE.SpriteMaterial({ map: texture[1] })];
 		const sprites = [new THREE.Sprite(spriteMaterial[0]), new THREE.Sprite(spriteMaterial[1])];
+		const lights = setupLight();
 		sprites[0].position.set(-4.2, 0, -6.2);
 		sprites[1].position.set(13.5, 0, -6.2);
 		scene.background = new THREE.Color('#4f9a79');
 		scene.add(ball3d, ground);
-		scene.add(new THREE.AmbientLight(0xffffff, 2));
+		scene.add(...lights);
 		scene.add(...player);
 		scene.add(...sprites);
 
