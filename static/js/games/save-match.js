@@ -1,4 +1,30 @@
-import { tournamentMatch } from "./game-modes.js"
+import { tournamentMatch } from "./game-modes.js";
+
+async function loadingResultPage(match) {
+	const url = `${BASE_URL}/games/match-result/`;
+	const options = {
+		method: 'POST',
+		headers: {
+			'X-CSRFToken': getCookie('csrftoken'),
+			'X-Requested-With': 'XMLHttpRequest',
+		},
+		body: JSON.stringify(match)
+	}
+
+	try {
+		const data = await fetchData(url, options);
+
+		if (data.innerHtml)
+			updatePage(data.innerHtml);
+		else {
+			const error = new Error(`Error when loading result page`);
+			throw error;
+		}
+	} catch (error) {
+		console.log(error)
+		handleLocation("/home/")
+	}
+}
 
 async function tournamentSaveMatch(tournamentId, match) {
 	const url = `${BASE_URL}/tournament/${tournamentId}/save_match`;
@@ -36,8 +62,12 @@ async function saveMatch(match) {
 	}
 }
 
-export async function saveMatchResult(match) {
-	if (match.gameMode === "pve") return;
+export async function endOfMatch(match) {
+	await sleep(1000);
+	if (match.gameMode === "pve") {
+		await loadingResultPage(match);
+		return ;
+	}
 
 	try {
 		var savedMatch = false;
@@ -49,10 +79,15 @@ export async function saveMatchResult(match) {
 			throw error;
 		}
 
-		if (match.gameMode == "pvp")
-			handleRedirect('/home/');
-		else
+		if (match.gameMode === "pvp") {
+			await loadingResultPage(match);
+		} else {
+			if (match.bracket !== "FINAL") {
+				await loadingResultPage(match);
+				await sleep(3000);
+			}
 			await tournamentMatch(TOURNAMENT_ID);
+		}
 	} catch {
 		console.error(error)
 		handleRedirect('/home/');

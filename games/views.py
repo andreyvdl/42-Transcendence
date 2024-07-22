@@ -74,3 +74,34 @@ def jkp(request):
             "text": ctx['err_msg'],
         })
     return JsonResponse({'innerHtml': render_to_string('pages/jkp.html', ctx, request=request)})
+
+def match_result(request):
+    if not _ajax(request):
+        return redirect("/home/")
+
+    try:
+        data = json.loads(request.body)
+        game = data["game"]
+        game_mode = data["gameMode"]
+        bracket = data["bracket"]
+        score_p1 = data["scores"]["p1"]
+        score_p2 = data["scores"]["p2"]
+        winner = data["winner"]
+        player1 = data["player1"]
+        player2 = data["player2"]
+    except Exception as e:
+        return JsonResponse({"error": f"Missing field {str(e)}."})
+
+    ctx = {
+        "game": game,
+        "game_mode": game_mode,
+        "bracket": bracket,
+        "score_p1": score_p1,
+        "score_p2": score_p2,
+        "winner": winner,
+        "player1": player1,
+        "player2": player2,
+    }
+
+    inner_html = render_to_string("pages/match-result.html", ctx, request=request)
+    return JsonResponse({'innerHtml': inner_html})

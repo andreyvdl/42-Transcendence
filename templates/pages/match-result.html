@@ -1,0 +1,24 @@
+<div id="match-result-page" class="d-flex justify-content-center align-items-center" style="background-color: rgb(54, 54, 54); height: 100%;">
+    <div class="card text-bg-dark" style="width: 50vw; height: fit-content; margin-right: 1vw;">
+        <h5 class="text-center card-header">MATCH RESULT</h5>
+        <div class="d-flex mt-2 mb-2">
+            <div class="card text-center text-bg-secondary align-items-center justify-content-center" style="width: 25vw; height: 100px; margin-left: 1vw;">
+                <h5>GAME</h5>
+                <a>{{ game }}</a>
+            </div>
+            <div style="width: 2vw;"></div>
+            <div class="card text-center text-bg-secondary align-items-center justify-content-center" style="width: 25vw; height: 100px; margin-right: 1vw;">
+                <h5>👑 WINNER 👑</h5>
+                <a>{{ winner }}</a>
+            </div>
+        </div>
+        <div class="card text-bg-secondary d-flex text-center align-items-center justify-content-center" style="height: 100px; margin: 2%;">
+            <h5 class="text-center mt-1" style="margin: 0;">PLAYERS</h5>
+			<p class="text-center mt-2" style="margin: 0;">{{ player1 }} x {{ player2 }}</p>
+			<p class="text-center mt-2" style="margin: 0;">{{ score_p1 }} : {{ score_p2 }}</p>
+        </div>
+		{% if game_mode != "tournament" %}
+        	<a class="btn btn-lg btn-secondary align-self-center" style="width: 25vw;" href="{% url 'home' %}">Home</a>
+		{% endif %}
+	</div>
+</div>

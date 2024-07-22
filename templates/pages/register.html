@@ -1,11 +1,12 @@
+{% load static %}
 <div id="register-page" style="
 height: 100%;
 background-color: black;
-background-image: url('https://s.hdnux.com/photos/01/31/65/24/23549203/3/rawImage.jpg');
 background-size: cover;
 background-repeat: no-repeat;
 background-attachment: fixed;
 background-position: center;
+background-image: url({% static 'assets/background.jpeg' %});
 ">
 	{% if registered_successfully %}
 	<div class="container-fluid align-items-center"  style="margin-top: 40vh; width: fit-content;">
@@ -42,7 +43,7 @@ background-position: center;
 	</div>
 	<div class="container text-center">
 		<p class="shadow-lg bg-black rounded"style="color: white;">Sign Up with:</p>
-		<a id="intraLink" class="btn btn-dark btn" style=" width: 50px;"><img src="https://auth.42.fr/auth/resources/yyzrk/login/students/img/42_logo.svg">
+		<a id="intraLink" class="btn btn-dark btn" style=" width: 50px;"><img src="{% static 'assets/42_logo.svg' %}">
 		</a>
 	</div>
 	{% endif %}

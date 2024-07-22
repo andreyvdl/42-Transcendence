@@ -1,11 +1,12 @@
+{% load static %}
 <div id="login-page" style="
 background-color: black;
-background-image: url('https://s.hdnux.com/photos/01/31/65/24/23549203/3/rawImage.jpg');
 background-size: cover;
 background-repeat: no-repeat;
 background-attachment: fixed;
 background-position: center;
 height: 100%;
+background-image: url({% static 'assets/background.jpeg' %});
 ">
 	<div class="d-flex" style="margin-top: 25vh;"></div>
 	<h1 style="color: white; text-align: center;">FT_PONGAS</h1>
@@ -32,7 +33,7 @@ height: 100%;
 	</div>
 	<div class="container text-center">
 		<p class="shadow-lg bg-black rounded"style="color: white;">Or sign in with:</p>
-		<a id="intraLink" class="btn btn-dark btn" style=" width: 50px;"><img src="https://auth.42.fr/auth/resources/yyzrk/login/students/img/42_logo.svg">
+		<a id="intraLink" class="btn btn-dark btn" style=" width: 50px;"><img src="{% static 'assets/42_logo.svg' %}">
 		</a>
 	</div>
 </div>

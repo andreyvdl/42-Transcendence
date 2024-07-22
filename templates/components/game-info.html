@@ -1,0 +1,35 @@
+<!-- <div>
+	{% if game_mode == "tournament" %}
+		<h1>TOURNAMENT</h1>
+		{% if bracket == "FINAL" %}
+			<a>FINAL</a>
+		{% else %}
+			<a>SEMIFINAL</a>
+		{% endif %}
+	{% endif %}
+	<h1>{{ player1 }} x {{ player2 }}</h1>
+</div> -->
+
+<div class="d-flex justify-content-center align-items-center align-self-center" style="margin-top: 30vh">
+    <div class="card text-bg-dark" style="width: 50vw; height: fit-content; margin-right: 1vw;">
+		{% if game_mode == "tournament" %}
+       		<h5 class="text-center card-header">TOURNAMENT</h5>
+		   <div class="card text-bg-secondary d-flex text-center align-items-center justify-content-center" style="height: 100px; margin: 2%;">
+			   <h5 class=" card-header text-center mt-1" style="margin: 0;">MATCH</h5>
+			   {% if bracket == "FINAL" %}
+			   <p class="text-center mt-2" style="margin: 0;">FINAL</p>
+			   {% else %}
+			   <p class="text-center mt-2" style="margin: 0;">SEMIFINAL</p>
+			   {% endif %}
+			</div>
+		{% endif %}
+		<div class="card text-bg-secondary d-flex text-center align-items-center justify-content-center" style="height: fit-content; margin: 2%;">
+			<h5 class="card-header text-center mt-1" style="margin: 0;">PLAYERS</h5>
+			<div class="d-flex flex-rowjustify-content-center align-items-center" style="width: fit-content;">
+				<p class="d-flex flex-col mt-2" style="margin: 0;">{{ player1 }}</p>
+				<p class="d-flex flex-col mt-2" style="margin: 0; margin-left: 1vw; margin-right: 1vw;">x</p>
+				<p class="d-flex flex-col mt-2" style="margin: 0;">{{ player2 }}</p>
+			</div>
+		</div>
+	</div>
+</div>
