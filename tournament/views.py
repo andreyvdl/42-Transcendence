@@ -6,11 +6,11 @@ from django.http import JsonResponse
 from main.models import PongUser
 from tournament.models import Tournament
 from django.shortcuts import redirect
+from django.shortcuts import render
 
 
 def _ajax(request):
     return request.headers.get("X-Requested-With") == "XMLHttpRequest"
-
 
 @login_required(login_url='login')
 def create_tournament(request):
