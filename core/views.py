@@ -141,6 +141,16 @@ class AccountView(View):
                 "title": "🔴 ERROR",
                 "text": "Username already in use.",
             })
+        elif len(new_username) > 25:
+            return JsonResponse({
+                "title": "🔴 ERROR",
+                "text": "Username can't have more than 25 characters.",
+            })
+        elif len(new_username) < 1:
+            return JsonResponse({
+                "title": "🔴 ERROR",
+                "text": "Username can't be empty",
+            })
         else:
             curr_user = PongUser.objects.get(username=request.user)
             curr_user.username = new_username
