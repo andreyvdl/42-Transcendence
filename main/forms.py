@@ -1,7 +1,9 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from .models import PongUser
+import re
 
+#Enter a valid username. This value may contain only letters, numbers, and @/./+/-/_ characters.
 class PongUserCreationForm(UserCreationForm):
 	email = forms.EmailField(required=True)
 
@@ -11,6 +13,21 @@ class PongUserCreationForm(UserCreationForm):
 
 	def clean_email(self):
 		email = self.cleaned_data.get("email")
+		emoji_pattern = re.compile(
+			"["
+			"\U0001F600-\U0001F64F" # emoticons
+			"\U0001F300-\U0001F5FF" # symbols & pictographs
+			"\U0001F680-\U0001F6FF" # transport & map symbols
+			"\U0001F1E0-\U0001F1FF" # flags (iOS)
+			"\U00002700-\U000027BF" # Dingbats
+			"\U000024C2-\U0001F251"
+			"]+", flags=re.UNICODE
+		)
+
+		print(email)
+		print(emoji_pattern.search(email, 0, len(email)))
+		if emoji_pattern.search(email):
+			raise form.ValidationError("Email can't have emoji")
 		if PongUser.objects.filter(email=email).exists():
 			raise forms.ValidationError("Email already in use.")
 		return email
@@ -19,6 +36,8 @@ class PongUserCreationForm(UserCreationForm):
 		username = self.cleaned_data.get("username").strip()
 		if PongUser.objects.filter(username=username).exists():
 			raise forms.ValidationError("Username already in use.")
-		elif len(username) > 25:
-			raise forms.ValidationError("Username can't have more than 25 characters.")
+		username = username.encode()
+		if len(username) > 16:
+			raise forms.ValidationError("Username can't have more than 16 characters.")
+		username = username.decode()
 		return username

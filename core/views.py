@@ -1,4 +1,5 @@
 import base64
+import re
 
 from django.shortcuts import render
 from django.urls import reverse
@@ -136,15 +137,32 @@ class AccountView(View):
             'matches': matches,
             'user_info': user_info,
         }
-        if PongUser.objects.filter(username=new_username).exists():
+        emoji_pattern = re.compile(
+            "["
+            "\U0001F600-\U0001F64F" # emoticons
+            "\U0001F300-\U0001F5FF" # symbols & pictographs
+            "\U0001F680-\U0001F6FF" # transport & map symbols
+            "\U0001F1E0-\U0001F1FF" # flags (iOS)
+            "\U00002700-\U000027BF" # Dingbats
+            "\U000024C2-\U0001F251"
+            "]+", flags=re.UNICODE
+        )
+
+        if emoji_pattern.search(new_username):
+            return JsonResponse({
+                "title": "🔴 ERROR",
+                "text": "NO EMOJIS!",
+            })
+        elif PongUser.objects.filter(username=new_username).exists():
             return JsonResponse({
                 "title": "🔴 ERROR",
                 "text": "Username already in use.",
             })
-        elif len(new_username) > 25:
+        new_username = new_username.encode()
+        if len(new_username) > 16:
             return JsonResponse({
                 "title": "🔴 ERROR",
-                "text": "Username can't have more than 25 characters.",
+                "text": "Username can't have more than 16 characters.",
             })
         elif len(new_username) < 1:
             return JsonResponse({
@@ -153,7 +171,7 @@ class AccountView(View):
             })
         else:
             curr_user = PongUser.objects.get(username=request.user)
-            curr_user.username = new_username
+            curr_user.username = new_username.decode()
             curr_user.save()
             ctx['username'] = curr_user.username
 

@@ -45,15 +45,9 @@ function pongGameInit() {
 		playerTwo: 0,
 	};
 
-	document.addEventListener("keydown", (event) => {
-		KEYS[event.key] = true;
-		if (event.key == " ")
-			alert("");
-	});
+	document.addEventListener("keydown", (event) => { KEYS[event.key] = true; });
 
-	document.addEventListener("keyup", (event) => {
-		KEYS[event.key] = false;
-	});
+	document.addEventListener("keyup", (event) => { KEYS[event.key] = false; });
 
 	var timerToggle = false;
 	var timer = 0;

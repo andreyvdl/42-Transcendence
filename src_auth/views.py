@@ -130,7 +130,7 @@ def _call_api(user_code):
 
 def _register_intra(request, ctx):
     if PongUser.objects.filter(username=ctx['username']).exists():
-        ctx['username'] += datetime.now().strftime('%Y%m%d%H%M%S')
+        ctx['username'] += str(datetime.now().time().microsecond)
     try:
         pong_user = PongUser.objects.create_user(
             email=ctx['email'],
