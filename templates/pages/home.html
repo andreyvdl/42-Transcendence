@@ -1,4 +1,4 @@
-<div class="container-fluid" id="home-page" style="background-color: rgb(80,80,80); height: 100%;">
+<div class="container-fluid" id="home-page" style="background-color: rgb(80,80,80);">
 	<nav id="nav" class="navbar  border-body " data-bs-theme="dark" style="background-color: rgb(54, 54, 54); width: 55vw; margin-left:22vw; padding: 0;">
 		<div class="container-fluid">
 			<p class="navbar-brand">Pongas</p>
@@ -12,17 +12,17 @@
 				</div>
 				<div class="offcanvas-body" style="background-color: rgb(54, 54, 54);">
 					<ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-						<a href="{% url 'account' %}" id="account-btn" class="btn btn-outline-success" style="margin-top:80vh;" >Account</a>
+						<a href="{% url 'account' %}" id="account-btn" class="btn btn-outline-success" style="margin-top: 72vh;" >Account</a>
 						<button id="logout-btn" class="btn btn-outline-danger" style="margin-top:1vh;" >Logout</button>
 					</ul>
 				</div>
 			</div>
 		</div>
 	</nav>
-	<div id="homeBody" class="d-flex justify-content-center align-items-center flex-column" style="background-color: rgb(54, 54, 54); width: 55vw; height: max-content; margin-left: 22vw; margin-right: 1vw; font-size: 24px;">
+	<div id="homeBody" class="d-flex justify-content-center flex-column " style="background-color: rgb(54, 54, 54); width: 55vw; height: 100vh; margin-left: 22vw; margin-right: 1vw; font-size: 20px;">
 		<div class="d-grid gap-2 col-6 mx-auto">
-			<form id="form-game" style="margin-top: 4vh;">
-				<h2 class="text-center mb-4" style="color: white;">Welcome to Pongas</h2>
+			<form id="form-game">
+				<h2 class="text-center" style="color: white; margin-bottom: 5vh; margin-top: 5vh;">Welcome to Pongas</h2>
 				{% csrf_token %}
 				<select title="Game Options" id="gameSelect" name="game" class="form-select form-select-lg mb-3">
 					<option id="title" value="0" disabled selected>Select Game</option>
@@ -56,10 +56,10 @@
 				</div>
 			</div>
 		</div>
-		<div class="d-flex flex-row justify-content-center align-items-center"  style="margin-top: 6vh; background-color: rgb(54, 54, 54); height: 100%; width: 55vw; font-size: 24px;">
-			<div class="card text-bg-dark" style="width: 25vw; margin-right: 1vw;">
+		<div class="d-flex flex-row justify-content-center align-items-center"  style="margin-top: 6vh; background-color: rgb(54, 54, 54); width: 55vw; font-size: 24px;">
+			<div class="card text-bg-dark" style="height: 250px; width: 25vw; margin-right: 1vw;">
 				<div class="card-header text-center">Pong Tutorial</div>
-				<div class="card-body overflow-auto" style="font-size: 19px; height: 200px; margin-bottom: 10vh;">
+				<div class="card-body overflow-auto" style="font-size: 19px; height: 200px;">
 					<p>Jogador 1: 'w' e 's'</p>
 					<p>Jogador 2: 'cima' e 'baixo'</p>
 					<p>Espaço pausa o jogo</p>
@@ -67,9 +67,9 @@
 					<p>Dica: mire nos cantos</p>
 				</div>
 			</div>
-			<div class="card text-bg-dark" style="width: 25vw; margin-left: 1vw;">
+			<div class="card text-bg-dark" style="height: 250px; width: 25vw; margin-left: 1vw;">
 				<div class="card-header text-center">JKP Tutorial</div>
-				<div class="card-body overflow-auto" style="font-size: 19px; height: 200px; margin-bottom: 10vh;">
+				<div class="card-body overflow-auto" style="font-size: 19px; height: 200px;">
 					<p>Jogador 1: 'a' = 🔥, 's' = 💧 e 'd' = ❄️</p>
 					<p>Jogador 2: 'j' = 🔥, 'k' = 💧 e 'l' = ❄️</p>
 					<p>Vocês tem 5 segundos para escolher</p>
