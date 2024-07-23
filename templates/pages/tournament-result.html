@@ -1,12 +1,27 @@
-<div id="tournament-result-page">
-    <h1>GAME:</h1>
-    <a>{{ game }}</a>
-    <h1>WINNER:</h1>
-    <a>{{ winner }}</a>
-    <h1>PLAYERS:</h1>
-    {% for p in players %}
-        <a>{{ p }}</a>
-    {% endfor %}
-    <br>
-    <a href={% url 'home' %}>home</a>
+{% load static %}
+
+<div id="tournament-result-page" class="d-flex justify-content-center align-items-center" style="background-color: rgb(54, 54, 54); height: 100%;">
+    <div class="card text-bg-dark" style="width: 50vw; height: fit fit-content; margin-right: 1vw;">
+        <h5 class="text-center card-header">TOURNAMENT RESULT</h5>
+        <div class="d-flex mt-2 mb-2">
+            <div class="card text-center text-bg-secondary align-items-center justify-content-center" style="width: 25vw; height: 100px; margin-left: 1vw;">
+                <h5>GAME</h5>
+                <a>{{ game }}</a>
+            </div>
+            <div style="width: 2vw;"></div>
+            <div class="card text-center text-bg-secondary align-items-center justify-content-center" style="width: 25vw; height: 100px; margin-right: 1vw;">
+                <h5>👑 WINNER 👑</h5>
+                <a>{{ winner }}</a>
+            </div>
+        </div>
+        <div class="card text-bg-secondary d-flex flex-col text-center align-items-center justify-content-center" style="height: 100px; margin: 2%;">
+            <h5 class="text-center">PLAYERS</h5>
+            <div class="row">
+                {% for p in players %}
+                    <p class="col">{{ p }}</p>
+                {% endfor %}
+            </div>
+        </div>
+        <a class="btn btn-lg btn-secondary align-self-center" style="width: 25vw;" href="{% url 'home' %}">Home</a>
+    </div>
 </div>

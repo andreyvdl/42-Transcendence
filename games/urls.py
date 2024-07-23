@@ -6,4 +6,5 @@ from . import views
 urlpatterns = [
     path("pong", views.pong, name="pong"),
     path("jkp", views.jkp, name="jkp"),
+    path('match-result/', views.match_result),
 ]
