@@ -110,14 +110,18 @@
 							{% for date, score, game, game_mode, win, rival in matches %}
 								{% if game_mode != 'tournament' %}
 									{% if win %}
-										<tr class="table-dark table-bordered border-success" >
+										<tr class="table-dark table-bordered border-success" style="height: fit-content;" >
 											<td class="d-flex align-self-center" style="color: lightgreen;">
 									{% else %}
 										<tr class="table-dark table-bordered border-danger">
 											<td class="d-flex align-self-center" style="color: lightcoral;">
 									{% endif %}
-												<div class="d-flex flex-grow-1">{{ date }} {{ game }}</div>
-												<div class="d-flex">{{ score }} {{ rival }}</div>
+												<div class="d-flex align-items-center flex-grow-1">{{ date }}</div>
+												<div class="col flex-grow-1">
+													<div class="d-flex row text-center">{{ game }}</div>
+													<div class="d-flex row text-center">{{ score }}</div>
+												</div>
+												<div class="d-flex align-items-center">{{ rival }}</div>
 											</td>
 										</tr>
 								{% endif %}
@@ -128,14 +132,18 @@
 							{% for date, score, game, game_mode, win, rival in matches %}
 								{% if game_mode == 'tournament' %}
 									{% if win %}
-										<tr class="table-dark table-bordered border-success" >
+										<tr class="table-dark table-bordered border-success" style="height: fit-content;" >
 											<td class="d-flex align-self-center" style="color: lightgreen;">
 									{% else %}
 										<tr class="table-dark table-bordered border-danger">
-											<td class="d-flex align-self-center" style="color: lightcoral;">
+											<td class="d-flex align-self-center flex-row" style="color: lightcoral;">
 									{% endif %}
-												<div class="d-flex flex-grow-1">{{ date }} {{ game }}</div>
-												<div class="d-flex">{{ score }} {{ rival }}</div>
+												<div class="d-flex align-items-center flex-grow-1">{{ date }}</div>
+												<div class="col flex-grow-1">
+													<div class="d-flex row text-center">{{ game }}</div>
+													<div class="d-flex row text-center">{{ score }}</div>
+												</div>
+												<div class="d-flex align-items-center">{{ rival }}</div>
 											</td>
 										</tr>
 								{% endif %}
