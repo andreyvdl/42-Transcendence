@@ -50,7 +50,7 @@ async function tournamentSaveMatch(tournamentId, match) {
 }
 
 async function saveMatch(match) {
-	const url = `${BASE_URL}/api/save_match/${match.player2}/${match.scores.p1}v${match.scores.p2}/${match.winner}`;
+	const url = `${BASE_URL}/api/save_match/${match.gameMode}/${match.game}/${match.player1}/${match.player2}/${match.scores.p1}X${match.scores.p2}/${match.winner}`;
 
 	try {
 		await fetchData(url);
@@ -71,10 +71,8 @@ export async function endOfMatch(match) {
 
 	try {
 		var savedMatch = false;
-		if (match.gameMode === "pvp")
-			savedMatch = await saveMatch(match);
-		else
-			savedMatch = await tournamentSaveMatch(TOURNAMENT_ID, match);
+		if (match.gameMode === "tournament") await tournamentSaveMatch(TOURNAMENT_ID, match);
+		savedMatch = await saveMatch(match);
 
 		if (!savedMatch) {
 			const error = new Error(`Error when saving the game with GAME_MODE = ${match.gameMode}`);

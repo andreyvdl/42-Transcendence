@@ -45,15 +45,9 @@ function pongGameInit() {
 		playerTwo: 0,
 	};
 
-	document.addEventListener("keydown", (event) => {
-		KEYS[event.key] = true;
-		if (event.key == " ")
-			alert("");
-	});
+	document.addEventListener("keydown", (event) => { KEYS[event.key] = true; });
 
-	document.addEventListener("keyup", (event) => {
-		KEYS[event.key] = false;
-	});
+	document.addEventListener("keyup", (event) => { KEYS[event.key] = false; });
 
 	var timerToggle = false;
 	var timer = 0;
@@ -218,7 +212,6 @@ function pongGameInit() {
 			let vector;
 
 			BALL_VELOCITY.x = -BALL_VELOCITY.x * (Math.abs(BALL_VELOCITY.x) < 0.35 ? THREE.MathUtils.randFloat(1.1, 1.2) : 1);
-			console.log(BALL_VELOCITY.x);
 			BALL_VELOCITY.timer = 5 / Math.abs(BALL_VELOCITY.x);
 			if (ball3d.position.x > 0)
 				vector = player[1].position;

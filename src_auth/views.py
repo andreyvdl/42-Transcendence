@@ -13,6 +13,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core.files.base import ContentFile
 from datetime import datetime
 from main.models import PongUser
+from main.forms import PongUserCreationForm
 
 
 def _ajax(request):
@@ -31,54 +32,22 @@ class RegisterView(View):
 
     @staticmethod
     def post(request):
-        email = request.POST["email"]
-        username = request.POST["username"]
-        password = request.POST["password1"]
-        comp = request.POST["password2"]
+        form = PongUserCreationForm(request.POST)
 
-        if password != comp:
-            return JsonResponse({
-                "title": "🔴 ERROR",
-                "text": "Passwords don't match.",
-            })
+        if form.is_valid():
+            ctx = {
+                'registered_successfully': True,
+                'username': form.cleaned_data.get("username")
+            }
 
-        try:
-            PongUser.objects.get(email=email)
-            return JsonResponse({
-                "title": "🔴 ERROR",
-                "text": "Email already in use.",
-            })
-        except:
-            pass
+            form.save()
+            return JsonResponse({'innerHtml': render_to_string('pages/register.html', ctx, request=request)})
 
-        try:
-            PongUser.objects.get(username=username)
-            return JsonResponse({
-                "title": "🔴 ERROR",
-                "text": "Username already in use.",
-            })
-        except:
-            pass
-
-        try:
-            pong_user = PongUser.objects.create_user(
-                email=email,
-                username=username,
-                password=password,
-            )
-            pong_user.save()
-        except:
-            return JsonResponse({
-                "title": "🔴 ERROR",
-                "text": "Server error creating new user.",
-            })
-
-        ctx = {
-            'registered_successfully': True,
-            'username': username
-        }
-        inner_html = render_to_string('pages/register.html', ctx, request=request)
-        return JsonResponse({'innerHtml': inner_html})
+        error = form.errors.popitem()
+        return JsonResponse({
+            "title": "🔴 ERROR",
+            "text": error[1][0],
+        })
 
 
 class LoginView(View):
@@ -92,8 +61,14 @@ class LoginView(View):
 
     @staticmethod
     def post(request):
-        username = request.POST["username"].strip()
-        password = request.POST["password"].strip()
+        try:
+            username = request.POST["username"].strip()
+            password = request.POST["password"].strip()
+        except Exception:
+            return JsonResponse({
+                "title": "🔴 ERROR",
+                "text": "Empty username or password.",
+            })
 
         user = authenticate(
             request,
@@ -161,7 +136,7 @@ def _call_api(user_code):
 
 def _register_intra(request, ctx):
     if PongUser.objects.filter(username=ctx['username']).exists():
-        ctx['username'] += datetime.now().strftime('%Y%m%d_%H%M%S')
+        ctx['username'] += str(datetime.now().time().microsecond)
     try:
         pong_user = PongUser.objects.create_user(
             email=ctx['email'],

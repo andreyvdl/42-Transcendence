@@ -44,7 +44,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
 	window.addEventListener('click', (event) => {
 		const target = event.target;
-		if (target instanceof HTMLElement && target.hasAttribute("href")) {
+		if (target instanceof HTMLElement && target.hasAttribute("href") && target.id !== "intraLink") {
 			event.preventDefault()
 			route(target);
 		} else if (target.id === "go-home") {

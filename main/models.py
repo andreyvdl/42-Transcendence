@@ -1,4 +1,4 @@
-from datetime import datetime
+from django.utils import timezone
 from django.db import models
 from django.db.models import Q
 from django.contrib.auth.models import AbstractUser
@@ -17,9 +17,12 @@ class PongUser(AbstractUser):
 
     def get_matches(self):
         p_id = self.get_id()
-        return Match.objects.filter(
-            Q(left_player=p_id) | Q(right_player=p_id)
-        )
+        return Match.objects.filter(Q(left_player=p_id) | Q(right_player=p_id))
+
+    def get_tournaments(self):
+        from tournament.models import Tournament
+        p_id = self.get_id()
+        return Tournament.objects.filter( Q(tournament_winner=p_id) )
 
     def get_wins(self):
         return self.get_matches().filter(winner=self.get_id())
@@ -46,7 +49,9 @@ class Match(models.Model):
                                      related_name="right_match")
     winner = models.ForeignKey(PongUser, on_delete=models.CASCADE)
     score = models.CharField(max_length=3)
-    date = models.DateTimeField(auto_now=False, auto_now_add=False, default=datetime.now)
+    date = models.DateTimeField(auto_now=False, auto_now_add=False, default=timezone.now)
+    game_type = models.CharField(max_length=4)
+    game_mode = models.CharField(max_length=10)
 
     def __str__(self):
         return (f"{self.left_player.username} VS {self.right_player.username} => {self.score}"

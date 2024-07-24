@@ -1,4 +1,5 @@
 import base64
+import re
 
 from django.shortcuts import render
 from django.urls import reverse
@@ -74,14 +75,16 @@ def _get_friends(pk):
 
 def _get_matches(pk):
     user = PongUser.objects.get(pk=pk)
-    matches = user.get_matches()
+    matches = user.get_matches().order_by("id").reverse()
     results = []
     username = user.get_username()
 
     for m in matches:
         results.append((
-            m.date.strftime("%d/%b|%H:%M"),
+            m.date.strftime("%d/%b"),
             m.score,
+            m.game_type,
+            m.game_mode,
             True if m.winner.get_username() == username else False,
             m.right_player.get_username() if username == m.left_player.get_username() else m.left_player.get_username(),
         ))
@@ -91,6 +94,7 @@ def _get_matches(pk):
         "wins": user.get_wins().count(),
         "loses": user.get_losses().count(),
         "winrate": user.get_winrate(),
+        "tournament_wins": user.get_tournaments().count(),
     }
 
     return results, user_info
@@ -133,14 +137,41 @@ class AccountView(View):
             'matches': matches,
             'user_info': user_info,
         }
-        if PongUser.objects.filter(username=new_username).exists():
+        emoji_pattern = re.compile(
+            "["
+            "\U0001F600-\U0001F64F" # emoticons
+            "\U0001F300-\U0001F5FF" # symbols & pictographs
+            "\U0001F680-\U0001F6FF" # transport & map symbols
+            "\U0001F1E0-\U0001F1FF" # flags (iOS)
+            "\U00002700-\U000027BF" # Dingbats
+            "\U000024C2-\U0001F251"
+            "]+", flags=re.UNICODE
+        )
+
+        if emoji_pattern.search(new_username):
+            return JsonResponse({
+                "title": "🔴 ERROR",
+                "text": "NO EMOJIS!",
+            })
+        elif PongUser.objects.filter(username=new_username).exists():
             return JsonResponse({
                 "title": "🔴 ERROR",
                 "text": "Username already in use.",
             })
+        new_username = new_username.encode()
+        if len(new_username) > 16:
+            return JsonResponse({
+                "title": "🔴 ERROR",
+                "text": "Username can't have more than 16 characters.",
+            })
+        elif len(new_username) < 1:
+            return JsonResponse({
+                "title": "🔴 ERROR",
+                "text": "Username can't be empty",
+            })
         else:
             curr_user = PongUser.objects.get(username=request.user)
-            curr_user.username = new_username
+            curr_user.username = new_username.decode()
             curr_user.save()
             ctx['username'] = curr_user.username
 
