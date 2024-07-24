@@ -61,8 +61,14 @@ class LoginView(View):
 
     @staticmethod
     def post(request):
-        username = request.POST["username"].strip()
-        password = request.POST["password"].strip()
+        try:
+            username = request.POST["username"].strip()
+            password = request.POST["password"].strip()
+        except Exception:
+            return JsonResponse({
+                "title": "🔴 ERROR",
+                "text": "Empty username or password.",
+            })
 
         user = authenticate(
             request,
