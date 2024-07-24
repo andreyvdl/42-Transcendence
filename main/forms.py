@@ -24,18 +24,12 @@ class PongUserCreationForm(UserCreationForm):
 			"]+", flags=re.UNICODE
 		)
 
-		print(email)
-		print(emoji_pattern.search(email, 0, len(email)))
 		if emoji_pattern.search(email):
 			raise form.ValidationError("Email can't have emoji")
-		if PongUser.objects.filter(email=email).exists():
-			raise forms.ValidationError("Email already in use.")
 		return email
 
 	def clean_username(self):
 		username = self.cleaned_data.get("username").strip()
-		if PongUser.objects.filter(username=username).exists():
-			raise forms.ValidationError("Username already in use.")
 		username = username.encode()
 		if len(username) > 16:
 			raise forms.ValidationError("Username can't have more than 16 characters.")
