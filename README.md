@@ -15,7 +15,7 @@ and JavaScript
 
 ## 🚧 Infra
 
-![image](https://github.com/user-attachments/assets/6a8f2e56-0491-474b-93a0-9856ce51d079)
+![Infrastructure](https://github.com/user-attachments/assets/61f5a59b-37ca-4bb3-a624-34c286fb743d)
 
 ## 🤔 What you can do?
 
