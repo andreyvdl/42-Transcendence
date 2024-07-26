@@ -31,9 +31,6 @@ function submitFormLogin(event) {
 
 export default function loginPageSetup() {
     const formLogin = document.getElementById('formLogin');
-	const intraLink = document.getElementById('intraLink');
-
-	intraLink.href = INTRA_URL;
 
     attachEvent(formLogin, 'submit', submitFormLogin);
 }

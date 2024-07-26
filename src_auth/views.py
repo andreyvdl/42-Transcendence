@@ -169,3 +169,8 @@ def intra(request):
         return redirect('account')
     else:
         return _register_intra(request, ctx)
+
+def intra_confirm(request):
+    if request.method != 'GET':
+        return JsonResponse({'error': 'Expected GET'}, status=400)
+    return redirect(f"{os.getenv('INTRA_LINK')}")
