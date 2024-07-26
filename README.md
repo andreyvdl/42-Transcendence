@@ -9,13 +9,13 @@ the beginning of your journey in computer science. Look at you now. Time to shin
 
 - build: [Docker/Docker Compose](https://www.docker.com)
 - front: [Bootstrap](https://getbootstrap.com), [Three.js](https://threejs.org)
-and javascript
+and JavaScript
 - back: [Django](https://www.djangoproject.com)
 - database: [Postgres](https://www.postgresql.org)
 
 ## 🚧 Infra
 
-<!-- INSERT IMAGE HERE -->
+![image](https://github.com/user-attachments/assets/6a8f2e56-0491-474b-93a0-9856ce51d079)
 
 ## 🤔 What you can do?
 
@@ -55,4 +55,4 @@ INTRA_REDIR="http://localhost:8000/auth/intra"
 MY_IP=your_LAN_ip
 ```
 
-After you have everything just run `make local`
+After you have everything just run `make local`.
