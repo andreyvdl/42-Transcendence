@@ -25,7 +25,7 @@ class PongUserCreationForm(UserCreationForm):
 		)
 
 		if emoji_pattern.search(email):
-			raise form.ValidationError("Email can't have emoji")
+			raise forms.ValidationError("Email can't have emoji")
 		return email
 
 	def clean_username(self):
