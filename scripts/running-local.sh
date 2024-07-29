@@ -43,7 +43,10 @@ source "$VENV_PATH/bin/activate"
 if [ -f $ENV_FILE ]; then
 	export $(grep -v '^#' $ENV_FILE | xargs)
 
+	export DJANGO_DEBUG="True"
 	export SQL_HOST="localhost"
+	export INTRA_LINK="https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-b03d3e34ca48d59cf52b525eef892e52f49bc88e15972bf41e3dc501fdbf7968&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fauth%2Fintra&response_type=code"
+	export INTRA_REDIR="http://localhost:8000/auth/intra"
 else
 	echo "ERROR: .env not found in path $ENV_FILE"
 	exit 1
