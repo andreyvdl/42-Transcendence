@@ -41,7 +41,7 @@ First you will need Docker and Docker Compose,
 You will need a .env file and an Intra42 registred API.
 
 ```.env
-DJANGO_DEBUG=True
+DJANGO_DEBUG=False
 
 SQL_DATABASE=your_database_name
 SQL_USER=your_database_user
@@ -51,8 +51,9 @@ SQL_PORT=your_database_port
 
 INTRA_UID=your_intra_public_key
 INTRA_SECRET=your_intra_secret_key
-INTRA_REDIR="http://localhost:8000/auth/intra"
+INTRA_LINK=your_intra_Oauth_link
+INTRA_REDIR="https://your_LAN_ip:5000/auth/intra"
 MY_IP=your_LAN_ip
 ```
 
-After you have everything just run `make local`.
+After you have everything just run `make`.
