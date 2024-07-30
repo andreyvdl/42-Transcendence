@@ -14,8 +14,6 @@ services:
       - transcendence
     env_file:
       - .env
-    ports:
-      - 8000:8000
 
   nginx:
     build:
